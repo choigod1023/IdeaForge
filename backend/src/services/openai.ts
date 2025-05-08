@@ -2,12 +2,17 @@ import OpenAI from "openai";
 import { PromptRequest, Project } from "../types";
 import dotenv from "dotenv";
 
+// 환경 변수 설정
 dotenv.config();
 
 class OpenAIService {
   private openai: OpenAI;
 
   constructor() {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error("OPENAI_API_KEY is not defined in environment variables");
+    }
+
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
