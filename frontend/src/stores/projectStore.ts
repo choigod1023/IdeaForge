@@ -6,13 +6,16 @@ interface ProjectState {
   project: Project | null;
   isLoading: boolean;
   error: string | null;
+  preferredTech: string[];
   generateProject: (request: ProjectRequest) => Promise<void>;
+  setPreferredTech: (techs: string[]) => void;
 }
 
 export const useProjectStore = create<ProjectState>((set) => ({
   project: null,
   isLoading: false,
   error: null,
+  preferredTech: [],
   generateProject: async (request: ProjectRequest) => {
     set({ isLoading: true, error: null });
     try {
@@ -38,4 +41,5 @@ export const useProjectStore = create<ProjectState>((set) => ({
       });
     }
   },
+  setPreferredTech: (techs: string[]) => set({ preferredTech: techs }),
 }));

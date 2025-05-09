@@ -1,24 +1,101 @@
-export const TECH_OPTIONS = [
+// 프론트엔드
+const FRONTEND_TECHS = [
   "React",
   "Vue",
   "Angular",
-  "Node.js",
-  "Python",
-  "Java",
   "TypeScript",
+  "JavaScript",
+  "HTML/CSS",
+  "Tailwind CSS",
+  "Redux",
+  "Next.js",
+  "Nuxt.js",
+] as const;
+
+// 백엔드
+const BACKEND_TECHS = [
+  "Node.js",
+  "Java",
+  "Spring",
+  "Python",
+  "Django",
+  "FastAPI",
+  "PostgreSQL",
+  "MongoDB",
+  "MySQL",
+  "Redis",
+] as const;
+
+// 모바일
+const MOBILE_TECHS = [
+  "React Native",
+  "Flutter",
   "Swift",
   "Kotlin",
-  "C#",
-  "Unity",
+  "Dart",
+  "Firebase",
+] as const;
+
+// AI/ML/데이터
+const AI_ML_TECHS = [
   "TensorFlow",
   "PyTorch",
-  "Django",
-  "Spring",
-  "Flutter",
-  "React Native",
+  "Pandas",
+  "Scikit-learn",
+  "OpenCV",
+  "Jupyter",
+] as const;
+
+// 게임 개발
+const GAME_TECHS = [
+  "Unity",
+  "Unreal Engine",
+  "C#",
+  "C++",
+  "Blueprints",
+  "Photon",
+] as const;
+
+// 임베디드/IoT
+const EMBEDDED_TECHS = [
+  "Arduino",
+  "Raspberry Pi",
+  "C",
+  "C++",
+  "MQTT",
+  "RTOS",
+] as const;
+
+// DevOps/클라우드
+const DEVOPS_TECHS = [
   "AWS",
   "Docker",
   "Kubernetes",
+  "Terraform",
+  "Jenkins",
+  "GitLab CI",
+] as const;
+
+// 보안
+const SECURITY_TECHS = [
+  "Wireshark",
+  "Metasploit",
+  "Burp Suite",
+  "OpenSSL",
+  "Cryptography",
+  "JWT",
+] as const;
+
+// 모든 기술 스택을 하나의 배열로 통합
+export const TECH_OPTIONS = [
+  ...FRONTEND_TECHS,
+  ...BACKEND_TECHS,
+  ...MOBILE_TECHS,
+  ...AI_ML_TECHS,
+  ...GAME_TECHS,
+  ...EMBEDDED_TECHS,
+  ...DEVOPS_TECHS,
+  ...SECURITY_TECHS,
 ] as const;
 
 export const INTEREST_OPTIONS = [
@@ -32,6 +109,7 @@ export const INTEREST_OPTIONS = [
   "클라우드",
   "DevOps",
   "UI/UX 디자인",
+  "임베디드/IoT",
 ] as const;
 
 export const CATEGORY_OPTIONS = [

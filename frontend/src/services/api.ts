@@ -20,10 +20,17 @@ export const api = {
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "프로젝트 추천 생성에 실패했습니다");
+      const errorData = await response
+        .json()
+        .catch(() => ({ message: "프로젝트 추천 생성에 실패했습니다" }));
+      throw new Error(errorData.message || "프로젝트 추천 생성에 실패했습니다");
     }
 
-    return response.json();
+    const data = await response.json();
+    if (!data) {
+      throw new Error("프로젝트 추천 생성에 실패했습니다");
+    }
+
+    return data;
   },
 };
