@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import projectRoutes from "./routes/project.routes";
+import { openAIService } from "./services/openai";
 
 // Load environment variables
 dotenv.config();
@@ -10,11 +11,36 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? ["https://idea-forge-omega.vercel.app/"]
+        : ["http://localhost:5173"],
+    methods: ["GET", "POST"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 // Routes
 app.use("/api/projects", projectRoutes);
+
+// 프로젝트 추천 API 엔드포인트
+app.post("/api/projects/recommend", async (req, res) => {
+  try {
+    const project = await openAIService.generateProjectRecommendation(req.body);
+    res.json(project);
+  } catch (error) {
+    console.error("Error generating project recommendation:", error);
+    res.status(500).json({
+      message:
+        error instanceof Error
+          ? error.message
+          : "프로젝트 추천 생성에 실패했습니다",
+    });
+  }
+});
 
 // Error handling middleware
 app.use(
