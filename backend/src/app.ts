@@ -15,12 +15,15 @@ app.use(
   cors({
     origin:
       process.env.NODE_ENV === "production"
-        ? ["https://idea-forge-omega.vercel.app/"]
+        ? ["https://idea-forge-omega.vercel.app"]
         : ["http://localhost:5173"],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
     credentials: true,
   })
 );
+
+// Parse JSON bodies
 app.use(express.json());
 
 // Routes
