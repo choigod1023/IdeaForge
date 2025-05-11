@@ -46,10 +46,10 @@ export default function ProjectDetail() {
               기술 스택
             </h2>
             <div className="flex flex-wrap gap-2">
-              {project.techStack.map((tech) => (
+              {project.techStack.map((tech: string) => (
                 <span
                   key={tech}
-                  className="px-3 py-1 text-sm text-gray-800 bg-gray-100 rounded-full"
+                  className="px-3 py-1 text-sm font-medium text-indigo-800 bg-indigo-100 rounded-full"
                 >
                   {tech}
                 </span>
@@ -63,8 +63,10 @@ export default function ProjectDetail() {
               주요 기능
             </h2>
             <ul className="space-y-2 text-gray-700 list-disc list-inside">
-              {project.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
+              {project.features.map((feature: string) => (
+                <li key={feature} className="text-gray-600">
+                  {feature}
+                </li>
               ))}
             </ul>
           </div>
@@ -75,65 +77,89 @@ export default function ProjectDetail() {
               학습 내용
             </h2>
             <ul className="space-y-2 text-gray-700 list-disc list-inside">
-              {project.learningOutcomes.map((outcome, index) => (
-                <li key={index}>{outcome}</li>
+              {project.learningPoints.map((outcome: string, index: number) => (
+                <li key={index} className="text-gray-600">
+                  {outcome}
+                </li>
               ))}
             </ul>
           </div>
 
-          {/* 참고 자료 */}
-          <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
-            <h2 className="mb-4 text-xl font-semibold text-gray-900">
-              참고 자료
-            </h2>
-            <ul className="space-y-2 text-gray-700 list-disc list-inside">
-              {project.resources.map((resource, index) => (
-                <li key={index}>{resource}</li>
-              ))}
-            </ul>
-          </div>
+          {/* Resources */}
+          {Array.isArray(project.resources) && project.resources.length > 0 && (
+            <div>
+              <h3 className="mb-2 text-lg font-semibold text-gray-900">
+                Resources
+              </h3>
+              <ul className="pl-5 space-y-1 list-disc">
+                {project.resources.map((resource: string) => (
+                  <li key={resource} className="text-gray-600">
+                    {resource}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
 
           {/* 사전 지식 */}
-          {project.prerequisites.length > 0 && (
+          {project.prerequisites && project.prerequisites.length > 0 && (
             <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
               <h2 className="mb-4 text-xl font-semibold text-gray-900">
                 사전 지식
               </h2>
               <ul className="space-y-2 text-gray-700 list-disc list-inside">
-                {project.prerequisites.map((prerequisite, index) => (
-                  <li key={index}>{prerequisite}</li>
+                {project.prerequisites.map((prerequisite: string) => (
+                  <li key={prerequisite} className="text-gray-600">
+                    {prerequisite}
+                  </li>
                 ))}
               </ul>
             </div>
           )}
 
           {/* 도전 과제 */}
-          {project.challenges.length > 0 && (
+          {project.challenges && project.challenges.length > 0 && (
             <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
               <h2 className="mb-4 text-xl font-semibold text-gray-900">
                 도전 과제
               </h2>
               <ul className="space-y-2 text-gray-700 list-disc list-inside">
-                {project.challenges.map((challenge, index) => (
-                  <li key={index}>{challenge}</li>
+                {project.challenges.map((challenge: string) => (
+                  <li key={challenge} className="text-gray-600">
+                    {challenge}
+                  </li>
                 ))}
               </ul>
             </div>
           )}
 
           {/* 개발 팁 */}
-          {project.tips.length > 0 && (
+          {project.tips && project.tips.length > 0 && (
             <div className="p-6 mb-6 bg-white rounded-lg shadow-md">
               <h2 className="mb-4 text-xl font-semibold text-gray-900">
                 개발 팁
               </h2>
               <ul className="space-y-2 text-gray-700 list-disc list-inside">
-                {project.tips.map((tip, index) => (
-                  <li key={index}>{tip}</li>
+                {project.tips.map((tip: string) => (
+                  <li key={tip} className="text-gray-600">
+                    {tip}
+                  </li>
                 ))}
               </ul>
             </div>
           )}
+
+          {/* Difficulty and Time */}
+          <div className="flex items-center justify-between pt-4 border-t">
+            <span className="px-3 py-1 text-sm font-medium text-green-800 bg-green-100 rounded-full">
+              {project.difficulty}
+            </span>
+            {project.estimatedTime && (
+              <span className="text-gray-600">
+                Estimated Time: {project.estimatedTime}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </div>
