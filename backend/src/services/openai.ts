@@ -62,11 +62,8 @@ class OpenAIService {
       필수 요구사항:
       - 난이도: ${
         request.difficulty
-      } (반드시 "Beginner", "Intermediate", "Advanced" 중 하나로 응답)
+      } (반드시 "초급", "중급", "고급" 중 하나로 응답)
       - 선호하는 기술: ${request.preferredTech.join(", ")}
-      - 가용 시간: ${request.timeAvailable}
-      - 관심 분야: ${request.interests.join(", ")}
-      ${request.category ? `- 프로젝트 카테고리: ${request.category}` : ""}
       ${request.theme ? `- 프로젝트 테마: ${request.theme}` : ""}
       ${request.description ? `- 추가 설명: ${request.description}` : ""}
       
@@ -82,25 +79,23 @@ class OpenAIService {
         "id": "프로젝트-고유-id",
         "title": "프로젝트 제목 (한글로 작성)",
         "description": "상세한 프로젝트 설명 (한글로 작성, 200자 이내)",
-        "techStack": ["사용할 기술 스택 (최소 2개, 최대 4개)"],
+        "techStack": ["사용할 기술 스택 (최소 3개)"],
         "difficulty": "${request.difficulty}",
-        "estimatedTime": "${request.timeAvailable}",
-        "features": ["주요 기능 4-5개 (한글로 작성)"],
-        "learningOutcomes": ["학습할 수 있는 내용 4-5개 (한글로 작성)"],
-        "resources": ["참고할 수 있는 자료 4-5개 (한글로 작성)"],
-        "category": "${request.category || "웹 개발"}",
+        "features": ["주요 기능 5-7개 (한글로 작성)"],
+        "learningOutcomes": ["학습할 수 있는 내용 5-7개 (한글로 작성)"],
+        "resources": ["참고할 수 있는 자료 5-7개 (한글로 작성, 해당 링크 포함)"],
         "theme": "${request.theme || "생산성"}",
         "prerequisites": ${
           request.hasPrerequisites
-            ? '["사전 지식/요구사항 4-5개 (한글로 작성)"]'
+            ? '["사전 지식/요구사항 5-7개 (한글로 작성)"]'
             : "[]"
         },
         "challenges": ${
           request.hasChallenges
-            ? '["예상되는 도전 과제 4-5개 (한글로 작성)"]'
+            ? '["예상되는 도전 과제 5-7개 (한글로 작성)"]'
             : "[]"
         },
-        "tips": ${request.hasTips ? '["개발 팁 4-5개 (한글로 작성)"]' : "[]"}
+        "tips": ${request.hasTips ? '["개발 팁 5-7개 (한글로 작성)"]' : "[]"}
       }`;
   }
 }

@@ -42,7 +42,6 @@ export interface Project {
 export interface ProjectRequest {
   difficulty: Difficulty;
   preferredTech: string[];
-  timeAvailable: string;
   interests: string[];
   category?: ProjectCategory;
   theme?: ProjectTheme;
@@ -50,4 +49,5 @@ export interface ProjectRequest {
   hasPrerequisites: boolean;
   hasChallenges: boolean;
   hasTips: boolean;
+  additionalInfo?: string;
 }

@@ -1,91 +1,20 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import type { ProjectRequest, ProjectCategory } from "../types";
-import { useProjectStore } from "../stores/projectStore";
-import { projectFormSchema } from "../schemas/projectFormSchema";
+import {
+  projectFormSchema,
+  type ProjectRequest,
+} from "../schemas/projectFormSchema";
 import { TechStackSelector } from "./forms/TechStackSelector";
 import {
-  INTEREST_OPTIONS,
-  CATEGORY_OPTIONS,
   THEME_OPTIONS,
   DIFFICULTY_DESCRIPTIONS,
 } from "../constants/formOptions";
-import { useEffect } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useEffect, useState, useRef } from "react";
+import { FaSeedling, FaStar, FaFire } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
+import { useProjectStore } from "../stores/projectStore";
 
-// 기술 스택과 관심 분야 매핑
-const TECH_TO_INTEREST_MAP: Record<string, string[]> = {
-  // 프론트엔드
-  React: ["프론트엔드 개발"],
-  Vue: ["프론트엔드 개발"],
-  Angular: ["프론트엔드 개발"],
-  TypeScript: ["프론트엔드 개발"],
-  JavaScript: ["프론트엔드 개발"],
-  "HTML/CSS": ["프론트엔드 개발", "UI/UX 디자인"],
-  "Tailwind CSS": ["프론트엔드 개발", "UI/UX 디자인"],
-  Redux: ["프론트엔드 개발"],
-  "Next.js": ["프론트엔드 개발"],
-  "Nuxt.js": ["프론트엔드 개발"],
-
-  // 백엔드
-  "Node.js": ["백엔드 개발"],
-  Java: ["백엔드 개발"],
-  Spring: ["백엔드 개발"],
-  Python: ["백엔드 개발", "AI/ML", "데이터 분석"],
-  Django: ["백엔드 개발"],
-  FastAPI: ["백엔드 개발"],
-  PostgreSQL: ["백엔드 개발"],
-  MongoDB: ["백엔드 개발"],
-  MySQL: ["백엔드 개발"],
-  Redis: ["백엔드 개발"],
-
-  // 모바일
-  "React Native": ["모바일 앱 개발"],
-  Flutter: ["모바일 앱 개발"],
-  Swift: ["모바일 앱 개발"],
-  Kotlin: ["모바일 앱 개발"],
-  Dart: ["모바일 앱 개발"],
-  Firebase: ["모바일 앱 개발"],
-
-  // AI/ML/데이터
-  TensorFlow: ["AI/ML"],
-  PyTorch: ["AI/ML"],
-  Pandas: ["데이터 분석"],
-  "Scikit-learn": ["AI/ML", "데이터 분석"],
-  OpenCV: ["AI/ML"],
-  Jupyter: ["데이터 분석"],
-
-  // 게임 개발
-  Unity: ["게임 개발"],
-  "Unreal Engine": ["게임 개발"],
-  "C#": ["게임 개발"],
-  "C++": ["게임 개발"],
-  Blueprints: ["게임 개발"],
-  Photon: ["게임 개발"],
-
-  // 임베디드/IoT
-  Arduino: ["임베디드/IoT"],
-  "Raspberry Pi": ["임베디드/IoT"],
-  C: ["임베디드/IoT"],
-  MQTT: ["임베디드/IoT"],
-  RTOS: ["임베디드/IoT"],
-
-  // DevOps/클라우드
-  AWS: ["클라우드", "DevOps"],
-  Docker: ["DevOps"],
-  Kubernetes: ["DevOps"],
-  Terraform: ["DevOps"],
-  Jenkins: ["DevOps"],
-  "GitLab CI": ["DevOps"],
-
-  // 보안
-  Wireshark: ["보안"],
-  Metasploit: ["보안"],
-  "Burp Suite": ["보안"],
-  OpenSSL: ["보안"],
-  Cryptography: ["보안"],
-  JWT: ["보안"],
-};
+// 기술 스택과 관심 분야 매핑 제거
 
 // 기술 스택과 프로젝트 카테고리 매핑
 const TECH_TO_CATEGORY_MAP: Record<string, ProjectCategory[]> = {
@@ -153,271 +82,262 @@ const TECH_TO_CATEGORY_MAP: Record<string, ProjectCategory[]> = {
   RTOS: ["임베디드"],
 };
 
+const DIFFICULTY_LABELS = {
+  Beginner: "초급",
+  Intermediate: "중급",
+  Advanced: "고급",
+} as const;
+
+const ERROR_MESSAGES = {
+  preferredTech: "기술 스택을 최소 1개 이상 선택해주세요",
+  difficulty: "난이도를 선택해주세요",
+  theme: "프로젝트 테마를 선택해주세요",
+} as const;
+
 export const ProjectForm = () => {
-  const { generateProject, preferredTech } = useProjectStore();
+  const navigate = useNavigate();
+  const { preferredTech, setPreferredTech } = useProjectStore();
+  const [selectedDifficulty, setSelectedDifficulty] = useState<string>("");
+  const errorRefs = useRef<Record<string, HTMLDivElement | null>>({});
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
     setValue,
+    trigger,
   } = useForm<ProjectRequest>({
     resolver: zodResolver(projectFormSchema),
+    mode: "onChange",
   });
 
-  // preferredTech가 변경될 때 폼 값 업데이트
+  // projectStore의 preferredTech가 변경될 때마다 폼 데이터 업데이트
   useEffect(() => {
-    if (preferredTech.length > 0) {
-      setValue("preferredTech", preferredTech);
-
-      // 선택된 기술 스택에 해당하는 관심 분야 자동 선택
-      const relatedInterests = new Set<string>();
-      preferredTech.forEach((tech) => {
-        const interests = TECH_TO_INTEREST_MAP[tech] || [];
-        interests.forEach((interest) => relatedInterests.add(interest));
-      });
-      setValue("interests", Array.from(relatedInterests));
-
-      // 선택된 기술 스택에 해당하는 프로젝트 카테고리 자동 선택
-      const relatedCategories = new Set<ProjectCategory>();
-      preferredTech.forEach((tech) => {
-        const categories = TECH_TO_CATEGORY_MAP[tech] || [];
-        categories.forEach((category) => relatedCategories.add(category));
-      });
-
-      // 가장 많이 언급된 카테고리를 선택
-      const categoryCounts = Array.from(relatedCategories).reduce(
-        (acc, category) => {
-          acc[category] = (acc[category] || 0) + 1;
-          return acc;
-        },
-        {} as Record<ProjectCategory, number>
-      );
-
-      const selectedCategory = Object.entries(categoryCounts).sort(
-        ([, a], [, b]) => b - a
-      )[0]?.[0] as ProjectCategory;
-
-      if (selectedCategory) {
-        setValue("category", selectedCategory);
-      }
-    }
+    setValue("preferredTech", preferredTech);
   }, [preferredTech, setValue]);
 
-  const {
-    mutate: submitProject,
-    isPending,
-    error,
-  } = useMutation({
-    mutationFn: async (data: ProjectRequest) => {
-      console.log("Submitting project data:", data);
-      await generateProject(data);
-    },
-    onSuccess: () => {
-      console.log("Project created successfully");
-    },
-    onError: (error) => {
-      console.error("Error creating project:", error);
-    },
-  });
+  // 에러가 발생하면 해당 필드로 스크롤
+  useEffect(() => {
+    const firstError = Object.keys(errors)[0];
+    if (firstError && errorRefs.current[firstError]) {
+      errorRefs.current[firstError]?.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
+    }
+  }, [errors]);
 
-  const onSubmit = async (data: ProjectRequest) => {
-    console.log("Form submitted with data:", data);
-    submitProject(data);
+  const handleFormSubmit = async (data: ProjectRequest) => {
+    try {
+      console.log("Form data to be submitted:", data);
+      navigate("/project", {
+        state: {
+          formData: data,
+        },
+      });
+    } catch (error) {
+      console.error("Error preparing form submission:", error);
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+    <form
+      onSubmit={(e) => {
+        console.log("Form submit event triggered");
+        handleSubmit(handleFormSubmit)(e);
+      }}
+      className="space-y-8"
+    >
+      {/* 기술 스택 선택 */}
+      <div
+        className="space-y-2"
+        ref={(el) => (errorRefs.current.preferredTech = el)}
+      >
+        <label className="block text-lg font-medium text-gray-700">
+          기술 스택
+        </label>
+        <TechStackSelector
+          selectedTechs={preferredTech}
+          onTechSelect={setPreferredTech}
+        />
+        {errors.preferredTech && (
+          <p className="mt-2 text-sm font-medium text-red-600">
+            {ERROR_MESSAGES.preferredTech}
+          </p>
+        )}
+      </div>
+
       {/* 난이도 선택 */}
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
+      <div
+        className="space-y-2"
+        ref={(el) => (errorRefs.current.difficulty = el)}
+      >
+        <label className="block text-lg font-medium text-gray-700">
           난이도
         </label>
-        <div className="space-y-2">
-          {Object.entries(DIFFICULTY_DESCRIPTIONS).map(
-            ([level, description]) => (
-              <label
-                key={level}
-                className="flex items-start p-3 space-x-3 border rounded-lg cursor-pointer hover:bg-gray-50"
+        <div className="grid grid-cols-3 gap-4">
+          {["Beginner", "Intermediate", "Advanced"].map((level) => (
+            <button
+              key={level}
+              type="button"
+              onClick={() => {
+                setSelectedDifficulty(level);
+                setValue(
+                  "difficulty",
+                  level as "Beginner" | "Intermediate" | "Advanced"
+                );
+                trigger("difficulty");
+              }}
+              className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
+                selectedDifficulty === level
+                  ? "border-blue-500 bg-blue-50/80 dark:bg-blue-900/30 dark:border-blue-400 shadow-sm"
+                  : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:hover:bg-gray-700/80"
+              }`}
+            >
+              <div
+                className={`p-2 rounded-md mb-2 ${
+                  selectedDifficulty === level
+                    ? "bg-white/90 dark:bg-gray-800/90"
+                    : "bg-gray-50/90 dark:bg-gray-700/90"
+                }`}
               >
-                <input
-                  type="radio"
-                  value={level}
-                  {...register("difficulty", {
-                    required: "난이도를 선택해주세요",
-                  })}
-                  className="w-4 h-4 mt-1 text-indigo-600 border-gray-300 focus:ring-indigo-500"
-                />
-                <div>
-                  <span className="block text-sm font-medium text-gray-900">
-                    {level}
-                  </span>
-                  <span className="block text-sm text-gray-500">
-                    {description}
-                  </span>
-                </div>
-              </label>
-            )
-          )}
+                {level === "Beginner" && (
+                  <FaSeedling className="w-6 h-6 text-green-500" />
+                )}
+                {level === "Intermediate" && (
+                  <FaStar className="w-6 h-6 text-yellow-500" />
+                )}
+                {level === "Advanced" && (
+                  <FaFire className="w-6 h-6 text-red-500" />
+                )}
+              </div>
+              <span
+                className={`font-medium ${
+                  selectedDifficulty === level
+                    ? "text-blue-900 dark:text-black"
+                    : "text-gray-700 dark:text-black"
+                }`}
+              >
+                {DIFFICULTY_LABELS[level as keyof typeof DIFFICULTY_LABELS]}
+              </span>
+              <span className="mt-1 text-sm text-gray-600 dark:text-gray-900">
+                {
+                  DIFFICULTY_DESCRIPTIONS[
+                    level as keyof typeof DIFFICULTY_DESCRIPTIONS
+                  ]
+                }
+              </span>
+            </button>
+          ))}
         </div>
         {errors.difficulty && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.difficulty.message as string}
-          </p>
-        )}
-      </div>
-
-      {/* 기술 스택 선택 */}
-      <TechStackSelector register={register} watch={watch} />
-
-      {/* 관심 분야 선택 */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          관심 있는 분야
-        </label>
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
-          {INTEREST_OPTIONS.map((interest) => (
-            <label
-              key={interest}
-              className="flex items-center space-x-2 text-sm"
-            >
-              <input
-                type="checkbox"
-                value={interest}
-                {...register("interests")}
-                className="text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
-              />
-              <span className="text-gray-700">{interest}</span>
-            </label>
-          ))}
-        </div>
-        {errors.interests && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.interests.message as string}
-          </p>
-        )}
-      </div>
-
-      {/* 프로젝트 카테고리 선택 */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          프로젝트 카테고리
-        </label>
-        <select
-          {...register("category", { required: "카테고리를 선택해주세요" })}
-          className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-        >
-          <option value="">카테고리 선택</option>
-          {CATEGORY_OPTIONS.map((category) => (
-            <option key={category} value={category}>
-              {category}
-            </option>
-          ))}
-        </select>
-        {errors.category && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.category.message as string}
+          <p className="mt-2 text-sm font-medium text-red-600">
+            {ERROR_MESSAGES.difficulty}
           </p>
         )}
       </div>
 
       {/* 프로젝트 테마 선택 */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-700">
+      <div className="space-y-2" ref={(el) => (errorRefs.current.theme = el)}>
+        <label className="block text-lg font-medium text-gray-700">
           프로젝트 테마
         </label>
         <select
-          {...register("theme", { required: "테마를 선택해주세요" })}
-          className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          {...register("theme")}
+          className="block w-full h-12 px-4 text-lg transition-all border-2 border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white/80 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-100 hover:border-blue-300 dark:hover:border-blue-400"
         >
-          <option value="">테마 선택</option>
+          <option value="">테마를 선택해주세요</option>
           {THEME_OPTIONS.map((theme) => (
-            <option key={theme} value={theme}>
+            <option key={theme} value={theme} className="dark:bg-gray-800">
               {theme}
             </option>
           ))}
         </select>
         {errors.theme && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.theme.message as string}
+          <p className="mt-2 text-sm font-medium text-red-600">
+            {ERROR_MESSAGES.theme}
           </p>
         )}
       </div>
 
-      {/* 가용 시간 입력 */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          가용 시간
+      {/* 프로젝트 기타 정보 */}
+      <div className="space-y-2">
+        <label className="block text-lg font-medium text-gray-700">
+          프로젝트 기타 정보
         </label>
-        <input
-          type="text"
-          {...register("timeAvailable", {
-            required: "가용 시간을 입력해주세요",
-          })}
-          placeholder="예: 2주, 1개월, 3개월"
-          className="block w-full mt-1 border-gray-300 rounded-md shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+        <textarea
+          {...register("description")}
+          rows={4}
+          className="block w-full px-4 py-3 text-lg transition-all border-2 border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white/80 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-100 hover:border-blue-300 dark:hover:border-blue-400"
+          placeholder="프로젝트에 대한 추가 정보를 입력해주세요"
         />
-        {errors.timeAvailable && (
-          <p className="mt-1 text-sm text-red-600">
-            {errors.timeAvailable.message as string}
-          </p>
-        )}
       </div>
 
-      {/* 추가 정보 포함 */}
-      <div>
-        <label className="block mb-2 text-sm font-medium text-gray-700">
-          추가 정보 포함
+      {/* 프로젝트 상세 정보 */}
+      <div className="space-y-2">
+        <label className="block text-lg font-medium text-gray-700">
+          프로젝트 상세 정보
         </label>
-        <div className="space-y-2">
-          <label className="inline-flex items-center">
+        <div className="space-y-3">
+          <label className="flex items-center p-4 space-x-3 transition-all border-2 border-gray-200 rounded-lg hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/80">
             <input
               type="checkbox"
               {...register("hasPrerequisites")}
-              className="text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
-            <span className="ml-2 text-sm text-gray-900">
-              사전 지식/요구사항
-            </span>
+            <div>
+              <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+                사전 지식
+              </span>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                프로젝트에 필요한 사전 지식과 요구사항을 포함합니다
+              </p>
+            </div>
           </label>
-          <br />
-          <label className="inline-flex items-center">
+          <label className="flex items-center p-4 space-x-3 transition-all border-2 border-gray-200 rounded-lg hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/80">
             <input
               type="checkbox"
               {...register("hasChallenges")}
-              className="text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
-            <span className="ml-2 text-sm text-gray-900">
-              예상되는 도전 과제
-            </span>
+            <div>
+              <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+                도전 과제
+              </span>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                프로젝트 진행 시 예상되는 도전 과제와 해결 방법을 포함합니다
+              </p>
+            </div>
           </label>
-          <br />
-          <label className="inline-flex items-center">
+          <label className="flex items-center p-4 space-x-3 transition-all border-2 border-gray-200 rounded-lg hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/80">
             <input
               type="checkbox"
               {...register("hasTips")}
-              className="text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+              className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
-            <span className="ml-2 text-sm text-gray-900">개발 팁</span>
+            <div>
+              <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+                개발 팁
+              </span>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                프로젝트 개발 시 유용한 팁과 트릭을 포함합니다
+              </p>
+            </div>
           </label>
         </div>
       </div>
 
-      {/* 제출 버튼 */}
-      <div className="flex justify-end">
-        <button
-          type="submit"
-          disabled={isPending}
-          className="px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-        >
-          {isPending ? "생성 중..." : "프로젝트 생성하기"}
-        </button>
-      </div>
-      {error && (
-        <div className="p-4 mt-4 text-sm text-red-700 bg-red-100 rounded-lg">
-          프로젝트 생성 중 오류가 발생했습니다: {error.message}
-        </div>
-      )}
+      <button
+        type="submit"
+        className="w-full px-4 py-3 text-lg font-medium text-white transition-colors bg-blue-600 border border-transparent rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+      >
+        <span className="flex items-center justify-center space-x-2">
+          <span>프로젝트 생성하기</span>
+          <span role="img" aria-label="rocket" className="text-xl">
+            🚀
+          </span>
+        </span>
+      </button>
     </form>
   );
 };

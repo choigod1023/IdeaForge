@@ -1,132 +1,290 @@
-import { useProjectStore } from "../stores/projectStore";
+import type { Project } from "../types";
+import {
+  FaCode,
+  FaBook,
+  FaExclamationTriangle,
+  FaLightbulb,
+  FaTools,
+  FaCopy,
+  FaArrowLeft,
+} from "react-icons/fa";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useNavigate } from "react-router-dom";
 
-export const ProjectDisplay = () => {
-  const { project, isLoading, error } = useProjectStore();
+interface ProjectDisplayProps {
+  project: Project;
+}
 
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600"></div>
-      </div>
-    );
-  }
+// 기술 스택별 파스텔톤 색상 매핑
+const TECH_COLORS: Record<string, { bg: string; text: string }> = {
+  // 프론트엔드
+  React: { bg: "bg-blue-100", text: "text-blue-800" },
+  Vue: { bg: "bg-green-100", text: "text-green-800" },
+  Angular: { bg: "bg-red-100", text: "text-red-800" },
+  TypeScript: { bg: "bg-blue-100", text: "text-blue-800" },
+  JavaScript: { bg: "bg-yellow-100", text: "text-yellow-800" },
+  "HTML/CSS": { bg: "bg-orange-100", text: "text-orange-800" },
+  "Tailwind CSS": { bg: "bg-cyan-100", text: "text-cyan-800" },
+  Redux: { bg: "bg-purple-100", text: "text-purple-800" },
+  "Next.js": { bg: "bg-gray-100", text: "text-gray-800" },
+  "Nuxt.js": { bg: "bg-green-100", text: "text-green-800" },
 
-  if (error) {
-    return (
-      <div className="p-4 bg-red-50 border border-red-200 rounded-md">
-        <p className="text-red-600">{error}</p>
-      </div>
-    );
-  }
+  // 백엔드
+  "Node.js": { bg: "bg-green-100", text: "text-green-800" },
+  Java: { bg: "bg-red-100", text: "text-red-800" },
+  Spring: { bg: "bg-green-100", text: "text-green-800" },
+  Python: { bg: "bg-blue-100", text: "text-blue-800" },
+  Django: { bg: "bg-green-100", text: "text-green-800" },
+  FastAPI: { bg: "bg-blue-100", text: "text-blue-800" },
+  PostgreSQL: { bg: "bg-blue-100", text: "text-blue-800" },
+  MongoDB: { bg: "bg-green-100", text: "text-green-800" },
+  MySQL: { bg: "bg-blue-100", text: "text-blue-800" },
+  Redis: { bg: "bg-red-100", text: "text-red-800" },
 
-  if (!project) {
-    return null;
-  }
+  // 기본값
+  default: { bg: "bg-gray-100", text: "text-gray-800" },
+};
+
+export function ProjectDisplay({ project }: ProjectDisplayProps) {
+  const navigate = useNavigate();
+  const getTechColor = (tech: string) => {
+    return TECH_COLORS[tech] || TECH_COLORS.default;
+  };
+
+  const handleCopy = async () => {
+    try {
+      // 마크다운 형식으로 프로젝트 데이터 포맷팅
+      const markdown = `# ${project.title}
+
+## 프로젝트 정보
+- **난이도**: ${project.difficulty}
+${project.category ? `- **카테고리**: ${project.category}\n` : ""}${
+        project.theme ? `- **테마**: ${project.theme}\n` : ""
+      }
+
+## 프로젝트 설명
+${project.description}
+
+## 기술 스택
+${project.techStack.map((tech) => `- ${tech}`).join("\n")}
+
+## 주요 기능
+${project.features.map((feature) => `- ${feature}`).join("\n")}
+
+${
+  project.prerequisites && project.prerequisites.length > 0
+    ? `## 사전 지식/요구사항
+${project.prerequisites
+  .map((prerequisite) => `- ${prerequisite}`)
+  .join("\n")}\n`
+    : ""
+}
+
+${
+  project.challenges && project.challenges.length > 0
+    ? `## 예상되는 도전 과제
+${project.challenges.map((challenge) => `- ${challenge}`).join("\n")}\n`
+    : ""
+}
+
+${
+  project.tips && project.tips.length > 0
+    ? `## 개발 팁
+${project.tips.map((tip) => `- ${tip}`).join("\n")}\n`
+    : ""
+}
+
+${
+  project.resources && project.resources.length > 0
+    ? `## 추천 학습 자료
+${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
+    : ""
+}`;
+
+      await navigator.clipboard.writeText(markdown);
+      toast.success("프로젝트가 마크다운 형식으로 복사되었습니다!");
+    } catch (error) {
+      console.error("복사하기 실패:", error);
+      toast.error("복사하기에 실패했습니다.");
+    }
+  };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 space-y-8">
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-200">
-          <h2 className="text-2xl font-bold text-gray-900">{project.title}</h2>
-          <div className="mt-2 flex flex-wrap gap-2">
-            <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-              {project.difficulty}
-            </span>
-            {project.category && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
-                {project.category}
-              </span>
-            )}
-            {project.theme && (
-              <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                {project.theme}
-              </span>
-            )}
-          </div>
+    <div className="p-4 mt-2 bg-white rounded-lg shadow-lg">
+      {/* 프로젝트 제목과 메타 정보 */}
+      <div className="mb-3">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold text-gray-900">{project.title}</h2>
+          <button
+            onClick={handleCopy}
+            className="p-2 text-gray-600 transition-colors rounded-full hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            title="프로젝트 데이터 복사하기"
+          >
+            <FaCopy className="w-4 h-4" />
+          </button>
         </div>
+        <div className="flex flex-wrap gap-1 mt-1">
+          <span className="px-1.5 py-0.5 text-xs font-medium text-indigo-800 bg-indigo-100 rounded-full">
+            {project.difficulty}
+          </span>
+          {project.category && (
+            <span className="px-1.5 py-0.5 text-xs font-medium text-green-800 bg-green-100 rounded-full">
+              {project.category}
+            </span>
+          )}
+          {project.theme && (
+            <span className="px-1.5 py-0.5 text-xs font-medium text-purple-800 bg-purple-100 rounded-full">
+              {project.theme}
+            </span>
+          )}
+        </div>
+      </div>
 
-        <div className="px-6 py-4 space-y-6">
-          <div>
-            <h3 className="text-lg font-medium text-gray-900">프로젝트 설명</h3>
-            <p className="mt-2 text-gray-600 whitespace-pre-line">
-              {project.description}
-            </p>
-          </div>
+      {/* 프로젝트 설명 */}
+      <div className="mb-3">
+        <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
+          <FaCode className="mr-1 text-indigo-600" />
+          프로젝트 설명
+        </h3>
+        <p className="px-2 py-1.5 text-xs text-gray-600 whitespace-pre-line bg-gray-50 rounded">
+          {project.description}
+        </p>
+      </div>
 
-          <div>
-            <h3 className="text-lg font-medium text-gray-900">기술 스택</h3>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {project.techStack.map((tech) => (
+      {/* 기술 스택 */}
+      {project.techStack && project.techStack.length > 0 && (
+        <div className="mb-3">
+          <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
+            <FaTools className="mr-1 text-indigo-600" />
+            기술 스택
+          </h3>
+          <div className="flex flex-wrap gap-1">
+            {project.techStack.map((tech) => {
+              const { bg, text } = getTechColor(tech);
+              return (
                 <span
                   key={tech}
-                  className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800"
+                  className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${bg} ${text}`}
                 >
                   {tech}
                 </span>
-              ))}
-            </div>
+              );
+            })}
           </div>
-
-          <div>
-            <h3 className="text-lg font-medium text-gray-900">주요 기능</h3>
-            <ul className="mt-2 list-disc list-inside space-y-2 text-gray-600">
-              {project.features.map((feature, index) => (
-                <li key={index}>{feature}</li>
-              ))}
-            </ul>
-          </div>
-
-          {project.prerequisites && (
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">
-                사전 지식/요구사항
-              </h3>
-              <ul className="mt-2 list-disc list-inside space-y-2 text-gray-600">
-                {project.prerequisites.map((prerequisite, index) => (
-                  <li key={index}>{prerequisite}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {project.challenges && (
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">
-                예상되는 도전 과제
-              </h3>
-              <ul className="mt-2 list-disc list-inside space-y-2 text-gray-600">
-                {project.challenges.map((challenge, index) => (
-                  <li key={index}>{challenge}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {project.tips && (
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">개발 팁</h3>
-              <ul className="mt-2 list-disc list-inside space-y-2 text-gray-600">
-                {project.tips.map((tip, index) => (
-                  <li key={index}>{tip}</li>
-                ))}
-              </ul>
-            </div>
-          )}
-
-          {project.resources && (
-            <div>
-              <h3 className="text-lg font-medium text-gray-900">
-                추천 학습 자료
-              </h3>
-              <ul className="mt-2 list-disc list-inside space-y-2 text-gray-600">
-                {project.resources.map((resource, index) => (
-                  <li key={index}>{resource}</li>
-                ))}
-              </ul>
-            </div>
-          )}
         </div>
+      )}
+
+      {/* 주요 기능 */}
+      {project.features && project.features.length > 0 && (
+        <div className="mb-3">
+          <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
+            <FaCode className="mr-1 text-indigo-600" />
+            주요 기능
+          </h3>
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+            {project.features.map((feature, index) => (
+              <li key={index}>{feature}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 사전 지식/요구사항 */}
+      {project.prerequisites && project.prerequisites.length > 0 && (
+        <div className="mb-3">
+          <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
+            <FaBook className="mr-1 text-indigo-600" />
+            사전 지식/요구사항
+          </h3>
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+            {project.prerequisites.map((prerequisite, index) => (
+              <li key={index}>{prerequisite}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 예상되는 도전 과제 */}
+      {project.challenges && project.challenges.length > 0 && (
+        <div className="mb-3">
+          <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
+            <FaExclamationTriangle className="mr-1 text-indigo-600" />
+            예상되는 도전 과제
+          </h3>
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+            {project.challenges.map((challenge, index) => (
+              <li key={index}>{challenge}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 개발 팁 */}
+      {project.tips && project.tips.length > 0 && (
+        <div className="mb-3">
+          <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
+            <FaLightbulb className="mr-1 text-indigo-600" />
+            개발 팁
+          </h3>
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+            {project.tips.map((tip, index) => (
+              <li key={index}>{tip}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {/* 추천 학습 자료 */}
+      {project.resources && project.resources.length > 0 && (
+        <div>
+          <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
+            <FaBook className="mr-1 text-indigo-600" />
+            추천 학습 자료
+          </h3>
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+            {project.resources.map((resource, index) => {
+              // URL 패턴 매칭
+              const urlPattern = /(https?:\/\/[^\s]+)/g;
+              const parts = resource.split(urlPattern);
+
+              return (
+                <li key={index} className="flex items-center gap-1">
+                  {parts.map((part, i) => {
+                    if (part.match(urlPattern)) {
+                      return (
+                        <a
+                          key={i}
+                          href={part}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                        >
+                          {part}
+                          <span className="ml-1 text-[10px]">↗</span>
+                        </a>
+                      );
+                    }
+                    return <span key={i}>{part}</span>;
+                  })}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {/* 뒤로가기 버튼 */}
+      <div className="flex justify-center mt-8 pt-6 border-t border-gray-100">
+        <button
+          onClick={() => navigate("/create")}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          title="프로젝트 생성 페이지로 돌아가기"
+        >
+          <FaArrowLeft className="w-4 h-4" />
+          <span>프로젝트 생성으로 돌아가기</span>
+        </button>
       </div>
     </div>
   );
-};
+}
