@@ -328,6 +328,67 @@ const TECH_STACK_OPTIONS = [
   { id: "InVision", label: "InVision", icon: SiInvision, color: "#FF3366" },
 ];
 
+// 기술 스택 한글-영문 매핑
+const TECH_STACK_MAPPING: Record<string, readonly string[]> = {
+  React: ["리액트", "리액트JS", "ReactJS"],
+  Vue: ["뷰", "뷰JS", "VueJS"],
+  Angular: ["앵귤러", "앵귤러JS", "AngularJS"],
+  TypeScript: ["타입스크립트", "TS"],
+  JavaScript: ["자바스크립트", "JS"],
+  "Node.js": ["노드", "노드JS", "NodeJS"],
+  Spring: ["스프링", "스프링부트", "Spring Boot"],
+  Django: ["장고"],
+  FastAPI: ["패스트API"],
+  Express: ["익스프레스", "ExpressJS"],
+  PostgreSQL: ["포스트그레스", "Postgres"],
+  MongoDB: ["몽고", "몽고DB"],
+  MySQL: ["마이SQL", "마이에스큐엘"],
+  Redis: ["레디스"],
+  "React Native": ["리액트 네이티브", "RN"],
+  Flutter: ["플러터"],
+  TensorFlow: ["텐서플로", "텐서플로우"],
+  PyTorch: ["파이토치"],
+  AWS: ["아마존 웹 서비스", "Amazon Web Services"],
+  Docker: ["도커"],
+  Kubernetes: ["쿠버네티스", "K8s"],
+  GraphQL: ["그래프큐엘"],
+  "REST API": ["레스트 API", "RESTful API"],
+  WebSocket: ["웹소켓"],
+  WebRTC: ["웹RTC"],
+  Firebase: ["파이어베이스"],
+  Git: ["깃"],
+  GitHub: ["깃허브"],
+  GitLab: ["깃랩"],
+  "CI/CD": ["지속적 통합/배포", "지속적 통합", "지속적 배포"],
+  Jenkins: ["젠킨스"],
+  Linux: ["리눅스"],
+  Nginx: ["엔진엑스"],
+  Apache: ["아파치"],
+} as const;
+
+// 기술 스택 약어 매핑 추가
+const TECH_STACK_ABBREVIATIONS: Record<string, string> = {
+  "Tailwind CSS": "Tailwind",
+  "React Native": "RN",
+  TypeScript: "TS",
+  JavaScript: "JS",
+  "Node.js": "Node",
+  PostgreSQL: "Postgres",
+  MongoDB: "Mongo",
+  TensorFlow: "TF",
+  PyTorch: "PT",
+  "Scikit-learn": "Sklearn",
+  "Google Cloud": "GCP",
+  "REST API": "REST",
+  WebSocket: "WS",
+  WebRTC: "RTC",
+  "CI/CD": "CI",
+  "Unreal Engine": "UE",
+  "Burp Suite": "Burp",
+  "Raspberry Pi": "RPi",
+  "Adobe XD": "XD",
+} as const;
+
 interface TechStackSelectorProps {
   selectedTechs: string[];
   onTechSelect: (techs: string[]) => void;
@@ -357,12 +418,24 @@ export const TechStackSelector = ({
   };
 
   const filteredTechs = TECH_STACK_OPTIONS.filter((tech) => {
-    const matchesSearch = tech.label
-      .toLowerCase()
-      .includes(searchTerm.toLowerCase());
+    const normalizedSearch = searchTerm.toLowerCase().trim();
+    if (!normalizedSearch) return true;
+
+    // 영문 검색어 매칭
+    const matchesEnglish = tech.label.toLowerCase().includes(normalizedSearch);
+
+    // 한글 검색어 매칭
+    const koreanAliases =
+      TECH_STACK_MAPPING[tech.id as keyof typeof TECH_STACK_MAPPING] || [];
+    const matchesKorean = koreanAliases.some((alias: string) =>
+      alias.toLowerCase().includes(normalizedSearch)
+    );
+
+    const matchesSearch = matchesEnglish || matchesKorean;
     const matchesCategory =
       selectedCategory === "all" ||
       getCategoryForTech(tech.id) === selectedCategory;
+
     return matchesSearch && matchesCategory;
   });
 
@@ -375,6 +448,11 @@ export const TechStackSelector = ({
     return acc;
   }, {} as Record<string, typeof TECH_STACK_OPTIONS>);
 
+  // 기술 스택 표시 이름 가져오기
+  const getDisplayName = (techId: string): string => {
+    return TECH_STACK_ABBREVIATIONS[techId] || techId;
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
@@ -383,21 +461,21 @@ export const TechStackSelector = ({
           placeholder="기술 스택 검색..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+          className="flex-1 px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
         />
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-4 py-2.5 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[200px] bg-white dark:bg-gray-800 dark:border-gray-700 dark:text-gray-100"
+          className="px-4 py-2.5 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[200px] bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         >
-          <option value="all" className="dark:bg-gray-800">
+          <option value="all" className="dark:bg-gray-700 dark:text-white">
             전체
           </option>
           {categories.map((category) => (
             <option
               key={category.id}
               value={category.id}
-              className="dark:bg-gray-800"
+              className="dark:bg-gray-700 dark:text-white"
             >
               {category.label}
             </option>
@@ -413,12 +491,12 @@ export const TechStackSelector = ({
           const CategoryIcon = category.icon;
           return (
             <div key={categoryId} className="space-y-3">
-              <div className="flex items-center pb-2 space-x-2 border-b border-gray-200">
+              <div className="flex items-center pb-2 space-x-2 border-b border-gray-200 dark:border-gray-700">
                 <CategoryIcon
                   className="w-6 h-6"
                   style={{ color: category.color }}
                 />
-                <h3 className="text-lg font-semibold text-gray-900">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                   {category.label}
                 </h3>
               </div>
@@ -436,17 +514,17 @@ export const TechStackSelector = ({
                           : [...selectedTechs, tech.id];
                         onTechSelect(newTechs);
                       }}
-                      className={`flex items-center space-x-2 p-3 rounded-lg border-2 transition-all ${
+                      className={`flex items-center space-x-2 p-3 rounded-lg border-2 transition-all w-full text-left ${
                         isSelected
-                          ? "border-blue-500 bg-blue-50/80 dark:bg-blue-900/30 dark:border-blue-400 shadow-sm"
-                          : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/80"
+                          ? "border-blue-500 bg-blue-50 dark:bg-blue-900/50 dark:border-blue-400 shadow-sm"
+                          : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                       }`}
                     >
                       <div
-                        className={`p-1.5 rounded-md ${
+                        className={`p-1.5 rounded-md flex-shrink-0 ${
                           isSelected
-                            ? "bg-white/90 dark:bg-gray-800/90"
-                            : "bg-gray-50/90 dark:bg-gray-700/90"
+                            ? "bg-white dark:bg-gray-800"
+                            : "bg-gray-50 dark:bg-gray-700"
                         }`}
                       >
                         <Icon
@@ -454,15 +532,22 @@ export const TechStackSelector = ({
                           style={{ color: tech.color }}
                         />
                       </div>
-                      <span
-                        className={`text-sm font-medium ${
-                          isSelected
-                            ? "text-blue-900 dark:text-blue-100"
-                            : "text-gray-900 dark:text-gray-100"
-                        }`}
-                      >
-                        {tech.label}
-                      </span>
+                      <div className="flex flex-col">
+                        <span
+                          className={`text-sm font-medium ${
+                            isSelected
+                              ? "text-blue-900 dark:text-blue-100"
+                              : "text-gray-900 dark:text-gray-100"
+                          }`}
+                        >
+                          {getDisplayName(tech.id)}
+                        </span>
+                        {TECH_STACK_ABBREVIATIONS[tech.id] && (
+                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                            {tech.label}
+                          </span>
+                        )}
+                      </div>
                     </button>
                   );
                 })}
@@ -486,30 +571,37 @@ export const TechStackSelector = ({
                     : [...selectedTechs, tech.id];
                   onTechSelect(newTechs);
                 }}
-                className={`flex items-center space-x-2 p-3 rounded-lg border-2 transition-all ${
+                className={`flex items-center space-x-2 p-3 rounded-lg border-2 transition-all w-full text-left ${
                   isSelected
-                    ? "border-blue-500 bg-blue-50/80 dark:bg-blue-900/30 dark:border-blue-400 shadow-sm"
-                    : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:bg-gray-800/80 hover:bg-gray-50 dark:hover:bg-gray-700/80"
+                    ? "border-blue-500 bg-blue-50 dark:bg-blue-900/50 dark:border-blue-400 shadow-sm"
+                    : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                 }`}
               >
                 <div
-                  className={`p-1.5 rounded-md ${
+                  className={`p-1.5 rounded-md flex-shrink-0 ${
                     isSelected
-                      ? "bg-white/90 dark:bg-gray-800/90"
-                      : "bg-gray-50/90 dark:bg-gray-700/90"
+                      ? "bg-white dark:bg-gray-800"
+                      : "bg-gray-50 dark:bg-gray-700"
                   }`}
                 >
                   <Icon className="w-5 h-5" style={{ color: tech.color }} />
                 </div>
-                <span
-                  className={`text-sm font-medium ${
-                    isSelected
-                      ? "text-blue-900 dark:text-blue-100"
-                      : "text-gray-900 dark:text-gray-100"
-                  }`}
-                >
-                  {tech.label}
-                </span>
+                <div className="flex flex-col">
+                  <span
+                    className={`text-sm font-medium ${
+                      isSelected
+                        ? "text-blue-900 dark:text-blue-100"
+                        : "text-gray-900 dark:text-gray-100"
+                    }`}
+                  >
+                    {getDisplayName(tech.id)}
+                  </span>
+                  {TECH_STACK_ABBREVIATIONS[tech.id] && (
+                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                      {tech.label}
+                    </span>
+                  )}
+                </div>
               </button>
             );
           })}

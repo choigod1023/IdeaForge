@@ -6,7 +6,7 @@ export const ProjectSchema = z.object({
   title: z.string(),
   description: z.string(),
   techStack: z.array(z.string()),
-  difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
+  difficulty: z.enum(["초급", "중급", "고급"]),
   estimatedTime: z.string(),
   features: z.array(z.string()),
   learningOutcomes: z.array(z.string()),
@@ -29,7 +29,7 @@ export const ProjectSchema = z.object({
 
 // GPT prompt request validation schema
 export const PromptRequestSchema = z.object({
-  difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
+  difficulty: z.enum(["초급", "중급", "고급"]),
   preferredTech: z.array(z.string()),
   theme: z
     .enum([

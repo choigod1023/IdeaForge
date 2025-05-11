@@ -60,15 +60,15 @@ class OpenAIService {
     return `다음 요구사항에 맞는 프로그래밍 프로젝트를 추천해주세요:
 
       필수 요구사항:
-      - 난이도: ${
-        request.difficulty
-      } (반드시 "초급", "중급", "고급" 중 하나로 응답)
+      - 난이도: ${request.difficulty}
       - 선호하는 기술: ${request.preferredTech.join(", ")}
       ${request.theme ? `- 프로젝트 테마: ${request.theme}` : ""}
       ${request.description ? `- 추가 설명: ${request.description}` : ""}
       
       프로젝트 제약사항:
-      - 해당 난이도에 있는 개발자가 느끼기에 재미있고 흥미로운 프로젝트여야 합니다
+      - 해당 난이도(${
+        request.difficulty
+      })에 맞는 개발자가 느끼기에 재미있고 흥미로운 프로젝트여야 합니다
       - 아이디어가 실용적이거나 혹은 현재 개발자의 관심사에 맞는 프로젝트여야 합니다
       - 실제 구현 가능한 수준이어야 합니다.
       - 이전에 있던 프로젝트면 안됩니다.
@@ -81,21 +81,21 @@ class OpenAIService {
         "description": "상세한 프로젝트 설명 (한글로 작성, 200자 이내)",
         "techStack": ["사용할 기술 스택 (최소 3개)"],
         "difficulty": "${request.difficulty}",
-        "features": ["주요 기능 5-7개 (한글로 작성)"],
-        "learningOutcomes": ["학습할 수 있는 내용 5-7개 (한글로 작성)"],
-        "resources": ["참고할 수 있는 자료 5-7개 (한글로 작성, 해당 링크 포함)"],
+        "features": ["주요 기능 5-8개 (한글로 작성)"],
+        "learningOutcomes": ["학습할 수 있는 내용 5-8개 (한글로 작성)"],
+        "resources": ["참고할 수 있는 자료 5-8개 (한글로 작성, 해당 링크 포함)"],
         "theme": "${request.theme || "생산성"}",
         "prerequisites": ${
           request.hasPrerequisites
-            ? '["사전 지식/요구사항 5-7개 (한글로 작성)"]'
+            ? '["사전 지식/요구사항 5-8개 (한글로 작성)"]'
             : "[]"
         },
         "challenges": ${
           request.hasChallenges
-            ? '["예상되는 도전 과제 5-7개 (한글로 작성)"]'
+            ? '["예상되는 도전 과제 5-8개 (한글로 작성)"]'
             : "[]"
         },
-        "tips": ${request.hasTips ? '["개발 팁 5-7개 (한글로 작성)"]' : "[]"}
+        "tips": ${request.hasTips ? '["개발 팁 5-8개 (한글로 작성)"]' : "[]"}
       }`;
   }
 }

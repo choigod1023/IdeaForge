@@ -7,7 +7,7 @@ export const projectFormSchema = z.object({
     .array(z.string())
     .min(1, "최소 1개 이상의 기술 스택을 선택해주세요"),
   interests: z.array(z.string()),
-  difficulty: z.enum(["Beginner", "Intermediate", "Advanced"], {
+  difficulty: z.enum(["초급", "중급", "고급"], {
     required_error: "난이도를 선택해주세요",
   }),
   category: z

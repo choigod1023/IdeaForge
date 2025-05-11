@@ -19,9 +19,9 @@ import { z } from "zod";
 // 기술 스택과 프로젝트 카테고리 매핑 제거
 
 const DIFFICULTY_MAP = {
-  Beginner: "초급",
-  Intermediate: "중급",
-  Advanced: "고급",
+  초급: "초급",
+  중급: "중급",
+  고급: "고급",
 } as const;
 
 const ERROR_MESSAGES = {
@@ -116,7 +116,7 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
           난이도
         </label>
         <div className="grid grid-cols-3 gap-4">
-          {(["Beginner", "Intermediate", "Advanced"] as const).map((level) => (
+          {(["초급", "중급", "고급"] as const).map((level) => (
             <button
               key={level}
               type="button"
@@ -127,7 +127,7 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
               }}
               className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
                 selectedDifficulty === DIFFICULTY_MAP[level]
-                  ? "border-blue-500 bg-blue-50/80 dark:bg-blue-900/30 dark:border-blue-400 shadow-sm"
+                  ? "border-blue-500 bg-blue-50/80 dark:bg-blue-900/30 dark:border-blue-400 shadow-sm "
                   : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:hover:bg-gray-700/80"
               }`}
             >
@@ -138,26 +138,32 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
                     : "bg-gray-50/90 dark:bg-gray-700/90"
                 }`}
               >
-                {level === "Beginner" && (
+                {level === "초급" && (
                   <FaSeedling className="w-6 h-6 text-green-500" />
                 )}
-                {level === "Intermediate" && (
+                {level === "중급" && (
                   <FaStar className="w-6 h-6 text-yellow-500" />
                 )}
-                {level === "Advanced" && (
+                {level === "고급" && (
                   <FaFire className="w-6 h-6 text-red-500" />
                 )}
               </div>
               <span
                 className={`font-medium ${
                   selectedDifficulty === DIFFICULTY_MAP[level]
-                    ? "text-blue-900 dark:text-black"
-                    : "text-gray-700 dark:text-black"
+                    ? "text-blue-900 dark:text-blue-100"
+                    : "text-gray-700 dark:text-gray-900"
                 }`}
               >
-                {DIFFICULTY_MAP[level]}
+                {level}
               </span>
-              <span className="mt-1 text-sm text-gray-600 dark:text-gray-900">
+              <span
+                className={`mt-1 text-sm ${
+                  selectedDifficulty === DIFFICULTY_MAP[level]
+                    ? "text-blue-700 dark:text-blue-200"
+                    : "text-gray-600 dark:text-gray-900"
+                }`}
+              >
                 {DIFFICULTY_DESCRIPTIONS[level]}
               </span>
             </button>
@@ -175,7 +181,7 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
         className="space-y-2"
         ref={(el) => void (errorRefs.current.theme = el)}
       >
-        <label className="block text-lg font-medium text-gray-700">
+        <label className="block text-lg font-medium text-gray-700 dark:text-gray-100">
           프로젝트 테마
         </label>
         <select
@@ -184,7 +190,11 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
         >
           <option value="">테마를 선택해주세요</option>
           {THEME_OPTIONS.map((theme) => (
-            <option key={theme} value={theme} className="dark:bg-gray-800">
+            <option
+              key={theme}
+              value={theme}
+              className="dark:bg-gray-800 dark:text-gray-100"
+            >
               {theme}
             </option>
           ))}
@@ -198,20 +208,20 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
 
       {/* 프로젝트 기타 정보 */}
       <div className="space-y-2">
-        <label className="block text-lg font-medium text-gray-700">
+        <label className="block text-lg font-medium text-gray-700 dark:text-gray-100">
           프로젝트 기타 정보
         </label>
         <textarea
           {...register("description")}
           rows={4}
-          className="block w-full px-4 py-3 text-lg transition-all border-2 border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white/80 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-100 hover:border-blue-300 dark:hover:border-blue-400"
+          className="block w-full px-4 py-3 text-lg placeholder-gray-500 transition-all border-2 border-gray-200 rounded-lg shadow-sm focus:border-blue-500 focus:ring-blue-500 bg-white/80 dark:bg-gray-800/80 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400 hover:border-blue-300 dark:hover:border-blue-400"
           placeholder="프로젝트에 대한 추가 정보를 입력해주세요"
         />
       </div>
 
       {/* 프로젝트 상세 정보 */}
       <div className="space-y-2">
-        <label className="block text-lg font-medium text-gray-700">
+        <label className="block text-lg font-medium text-gray-700 dark:text-gray-100">
           프로젝트 상세 정보
         </label>
         <div className="space-y-3">
@@ -222,10 +232,10 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
               className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <div>
-              <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+              <span className="text-base font-medium text-gray-900 dark:text-gray-50">
                 사전 지식
               </span>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500 dark:text-gray-300">
                 프로젝트에 필요한 사전 지식과 요구사항을 포함합니다
               </p>
             </div>
@@ -237,10 +247,10 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
               className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <div>
-              <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+              <span className="text-base font-medium text-gray-900 dark:text-gray-50">
                 도전 과제
               </span>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500 dark:text-gray-300">
                 프로젝트 진행 시 예상되는 도전 과제와 해결 방법을 포함합니다
               </p>
             </div>
@@ -252,10 +262,10 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
               className="w-5 h-5 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
             />
             <div>
-              <span className="text-base font-medium text-gray-900 dark:text-gray-100">
+              <span className="text-base font-medium text-gray-900 dark:text-gray-50">
                 개발 팁
               </span>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className="text-sm text-gray-500 dark:text-gray-300">
                 프로젝트 개발 시 유용한 팁과 트릭을 포함합니다
               </p>
             </div>

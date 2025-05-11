@@ -1,4 +1,4 @@
-export type Difficulty = "Beginner" | "Intermediate" | "Advanced";
+export type Difficulty = "초급" | "중급" | "고급";
 
 export type ProjectCategory =
   | "웹 개발"
