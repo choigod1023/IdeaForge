@@ -11,76 +11,11 @@ import {
 } from "../constants/formOptions";
 import { useEffect, useState, useRef } from "react";
 import { FaSeedling, FaStar, FaFire } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
 import { useProjectStore } from "../stores/projectStore";
 
 // 기술 스택과 관심 분야 매핑 제거
 
-// 기술 스택과 프로젝트 카테고리 매핑
-const TECH_TO_CATEGORY_MAP: Record<string, ProjectCategory[]> = {
-  // 웹 개발
-  React: ["웹 개발"],
-  Vue: ["웹 개발"],
-  Angular: ["웹 개발"],
-  TypeScript: ["웹 개발"],
-  JavaScript: ["웹 개발"],
-  "HTML/CSS": ["웹 개발"],
-  "Tailwind CSS": ["웹 개발"],
-  Redux: ["웹 개발"],
-  "Next.js": ["웹 개발"],
-  "Nuxt.js": ["웹 개발"],
-  "Node.js": ["웹 개발"],
-  Java: ["웹 개발"],
-  Spring: ["웹 개발"],
-  Python: ["웹 개발"],
-  Django: ["웹 개발"],
-  FastAPI: ["웹 개발"],
-  PostgreSQL: ["웹 개발"],
-  MongoDB: ["웹 개발"],
-  MySQL: ["웹 개발"],
-  Redis: ["웹 개발"],
-
-  // 모바일 앱
-  "React Native": ["모바일 앱"],
-  Flutter: ["모바일 앱"],
-  Swift: ["모바일 앱"],
-  Kotlin: ["모바일 앱"],
-  Dart: ["모바일 앱"],
-  Firebase: ["모바일 앱"],
-
-  // AI/ML
-  TensorFlow: ["AI/ML"],
-  PyTorch: ["AI/ML"],
-  "Scikit-learn": ["AI/ML"],
-  OpenCV: ["AI/ML"],
-
-  // 데이터 분석
-  Pandas: ["데이터 분석"],
-  Jupyter: ["데이터 분석"],
-
-  // 게임
-  Unity: ["게임"],
-  "Unreal Engine": ["게임"],
-  "C#": ["게임"],
-  "C++": ["게임", "임베디드"],
-  Blueprints: ["게임"],
-  Photon: ["게임"],
-
-  // 보안
-  Wireshark: ["보안"],
-  Metasploit: ["보안"],
-  "Burp Suite": ["보안"],
-  OpenSSL: ["보안"],
-  Cryptography: ["보안"],
-  JWT: ["보안"],
-
-  // 임베디드
-  Arduino: ["임베디드"],
-  "Raspberry Pi": ["임베디드"],
-  C: ["임베디드"],
-  MQTT: ["임베디드"],
-  RTOS: ["임베디드"],
-};
+// 기술 스택과 프로젝트 카테고리 매핑 제거
 
 const DIFFICULTY_LABELS = {
   Beginner: "초급",
@@ -94,8 +29,11 @@ const ERROR_MESSAGES = {
   theme: "프로젝트 테마를 선택해주세요",
 } as const;
 
-export const ProjectForm = () => {
-  const navigate = useNavigate();
+interface ProjectFormProps {
+  onSubmit: (data: ProjectRequest) => Promise<void>;
+}
+
+export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
   const { preferredTech, setPreferredTech } = useProjectStore();
   const [selectedDifficulty, setSelectedDifficulty] = useState<string>("");
   const errorRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -129,12 +67,7 @@ export const ProjectForm = () => {
 
   const handleFormSubmit = async (data: ProjectRequest) => {
     try {
-      console.log("Form data to be submitted:", data);
-      navigate("/project", {
-        state: {
-          formData: data,
-        },
-      });
+      await onSubmit(data);
     } catch (error) {
       console.error("Error preparing form submission:", error);
     }
@@ -151,7 +84,7 @@ export const ProjectForm = () => {
       {/* 기술 스택 선택 */}
       <div
         className="space-y-2"
-        ref={(el) => (errorRefs.current.preferredTech = el)}
+        ref={(el) => void (errorRefs.current.preferredTech = el)}
       >
         <label className="block text-lg font-medium text-gray-700">
           기술 스택
@@ -170,7 +103,7 @@ export const ProjectForm = () => {
       {/* 난이도 선택 */}
       <div
         className="space-y-2"
-        ref={(el) => (errorRefs.current.difficulty = el)}
+        ref={(el) => void (errorRefs.current.difficulty = el)}
       >
         <label className="block text-lg font-medium text-gray-700">
           난이도
@@ -238,7 +171,10 @@ export const ProjectForm = () => {
       </div>
 
       {/* 프로젝트 테마 선택 */}
-      <div className="space-y-2" ref={(el) => (errorRefs.current.theme = el)}>
+      <div
+        className="space-y-2"
+        ref={(el) => void (errorRefs.current.theme = el)}
+      >
         <label className="block text-lg font-medium text-gray-700">
           프로젝트 테마
         </label>

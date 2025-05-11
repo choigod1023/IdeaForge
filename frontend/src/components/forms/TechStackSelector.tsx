@@ -1,4 +1,5 @@
 import { useState } from "react";
+import type { IconType } from "react-icons";
 import {
   SiVuedotjs,
   SiAngular,
@@ -67,7 +68,14 @@ import {
   FaMicrosoft,
 } from "react-icons/fa";
 
-const TECH_CATEGORIES = {
+type TechCategory = {
+  label: string;
+  icon: IconType;
+  color: string;
+  techs: string[];
+};
+
+const TECH_CATEGORIES: Record<string, TechCategory> = {
   frontend: {
     label: "프론트엔드",
     icon: FaReact,
