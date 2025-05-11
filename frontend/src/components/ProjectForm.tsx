@@ -12,12 +12,13 @@ import {
 import { useEffect, useState, useRef } from "react";
 import { FaSeedling, FaStar, FaFire } from "react-icons/fa";
 import { useProjectStore } from "../stores/projectStore";
+import { z } from "zod";
 
 // 기술 스택과 관심 분야 매핑 제거
 
 // 기술 스택과 프로젝트 카테고리 매핑 제거
 
-const DIFFICULTY_LABELS = {
+const DIFFICULTY_MAP = {
   Beginner: "초급",
   Intermediate: "중급",
   Advanced: "고급",
@@ -44,9 +45,15 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
     formState: { errors },
     setValue,
     trigger,
-  } = useForm<ProjectRequest>({
+  } = useForm<z.infer<typeof projectFormSchema>>({
     resolver: zodResolver(projectFormSchema),
     mode: "onChange",
+    defaultValues: {
+      interests: [],
+      hasPrerequisites: false,
+      hasChallenges: false,
+      hasTips: false,
+    },
   });
 
   // projectStore의 preferredTech가 변경될 때마다 폼 데이터 업데이트
@@ -109,27 +116,24 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
           난이도
         </label>
         <div className="grid grid-cols-3 gap-4">
-          {["Beginner", "Intermediate", "Advanced"].map((level) => (
+          {(["Beginner", "Intermediate", "Advanced"] as const).map((level) => (
             <button
               key={level}
               type="button"
               onClick={() => {
-                setSelectedDifficulty(level);
-                setValue(
-                  "difficulty",
-                  level as "Beginner" | "Intermediate" | "Advanced"
-                );
+                setSelectedDifficulty(DIFFICULTY_MAP[level]);
+                setValue("difficulty", level);
                 trigger("difficulty");
               }}
               className={`flex flex-col items-center justify-center p-4 rounded-lg border-2 transition-all ${
-                selectedDifficulty === level
+                selectedDifficulty === DIFFICULTY_MAP[level]
                   ? "border-blue-500 bg-blue-50/80 dark:bg-blue-900/30 dark:border-blue-400 shadow-sm"
                   : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white/80 dark:hover:bg-gray-700/80"
               }`}
             >
               <div
                 className={`p-2 rounded-md mb-2 ${
-                  selectedDifficulty === level
+                  selectedDifficulty === DIFFICULTY_MAP[level]
                     ? "bg-white/90 dark:bg-gray-800/90"
                     : "bg-gray-50/90 dark:bg-gray-700/90"
                 }`}
@@ -146,19 +150,15 @@ export const ProjectForm = ({ onSubmit }: ProjectFormProps) => {
               </div>
               <span
                 className={`font-medium ${
-                  selectedDifficulty === level
+                  selectedDifficulty === DIFFICULTY_MAP[level]
                     ? "text-blue-900 dark:text-black"
                     : "text-gray-700 dark:text-black"
                 }`}
               >
-                {DIFFICULTY_LABELS[level as keyof typeof DIFFICULTY_LABELS]}
+                {DIFFICULTY_MAP[level]}
               </span>
               <span className="mt-1 text-sm text-gray-600 dark:text-gray-900">
-                {
-                  DIFFICULTY_DESCRIPTIONS[
-                    level as keyof typeof DIFFICULTY_DESCRIPTIONS
-                  ]
-                }
+                {DIFFICULTY_DESCRIPTIONS[level]}
               </span>
             </button>
           ))}
