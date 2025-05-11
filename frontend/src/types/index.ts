@@ -27,16 +27,20 @@ export interface Project {
   title: string;
   description: string;
   techStack: string[];
-  difficulty: Difficulty;
-  estimatedTime: string;
   features: string[];
-  learningOutcomes: string[];
-  resources: string[];
-  category: ProjectCategory;
-  theme: ProjectTheme;
-  prerequisites: string[];
-  challenges: string[];
-  tips: string[];
+  difficulty: Difficulty;
+  category?: string;
+  theme?: string;
+  learningPoints: string[];
+  recommendationReason: string;
+  gettingStarted: string;
+  references: string[];
+  createdAt: string;
+  prerequisites?: string[];
+  challenges?: string[];
+  tips?: string[];
+  resources?: string[];
+  estimatedTime?: string;
 }
 
 export interface ProjectRequest {

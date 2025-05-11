@@ -7,10 +7,13 @@ import {
   FaTools,
   FaCopy,
   FaArrowLeft,
+  FaSave,
+  FaDownload,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { useProjectStore } from "../stores/projectStore";
 
 interface ProjectDisplayProps {
   project: Project;
@@ -48,8 +51,28 @@ const TECH_COLORS: Record<string, { bg: string; text: string }> = {
 
 export function ProjectDisplay({ project }: ProjectDisplayProps) {
   const navigate = useNavigate();
+  const { addToProjectList, exportToMarkdown } = useProjectStore();
+
   const getTechColor = (tech: string) => {
     return TECH_COLORS[tech] || TECH_COLORS.default;
+  };
+
+  const handleSave = () => {
+    try {
+      const { success, isDuplicate } = addToProjectList(project);
+      if (success) {
+        if (isDuplicate) {
+          toast.warning("이미 동일한 프로젝트가 저장되어 있습니다.");
+        } else {
+          toast.success("프로젝트가 내 프로젝트 목록에 저장되었습니다!");
+        }
+      } else {
+        toast.error("저장하기에 실패했습니다. 이미 저장되어 있거든요.");
+      }
+    } catch (error) {
+      console.error("저장하기 실패:", error);
+      toast.error("저장하기에 실패했습니다.");
+    }
   };
 
   const handleCopy = async () => {
@@ -110,19 +133,45 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
     }
   };
 
+  const handleDownload = async () => {
+    try {
+      await exportToMarkdown(project.id);
+      toast.success("프로젝트가 마크다운 파일로 저장되었습니다!");
+    } catch (error) {
+      console.error("다운로드 실패:", error);
+      toast.error("다운로드에 실패했습니다.");
+    }
+  };
+
   return (
     <div className="p-4 mt-2 bg-white rounded-lg shadow-lg">
       {/* 프로젝트 제목과 메타 정보 */}
       <div className="mb-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-bold text-gray-900">{project.title}</h2>
-          <button
-            onClick={handleCopy}
-            className="p-2 text-gray-600 transition-colors rounded-full hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
-            title="프로젝트 데이터 복사하기"
-          >
-            <FaCopy className="w-4 h-4" />
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={handleDownload}
+              className="p-2 text-blue-600 transition-colors rounded-full hover:bg-blue-100 dark:text-blue-400 dark:hover:bg-blue-900/30"
+              title="마크다운으로 다운로드"
+            >
+              <FaDownload className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleSave}
+              className="p-2 text-green-600 transition-colors rounded-full hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30"
+              title="프로젝트 저장하기"
+            >
+              <FaSave className="w-4 h-4" />
+            </button>
+            <button
+              onClick={handleCopy}
+              className="p-2 text-gray-600 transition-colors rounded-full hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+              title="프로젝트 데이터 복사하기"
+            >
+              <FaCopy className="w-4 h-4" />
+            </button>
+          </div>
         </div>
         <div className="flex flex-wrap gap-1 mt-1">
           <span className="px-1.5 py-0.5 text-xs font-medium text-indigo-800 bg-indigo-100 rounded-full">
@@ -275,7 +324,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
       )}
 
       {/* 뒤로가기 버튼 */}
-      <div className="flex justify-center mt-8 pt-6 border-t border-gray-100">
+      <div className="flex justify-center pt-6 mt-8 border-t border-gray-100">
         <button
           onClick={() => navigate("/create")}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"

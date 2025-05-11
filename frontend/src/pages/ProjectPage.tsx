@@ -1,32 +1,43 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import type { ProjectRequest } from "../types";
+import type { Project, ProjectRequest } from "../types";
 import { ProjectDisplay } from "../components/ProjectDisplay";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useEffect } from "react";
 import { api } from "../services/api";
 import { FaHome } from "react-icons/fa";
+import { useProjectStore } from "../stores/projectStore";
 
 export default function ProjectPage() {
-  const location = useLocation();
   const navigate = useNavigate();
-  const formData = location.state?.formData as ProjectRequest;
+  const location = useLocation();
+  const savedProject = location.state?.project as Project | undefined;
+  const initialFormData = location.state?.formData as
+    | ProjectRequest
+    | undefined;
 
   const {
-    data: project,
-    isLoading,
-    error,
+    project: storeProject,
+    generateProject,
+    error: storeError,
+    isLoading: storeLoading,
+  } = useProjectStore();
+
+  const formData = initialFormData || null;
+
+  const {
+    data: queryProject,
+    isLoading: queryLoading,
+    error: queryError,
     isSuccess,
   } = useQuery({
     queryKey: ["project", formData],
     queryFn: async () => {
-      if (!formData) {
-        return null;
-      }
+      if (!formData) return null;
       return api.generateRecommendation(formData);
     },
-    enabled: !!formData,
+    enabled: !!formData && !savedProject && !storeProject,
     retry: false,
     refetchOnWindowFocus: false,
     refetchOnMount: false,
@@ -35,20 +46,20 @@ export default function ProjectPage() {
   });
 
   useEffect(() => {
-    if (isSuccess && project) {
-      toast.success("프로젝트가 성공적으로 생성되었습니다!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        theme: "light",
+    if (isSuccess && queryProject) {
+      const result = generateProject(formData!);
+      result.then(({ success }) => {
+        if (!success) {
+          toast.error(storeError || "프로젝트 생성 중 오류가 발생했습니다.");
+        }
       });
     }
-  }, [isSuccess, project]);
+  }, [isSuccess, queryProject, formData, generateProject, storeError]);
 
-  if (!formData) {
+  // 저장된 프로젝트가 있으면 그것을 사용, 그 다음 store의 프로젝트, 마지막으로 query의 프로젝트
+  const project = savedProject || storeProject || queryProject;
+
+  if (!formData && !savedProject) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <div className="p-6 text-center bg-white rounded-lg shadow-lg">
@@ -70,7 +81,7 @@ export default function ProjectPage() {
     );
   }
 
-  if (isLoading) {
+  if ((storeLoading || queryLoading) && !savedProject) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="text-center">
@@ -81,7 +92,7 @@ export default function ProjectPage() {
     );
   }
 
-  if (error) {
+  if ((storeError || queryError) && !savedProject) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
         <div className="p-6 text-center bg-white rounded-lg shadow-lg">
@@ -107,7 +118,6 @@ export default function ProjectPage() {
 
   return (
     <div className="max-w-3xl mx-auto">
-      <ToastContainer position="top-right" autoClose={3000} />
       <ProjectDisplay project={project} />
     </div>
   );

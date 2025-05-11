@@ -41,7 +41,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
             Learning Outcomes
           </h3>
           <ul className="mt-2 space-y-1 list-disc list-inside">
-            {project.learningOutcomes.map((outcome) => (
+            {project.learningPoints.map((outcome: string) => (
               <li key={outcome} className="text-gray-600">
                 {outcome}
               </li>
@@ -52,7 +52,7 @@ export const ProjectCard = ({ project }: ProjectCardProps) => {
         <div>
           <h3 className="text-lg font-semibold text-gray-900">Resources</h3>
           <ul className="mt-2 space-y-1 list-disc list-inside">
-            {project.resources.map((resource) => (
+            {project.resources?.map((resource: string) => (
               <li key={resource} className="text-gray-600">
                 {resource}
               </li>
