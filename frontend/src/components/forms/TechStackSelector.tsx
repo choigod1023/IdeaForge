@@ -1,5 +1,6 @@
 import { useState } from "react";
 import type { IconType } from "react-icons";
+import { disassemble } from "es-hangul";
 import {
   SiVuedotjs,
   SiAngular,
@@ -392,21 +393,29 @@ const TECH_STACK_ABBREVIATIONS: Record<string, string> = {
 interface TechStackSelectorProps {
   selectedTechs: string[];
   onTechSelect: (techs: string[]) => void;
+  recommendedTechs?: readonly string[];
 }
 
 export const TechStackSelector = ({
   selectedTechs,
   onTechSelect,
+  recommendedTechs,
 }: TechStackSelectorProps) => {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [selectedCategory, setSelectedCategory] = useState("all");
 
-  const categories = Object.entries(TECH_CATEGORIES).map(([id, category]) => ({
-    id,
-    label: category.label,
-    icon: category.icon,
-    color: category.color,
-  }));
+  // 추천 기술 스택이 있는 경우, 해당 기술 스택이 포함된 카테고리만 표시
+  const availableCategories = Object.entries(TECH_CATEGORIES)
+    .filter(([, category]) => {
+      if (!recommendedTechs) return true;
+      return category.techs.some((tech) => recommendedTechs.includes(tech));
+    })
+    .map(([id, category]) => ({
+      id,
+      label: category.label,
+      icon: category.icon,
+      color: category.color,
+    }));
 
   const getCategoryForTech = (techId: string) => {
     for (const [categoryId, category] of Object.entries(TECH_CATEGORIES)) {
@@ -417,7 +426,12 @@ export const TechStackSelector = ({
     return "all";
   };
 
-  const filteredTechs = TECH_STACK_OPTIONS.filter((tech) => {
+  // 추천 기술 스택에 포함된 기술만 필터링
+  const availableTechs = TECH_STACK_OPTIONS.filter(
+    (tech) => !recommendedTechs || recommendedTechs.includes(tech.id)
+  );
+
+  const filteredTechs = availableTechs.filter((tech) => {
     const normalizedSearch = searchTerm.toLowerCase().trim();
     if (!normalizedSearch) return true;
 
@@ -431,7 +445,36 @@ export const TechStackSelector = ({
       alias.toLowerCase().includes(normalizedSearch)
     );
 
-    const matchesSearch = matchesEnglish || matchesKorean;
+    // 한글 초성 검색
+    const searchChars = Array.from(disassemble(normalizedSearch));
+    const techChars = Array.from(disassemble(tech.label));
+    const koreanAliasesChars = koreanAliases.map((alias) =>
+      Array.from(disassemble(alias))
+    );
+
+    const isChoseong = (char: string) => {
+      const code = char.charCodeAt(0);
+      return (
+        (0x1100 <= code && code <= 0x1112) || (0x3131 <= code && code <= 0x314e)
+      );
+    };
+
+    const searchChoseong = searchChars
+      .filter((char) => isChoseong(char))
+      .join("");
+
+    const techChoseong = techChars.filter((char) => isChoseong(char)).join("");
+    const koreanAliasesChoseong = koreanAliasesChars.map((chars) =>
+      chars.filter((char) => isChoseong(char)).join("")
+    );
+
+    const matchesChoseong =
+      techChoseong.includes(searchChoseong) ||
+      koreanAliasesChoseong.some((choseong) =>
+        choseong.includes(searchChoseong)
+      );
+
+    const matchesSearch = matchesEnglish || matchesKorean || matchesChoseong;
     const matchesCategory =
       selectedCategory === "all" ||
       getCategoryForTech(tech.id) === selectedCategory;
@@ -471,7 +514,7 @@ export const TechStackSelector = ({
           <option value="all" className="dark:bg-gray-700 dark:text-white">
             전체
           </option>
-          {categories.map((category) => (
+          {availableCategories.map((category) => (
             <option
               key={category.id}
               value={category.id}

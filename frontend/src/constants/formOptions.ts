@@ -137,7 +137,37 @@ export const THEME_OPTIONS = [
 ] as const;
 
 export const DIFFICULTY_DESCRIPTIONS = {
-  초급: "프로그래밍의 기본 개념을 이해하고, 간단한 프로젝트를 완성할 수 있는 수준입니다.",
-  중급: "여러 프로젝트를 경험했고, 주요 프레임워크나 라이브러리를 활용할 수 있는 수준입니다.",
-  고급: "복잡한 시스템을 설계하고 구현할 수 있으며, 다양한 기술 스택에 능숙한 수준입니다.",
+  초급: "프로그래밍이 처음이에요.",
+  중급: "기본기를 갖췄지만 더 배워볼래요.",
+  고급: "전문적인 시스템을 만들어 볼래요.",
+} as const;
+
+// 난이도별 추천 기술 스택 정의
+export const RECOMMENDED_TECHS = {
+  초급: [
+    "HTML/CSS",
+    "JavaScript",
+    "Python",
+    "React",
+    "Node.js",
+    "MySQL",
+    "Git",
+    "GitHub",
+  ] as const,
+  중급: [
+    "TypeScript",
+    "React",
+    "Vue",
+    "Next.js",
+    "Node.js",
+    "Spring",
+    "Django",
+    "PostgreSQL",
+    "MongoDB",
+    "Docker",
+    "AWS",
+    "Redux",
+    "Tailwind CSS",
+  ] as const,
+  고급: TECH_OPTIONS, // 고급은 모든 기술 스택 표시
 } as const;

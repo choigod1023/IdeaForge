@@ -147,7 +147,7 @@ export const TechIntroSection = () => {
     }
 
     setPosition((prev) => {
-      const newPosition = prev - 2;
+      const newPosition = prev - 1;
 
       // When we've moved one total width, reset to start
       if (Math.abs(newPosition) >= totalWidthRef.current * 2) {
@@ -183,11 +183,10 @@ export const TechIntroSection = () => {
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="text-center">
             <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-              다양한 기술 스택으로 시작하세요
+              다양한 기술을 활용해요.
             </h2>
             <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-              웹, 모바일, AI 등 다양한 분야의 기술을 활용한 프로젝트를
-              만나보세요
+              추천 기술을 활용해 프로젝트를 만들어요.
             </p>
           </div>
 
