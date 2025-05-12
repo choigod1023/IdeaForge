@@ -57,7 +57,8 @@ class OpenAIService {
    * @returns Constructed prompt string
    */
   private constructPrompt(request: PromptRequest): string {
-    return `다음 요구사항에 맞는 프로그래밍 프로젝트를 추천해주세요:
+    return `다음 요구사항에 맞는 프로그래밍 프로젝트를 추천해주세요.:
+     문장은 ~요 이런 식으로 작성해주세요. 사용자가 글에 거부감을 느끼지 않도록 해주세요.
 
       필수 요구사항:
       - 난이도: ${request.difficulty}
@@ -96,7 +97,8 @@ class OpenAIService {
             : "[]"
         },
         "tips": ${request.hasTips ? '["개발 팁 5-8개 (한글로 작성)"]' : "[]"}
-      }`;
+      }
+      `;
   }
 }
 
