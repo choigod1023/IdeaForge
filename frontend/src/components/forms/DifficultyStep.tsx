@@ -22,24 +22,6 @@ const DIFFICULTY_COLORS = {
   고급: "text-red-600 dark:text-red-400",
 } as const;
 
-const DIFFICULTY_BG_COLORS = {
-  초급: "bg-green-50 dark:bg-green-900/20",
-  중급: "bg-yellow-50 dark:bg-yellow-900/20",
-  고급: "bg-red-50 dark:bg-red-900/20",
-} as const;
-
-const DIFFICULTY_BORDER_COLORS = {
-  초급: "border-green-200 dark:border-green-800",
-  중급: "border-yellow-200 dark:border-yellow-800",
-  고급: "border-red-200 dark:border-red-800",
-} as const;
-
-const DIFFICULTY_HOVER_COLORS = {
-  초급: "hover:bg-green-100 dark:hover:bg-green-900/30",
-  중급: "hover:bg-yellow-100 dark:hover:bg-yellow-900/30",
-  고급: "hover:bg-red-100 dark:hover:bg-red-900/30",
-} as const;
-
 export const DifficultyStep = ({
   selectedDifficulty,
   onDifficultySelect,
@@ -48,10 +30,10 @@ export const DifficultyStep = ({
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-base sm:text-lg font-semibold text-gray-900 dark:text-white">
+        <h2 className="text-base font-semibold text-gray-900 sm:text-lg dark:text-white">
           프로젝트 난이도
         </h2>
-        <p className="mt-1 text-xs sm:text-sm text-gray-500 dark:text-gray-400">
+        <p className="mt-1 text-xs text-gray-500 sm:text-sm dark:text-gray-400">
           본인의 실력에 맞는 난이도를 선택해주세요.
         </p>
       </div>
@@ -75,7 +57,7 @@ export const DifficultyStep = ({
               <Icon
                 className={`w-5 h-5 sm:w-6 sm:h-6 mb-1.5 sm:mb-2 ${DIFFICULTY_COLORS[difficulty]}`}
               />
-              <span className="text-sm sm:text-base font-medium text-gray-900 dark:text-white">
+              <span className="text-sm font-medium text-gray-900 sm:text-base dark:text-white">
                 {difficulty}
               </span>
               <p className="mt-0.5 sm:mt-1 text-[10px] sm:text-xs text-gray-500 dark:text-gray-400">
@@ -87,7 +69,7 @@ export const DifficultyStep = ({
       </div>
 
       {error && (
-        <p className="mt-2 text-xs sm:text-sm text-red-600 dark:text-red-400">
+        <p className="mt-2 text-xs text-red-600 sm:text-sm dark:text-red-400">
           {error}
         </p>
       )}
