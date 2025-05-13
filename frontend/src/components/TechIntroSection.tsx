@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useRef } from "react";
 import {
   FaReact,
   FaNodeJs,
@@ -8,6 +8,7 @@ import {
   FaShieldAlt,
 } from "react-icons/fa";
 import { SiTensorflow } from "react-icons/si";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 
 const techCategories = [
   {
@@ -61,192 +62,119 @@ const techCategories = [
   },
 ];
 
-const scrollbarHideStyle = `
-  .scrollbar-hide {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    overscroll-behavior-x: contain;
-    touch-action: pan-x;
-  }
-  .scrollbar-hide::-webkit-scrollbar {
-    display: none;
-  }
-  .carousel-container {
-    overflow: hidden;
-    position: relative;
-    width: 100%;
-  }
-  .carousel-track {
-    display: flex;
-    will-change: transform;
-    position: relative;
-  }
-  .carousel-slide {
-    flex: 0 0 100%;
-    width: 100%;
-    padding: 0 0.75rem;
-    height: 100%;
-  }
-  .carousel-card {
-    height: 100%;
-    min-height: 150px;
-    display: flex;
-    flex-direction: column;
-  }
-  .carousel-card-content {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    padding: 1rem;
-  }
-  .carousel-card-techs {
-    margin-top: 0.75rem;
-  }
-  @media (min-width: 640px) {
-    .carousel-slide {
-      flex: 0 0 50%;
-      width: 50%;
-    }
-  }
-  @media (min-width: 1024px) {
-    .carousel-slide {
-      flex: 0 0 33.333333%;
-      width: 33.333333%;
-    }
-  }
-`;
-
 export const TechIntroSection = () => {
-  const [position, setPosition] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
-  const animationRef = useRef<number | undefined>(undefined);
-  const [isPaused, setIsPaused] = useState(false);
-  const totalWidthRef = useRef(0);
 
-  const getSlideWidth = (): number => {
-    if (!containerRef.current) return 0;
-    const width = containerRef.current.offsetWidth;
-    if (width >= 1024) return width / 3;
-    if (width >= 640) return width / 2;
-    return width;
+  const handlePrev = () => {
+    setCurrentIndex((prev) =>
+      prev === 0 ? techCategories.length - 1 : prev - 1
+    );
   };
 
-  // Initialize total width and starting position
-  useEffect(() => {
-    const slideWidth = getSlideWidth();
-    const totalSlides = techCategories.length;
-    totalWidthRef.current = slideWidth * totalSlides;
-    // Start from the second set of slides
-    setPosition(-totalWidthRef.current);
-  }, []);
-
-  const animate = () => {
-    if (isPaused) {
-      animationRef.current = requestAnimationFrame(animate);
-      return;
-    }
-
-    setPosition((prev) => {
-      const newPosition = prev - 1;
-
-      // When we've moved one total width, reset to start
-      if (Math.abs(newPosition) >= totalWidthRef.current * 2) {
-        return -totalWidthRef.current;
-      }
-      return newPosition;
-    });
-
-    animationRef.current = requestAnimationFrame(animate);
+  const handleNext = () => {
+    setCurrentIndex((prev) =>
+      prev === techCategories.length - 1 ? 0 : prev + 1
+    );
   };
-
-  useEffect(() => {
-    animationRef.current = requestAnimationFrame(animate);
-    return () => {
-      if (animationRef.current) {
-        cancelAnimationFrame(animationRef.current);
-      }
-    };
-  }, [isPaused]);
-
-  // Create four sets of slides for seamless transition
-  const quadruplicatedSlides = [
-    ...techCategories,
-    ...techCategories,
-    ...techCategories,
-    ...techCategories,
-  ];
 
   return (
-    <>
-      <style>{scrollbarHideStyle}</style>
-      <div className="w-full py-12 bg-white dark:bg-gray-800">
-        <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
-              다양한 기술을 활용해요.
-            </h2>
-            <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
-              추천 기술을 활용해 프로젝트를 만들어요.
-            </p>
+    <div className="w-full py-12 bg-white dark:bg-gray-800">
+      <div className="max-w-4xl px-4 mx-auto sm:px-6 lg:px-8">
+        <div className="text-center">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">
+            다양한 기술을 활용해요.
+          </h2>
+          <p className="mt-4 text-lg text-gray-600 dark:text-gray-300">
+            추천 기술을 활용해 프로젝트를 만들어요.
+          </p>
+        </div>
+
+        <div className="relative mt-12">
+          {/* Fixed Navigation Buttons */}
+          <div className="absolute inset-y-0 left-0 right-0 flex items-center justify-between pointer-events-none">
+            <div className="relative z-10 px-4 pointer-events-auto">
+              <button
+                onClick={handlePrev}
+                className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none"
+                aria-label="이전 기술"
+              >
+                <FaChevronLeft className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              </button>
+            </div>
+            <div className="relative z-10 px-4 pointer-events-auto">
+              <button
+                onClick={handleNext}
+                className="p-2 bg-white rounded-full shadow-lg hover:bg-gray-50 dark:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none"
+                aria-label="다음 기술"
+              >
+                <FaChevronRight className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+              </button>
+            </div>
           </div>
 
-          {/* Infinite Scroll Carousel */}
-          <div
-            ref={containerRef}
-            className="relative mt-12"
-            onMouseEnter={() => setIsPaused(true)}
-            onMouseLeave={() => setIsPaused(false)}
-          >
-            <div className="carousel-container">
-              <div
-                className="carousel-track"
-                style={{
-                  transform: `translateX(${position}px)`,
-                }}
-              >
-                {quadruplicatedSlides.map((category, index) => (
-                  <div
-                    key={`${category.title}-${index}`}
-                    className="carousel-slide"
-                  >
-                    <div className="relative transition-shadow rounded-lg shadow-sm carousel-card bg-gray-50 dark:bg-gray-700 hover:shadow-md">
-                      <div className="carousel-card-content">
-                        <div className="flex items-center space-x-3">
-                          <div
-                            className="p-2 rounded-lg"
-                            style={{ backgroundColor: `${category.color}20` }}
-                          >
-                            <category.icon
-                              className="w-4 h-4"
-                              style={{ color: category.color }}
-                            />
-                          </div>
-                          <h3 className="font-medium text-gray-900 text-m dark:text-white">
-                            {category.title}
-                          </h3>
-                        </div>
-                        <p className="mt-2 text-sm text-gray-600 dark:text-gray-300 line-clamp-2">
-                          {category.description}
-                        </p>
-                        <div className="carousel-card-techs flex flex-wrap gap-1.5">
-                          {category.techs.map((tech) => (
-                            <span
-                              key={tech}
-                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200"
-                            >
-                              {tech}
-                            </span>
-                          ))}
-                        </div>
+          {/* Cards Container */}
+          <div ref={containerRef} className="px-12 overflow-hidden">
+            <div
+              className="flex transition-transform duration-300 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+            >
+              {techCategories.map((category) => (
+                <div
+                  key={category.title}
+                  className="flex-none w-full px-4 sm:px-8"
+                >
+                  <div className="relative max-w-sm p-4 mx-auto transition-shadow rounded-lg shadow-sm sm:p-6 bg-gray-50 dark:bg-gray-700 hover:shadow-md">
+                    <div className="flex items-center space-x-3">
+                      <div
+                        className="p-2 rounded-lg"
+                        style={{ backgroundColor: `${category.color}20` }}
+                      >
+                        <category.icon
+                          className="w-5 h-5"
+                          style={{ color: category.color }}
+                        />
                       </div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                        {category.title}
+                      </h3>
+                    </div>
+                    <p className="mt-3 text-sm text-gray-600 dark:text-gray-300">
+                      {category.description}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 mt-3">
+                      {category.techs.map((tech) => (
+                        <span
+                          key={tech}
+                          className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-200"
+                        >
+                          {tech}
+                        </span>
+                      ))}
                     </div>
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
+          </div>
+
+          {/* Dots Indicator */}
+          <div className="flex justify-center mt-6 space-x-2">
+            {techCategories.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrentIndex(index)}
+                className={`w-2 h-2 rounded-full transition-colors ${
+                  currentIndex === index
+                    ? "bg-indigo-600 dark:bg-indigo-400"
+                    : "bg-gray-300 dark:bg-gray-600"
+                }`}
+                aria-label={`${index + 1}번째 기술로 이동`}
+              />
+            ))}
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };

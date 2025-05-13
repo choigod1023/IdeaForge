@@ -557,27 +557,27 @@ export const TechStackSelector = ({
                           : [...selectedTechs, tech.id];
                         onTechSelect(newTechs);
                       }}
-                      className={`flex items-center space-x-2 p-3 rounded-lg border-2 transition-all w-full text-left ${
+                      className={`flex items-center space-x-2 p-2 rounded-lg border-2 transition-all w-full text-left ${
                         isSelected
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900/50 dark:border-blue-400 shadow-sm"
                           : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                       }`}
                     >
                       <div
-                        className={`p-1.5 rounded-md flex-shrink-0 ${
+                        className={`p-1 rounded-md flex-shrink-0 ${
                           isSelected
                             ? "bg-white dark:bg-gray-800"
                             : "bg-gray-50 dark:bg-gray-700"
                         }`}
                       >
                         <Icon
-                          className="w-5 h-5"
+                          className="w-4 h-4"
                           style={{ color: tech.color }}
                         />
                       </div>
-                      <div className="flex flex-col">
+                      <div className="flex flex-col min-w-0">
                         <span
-                          className={`text-sm font-medium ${
+                          className={`text-xs font-medium truncate ${
                             isSelected
                               ? "text-blue-900 dark:text-blue-100"
                               : "text-gray-900 dark:text-gray-100"
@@ -586,7 +586,7 @@ export const TechStackSelector = ({
                           {getDisplayName(tech.id)}
                         </span>
                         {TECH_STACK_ABBREVIATIONS[tech.id] && (
-                          <span className="text-xs text-gray-500 dark:text-gray-400">
+                          <span className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
                             {tech.label}
                           </span>
                         )}
@@ -614,24 +614,24 @@ export const TechStackSelector = ({
                     : [...selectedTechs, tech.id];
                   onTechSelect(newTechs);
                 }}
-                className={`flex items-center space-x-2 p-3 rounded-lg border-2 transition-all w-full text-left ${
+                className={`flex items-center space-x-2 p-2 rounded-lg border-2 transition-all w-full text-left ${
                   isSelected
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-900/50 dark:border-blue-400 shadow-sm"
                     : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                 }`}
               >
                 <div
-                  className={`p-1.5 rounded-md flex-shrink-0 ${
+                  className={`p-1 rounded-md flex-shrink-0 ${
                     isSelected
                       ? "bg-white dark:bg-gray-800"
                       : "bg-gray-50 dark:bg-gray-700"
                   }`}
                 >
-                  <Icon className="w-5 h-5" style={{ color: tech.color }} />
+                  <Icon className="w-4 h-4" style={{ color: tech.color }} />
                 </div>
-                <div className="flex flex-col">
+                <div className="flex flex-col min-w-0">
                   <span
-                    className={`text-sm font-medium ${
+                    className={`text-xs font-medium truncate ${
                       isSelected
                         ? "text-blue-900 dark:text-blue-100"
                         : "text-gray-900 dark:text-gray-100"
@@ -640,7 +640,7 @@ export const TechStackSelector = ({
                     {getDisplayName(tech.id)}
                   </span>
                   {TECH_STACK_ABBREVIATIONS[tech.id] && (
-                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                    <span className="text-[10px] text-gray-500 dark:text-gray-400 truncate">
                       {tech.label}
                     </span>
                   )}

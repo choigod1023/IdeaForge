@@ -74,6 +74,7 @@ const DEVOPS_TECHS = [
   "Terraform",
   "Jenkins",
   "GitLab CI",
+  "Git",
 ] as const;
 
 // 보안
@@ -152,7 +153,6 @@ export const RECOMMENDED_TECHS = {
     "Node.js",
     "MySQL",
     "Git",
-    "GitHub",
   ] as const,
   중급: [
     "TypeScript",
@@ -168,6 +168,7 @@ export const RECOMMENDED_TECHS = {
     "AWS",
     "Redux",
     "Tailwind CSS",
+    "Git",
   ] as const,
-  고급: TECH_OPTIONS, // 고급은 모든 기술 스택 표시
+  고급: TECH_OPTIONS,
 } as const;

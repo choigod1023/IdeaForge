@@ -7,7 +7,6 @@ import {
   FaTools,
   FaCopy,
   FaArrowLeft,
-  FaSave,
   FaDownload,
 } from "react-icons/fa";
 import { toast } from "react-toastify";
@@ -17,6 +16,7 @@ import { useProjectStore } from "../stores/projectStore";
 
 interface ProjectDisplayProps {
   project: Project;
+  source?: "create" | "list";
 }
 
 // 기술 스택별 파스텔톤 색상 매핑
@@ -49,30 +49,15 @@ const TECH_COLORS: Record<string, { bg: string; text: string }> = {
   default: { bg: "bg-gray-100", text: "text-gray-800" },
 };
 
-export function ProjectDisplay({ project }: ProjectDisplayProps) {
+export function ProjectDisplay({
+  project,
+  source = "list",
+}: ProjectDisplayProps) {
   const navigate = useNavigate();
-  const { addToProjectList, exportToMarkdown } = useProjectStore();
+  const { exportToMarkdown } = useProjectStore();
 
   const getTechColor = (tech: string) => {
     return TECH_COLORS[tech] || TECH_COLORS.default;
-  };
-
-  const handleSave = () => {
-    try {
-      const { success, isDuplicate } = addToProjectList(project);
-      if (success) {
-        if (isDuplicate) {
-          toast.warning("이미 동일한 프로젝트가 저장되어 있습니다.");
-        } else {
-          toast.success("프로젝트가 내 프로젝트 목록에 저장되었습니다!");
-        }
-      } else {
-        toast.error("저장하기에 실패했습니다. 이미 저장되어 있거든요.");
-      }
-    } catch (error) {
-      console.error("저장하기 실패:", error);
-      toast.error("저장하기에 실패했습니다.");
-    }
   };
 
   const handleCopy = async () => {
@@ -158,13 +143,6 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
               <FaDownload className="w-4 h-4" />
             </button>
             <button
-              onClick={handleSave}
-              className="p-2 text-green-600 transition-colors rounded-full hover:bg-green-100 dark:text-green-400 dark:hover:bg-green-900/30"
-              title="프로젝트 저장하기"
-            >
-              <FaSave className="w-4 h-4" />
-            </button>
-            <button
               onClick={handleCopy}
               className="p-2 text-gray-600 transition-colors rounded-full hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
               title="프로젝트 데이터 복사하기"
@@ -213,7 +191,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
               const { bg, text } = getTechColor(tech);
               return (
                 <span
-                  key={tech}
+                  key={`${project.id}-${tech}`}
                   className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${bg} ${text}`}
                 >
                   {tech}
@@ -233,7 +211,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
           </h3>
           <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
             {project.features.map((feature, index) => (
-              <li key={index}>{feature}</li>
+              <li key={`${project.id}-feature-${index}`}>{feature}</li>
             ))}
           </ul>
         </div>
@@ -248,7 +226,9 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
           </h3>
           <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
             {project.prerequisites.map((prerequisite, index) => (
-              <li key={index}>{prerequisite}</li>
+              <li key={`${project.id}-prerequisite-${index}`}>
+                {prerequisite}
+              </li>
             ))}
           </ul>
         </div>
@@ -263,7 +243,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
           </h3>
           <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
             {project.challenges.map((challenge, index) => (
-              <li key={index}>{challenge}</li>
+              <li key={`${project.id}-challenge-${index}`}>{challenge}</li>
             ))}
           </ul>
         </div>
@@ -278,7 +258,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
           </h3>
           <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
             {project.tips.map((tip, index) => (
-              <li key={index}>{tip}</li>
+              <li key={`${project.id}-tip-${index}`}>{tip}</li>
             ))}
           </ul>
         </div>
@@ -286,7 +266,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
 
       {/* 추천 학습 자료 */}
       {project.resources && project.resources.length > 0 && (
-        <div>
+        <div className="mb-3">
           <h3 className="flex items-center mb-2 text-sm font-semibold text-gray-900">
             <FaBook className="mr-1 text-indigo-600" />
             추천 학습 자료
@@ -298,23 +278,39 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
               const parts = resource.split(urlPattern);
 
               return (
-                <li key={index} className="flex items-center gap-1">
+                <li key={`${project.id}-resource-${index}`}>
                   {parts.map((part, i) => {
                     if (part.match(urlPattern)) {
+                      // URL을 더 짧게 표시
+                      const url = new URL(part);
+                      const displayUrl =
+                        url.hostname +
+                        (url.pathname.length > 20
+                          ? url.pathname.substring(0, 20) + "..."
+                          : url.pathname);
+
                       return (
                         <a
-                          key={i}
+                          key={`${project.id}-resource-${index}-url-${i}`}
                           href={part}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-blue-600 hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                          className="inline-flex items-center text-blue-600 break-all hover:text-blue-800 hover:underline dark:text-blue-400 dark:hover:text-blue-300"
+                          title={part}
                         >
-                          {part}
-                          <span className="ml-1 text-[10px]">↗</span>
+                          {displayUrl}
+                          <span className="ml-1 text-[10px] shrink-0">↗</span>
                         </a>
                       );
                     }
-                    return <span key={i}>{part}</span>;
+                    return (
+                      <span
+                        key={`${project.id}-resource-${index}-text-${i}`}
+                        className="break-words"
+                      >
+                        {part}
+                      </span>
+                    );
                   })}
                 </li>
               );
@@ -326,12 +322,22 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
       {/* 뒤로가기 버튼 */}
       <div className="flex justify-center pt-6 mt-8 border-t border-gray-100">
         <button
-          onClick={() => navigate("/create")}
-          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          title="프로젝트 생성 페이지로 돌아가기"
+          onClick={() =>
+            navigate(source === "create" ? "/create" : "/projects")
+          }
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800"
+          title={
+            source === "create"
+              ? "프로젝트 생성 페이지로 돌아가기"
+              : "프로젝트 목록으로 돌아가기"
+          }
         >
           <FaArrowLeft className="w-4 h-4" />
-          <span>프로젝트 생성으로 돌아가기</span>
+          <span>
+            {source === "create"
+              ? "프로젝트 다시 생성하기"
+              : "내 프로젝트 다시 보기"}
+          </span>
         </button>
       </div>
     </div>

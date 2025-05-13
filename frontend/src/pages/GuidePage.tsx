@@ -154,42 +154,21 @@ const GuidePage = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="relative px-4 py-24 mx-auto max-w-7xl sm:px-6 lg:px-8">
+        <div className="px-4 py-16 mx-auto text-center max-w-7xl sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="relative px-8 py-12 overflow-hidden bg-white shadow-xl rounded-2xl dark:bg-gray-800"
           >
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-500/10 via-purple-500/10 to-pink-500/10 dark:from-indigo-500/5 dark:via-purple-500/5 dark:to-pink-500/5" />
-            <div className="relative z-10 text-center">
-              <motion.h2
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl"
-              >
-                바로 시작해보세요.
-              </motion.h2>
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: 0.4 }}
-                className="mt-8"
-              >
-                <Link to="/create">
-                  <button className="inline-flex items-center px-8 py-4 text-lg font-medium text-white transition-all duration-300 rounded-lg shadow-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    프로젝트 생성하러 가기
-                    <span className="ml-2" role="img" aria-label="rocket">
-                      🚀
-                    </span>
-                  </button>
-                </Link>
-              </motion.div>
-            </div>
+            <Link to="/create">
+              <button className="inline-flex items-center px-8 py-4 text-lg font-medium text-white transition-all duration-300 rounded-lg shadow-lg bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                프로젝트 생성하러 가기
+                <span className="ml-2" role="img" aria-label="rocket">
+                  🚀
+                </span>
+              </button>
+            </Link>
           </motion.div>
         </div>
       </div>
