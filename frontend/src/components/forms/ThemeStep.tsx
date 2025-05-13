@@ -14,25 +14,23 @@ interface ThemeStepProps {
 
 export const ThemeStep = ({ register, error }: ThemeStepProps) => {
   return (
-    <section className="p-8 border border-gray-100 shadow-sm bg-white/95 dark:bg-gray-800/95 rounded-2xl dark:border-gray-700">
-      <div className="space-y-3 sm:space-y-4">
+    <section className="p-3 sm:p-4 bg-white/95 dark:bg-gray-800/95 rounded-2xl">
+      <div className="space-y-2">
         <div className="flex items-center space-x-2">
-          <h2 className="text-base sm:text-xl font-semibold text-gray-900 dark:text-white">
+          <h2 className="text-base font-semibold text-gray-900 dark:text-white">
             프로젝트 테마
           </h2>
-          <span className="px-1.5 sm:px-2 py-0.5 sm:py-1 text-[10px] sm:text-xs font-medium text-blue-600 rounded-full bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300">
+          <span className="px-1.5 py-0.5 text-[10px] font-medium text-blue-600 rounded-full bg-blue-50 dark:bg-blue-900/30 dark:text-blue-300">
             필수
           </span>
         </div>
-        <p className="text-xs sm:text-sm text-gray-500 dark:text-gray-400 whitespace-nowrap">
+        <p className="text-xs text-gray-500 dark:text-gray-400">
           프로젝트의 주제와 방향성을 선택해요
         </p>
         <div className="relative">
           <select
             {...register("theme")}
-            className={`${INPUT_STYLES.base} ${
-              INPUT_STYLES.select
-            } h-12 sm:h-14 ${
+            className={`${INPUT_STYLES.base} ${INPUT_STYLES.select} h-11 ${
               error
                 ? "border-red-500 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:focus:border-red-400 dark:focus:ring-red-400"
                 : ""
@@ -51,7 +49,7 @@ export const ThemeStep = ({ register, error }: ThemeStepProps) => {
           </select>
           <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
             <svg
-              className={`w-4 h-4 sm:w-5 sm:h-5 ${
+              className={`w-4 h-4 ${
                 error ? "text-red-500 dark:text-red-400" : "text-gray-400"
               }`}
               fill="none"
@@ -68,9 +66,9 @@ export const ThemeStep = ({ register, error }: ThemeStepProps) => {
           </div>
         </div>
         {error && (
-          <div className="flex items-center gap-1.5 sm:gap-2 p-2 sm:p-3 mt-2 text-xs sm:text-sm font-medium text-red-600 rounded-lg bg-red-50 dark:bg-red-900/30 dark:text-red-400">
+          <div className="flex items-center gap-1.5 p-2 text-xs font-medium text-red-600 rounded-lg bg-red-50 dark:bg-red-900/30 dark:text-red-400">
             <svg
-              className="w-4 h-4 sm:w-5 sm:h-5"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"

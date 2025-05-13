@@ -213,26 +213,15 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
   };
 
   return (
-    <div className="flex flex-col items-center py-6 sm:py-10 bg-gray-50 dark:bg-gray-900">
-      <div className="w-full max-w-2xl px-4 text-xs sm:px-6 sm:text-sm">
+    <div className="flex flex-col items-center py-4 sm:py-6">
+      <div className="w-full max-w-3xl px-4 text-xs sm:px-6 sm:text-sm">
         {/* 진행 상태 표시 */}
-        <div className="mb-8 sm:mb-10">
+        <div className="mb-12 sm:mb-16">
           <div className="flex items-center justify-between">
             {STEPS.map((step: FormStep, index: number) => (
               <div key={step} className="flex flex-col items-center">
-                <div
-                  className={`flex items-center justify-center w-8 h-8 mb-2 text-xs sm:text-sm font-medium rounded-full ${
-                    currentStep === step
-                      ? "bg-indigo-600 text-white"
-                      : index < STEPS.indexOf(currentStep)
-                      ? "bg-indigo-100 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400"
-                      : "bg-gray-100 text-gray-400 dark:bg-gray-800 dark:text-gray-500"
-                  }`}
-                >
-                  {index + 1}
-                </div>
                 <span
-                  className={`text-[10px] sm:text-xs font-medium ${
+                  className={`text-sm sm:text-base font-semibold ${
                     currentStep === step
                       ? "text-indigo-600 dark:text-indigo-400"
                       : index < STEPS.indexOf(currentStep)
@@ -251,10 +240,10 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
               </div>
             ))}
           </div>
-          <div className="relative mt-6">
-            <div className="absolute top-0 w-full h-0.5 bg-gray-200 dark:bg-gray-700">
+          <div className="relative mt-5">
+            <div className="absolute top-0 w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full">
               <div
-                className="h-full transition-all duration-300 bg-indigo-600 dark:bg-indigo-500"
+                className="h-full transition-all duration-300 bg-indigo-600 rounded-full dark:bg-indigo-500"
                 style={{
                   width: `${
                     ((STEPS.indexOf(currentStep) + 1) / STEPS.length) * 100
@@ -275,13 +264,13 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
               onSubmit={handleSubmit(handleFormSubmit)}
               className="flex flex-col flex-1"
             >
-              <div className="flex-1 p-6 sm:p-8">{renderStep()}</div>
+              <div className="flex-1 p-4 sm:p-6">{renderStep()}</div>
               {/* 네비게이션 버튼 */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="flex justify-between p-6 border-t border-gray-100 sm:p-8 dark:border-gray-700"
+                className="flex justify-between p-4 border-t border-gray-100 sm:p-6 dark:border-gray-700"
               >
                 <button
                   type="button"
@@ -303,13 +292,13 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
             </motion.form>
           ) : (
             <div className="flex flex-col flex-1">
-              <div className="flex-1 p-6 sm:p-8">{renderStep()}</div>
+              <div className="flex-1 p-4 sm:p-6">{renderStep()}</div>
               {/* 네비게이션 버튼 */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.3, delay: 0.1 }}
-                className="flex justify-between p-6 border-t border-gray-100 sm:p-8 dark:border-gray-700"
+                className="flex justify-between p-4 border-t border-gray-100 sm:p-6 dark:border-gray-700"
               >
                 {currentStep !== "difficulty" && (
                   <button

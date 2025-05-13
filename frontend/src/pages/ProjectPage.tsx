@@ -6,7 +6,7 @@ import { ProjectDisplay } from "../components/ProjectDisplay";
 import { useProjectStore } from "../stores/projectStore";
 import type { Project, ProjectRequest } from "../types";
 import { FaHome, FaLightbulb, FaRocket } from "react-icons/fa";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useQuery } from "@tanstack/react-query";
 
 // 개발 팁 목록
@@ -58,12 +58,12 @@ export default function ProjectPage() {
       if (!result.success) {
         throw new Error(storeError || "프로젝트 생성에 실패했습니다.");
       }
-      return storeProject; // store에 저장된 프로젝트 반환
+      return storeProject;
     },
     enabled: !!initialFormData && !savedProject && !storeProject,
-    retry: 1, // 실패 시 1번만 재시도
-    staleTime: Infinity, // 데이터가 stale되지 않도록 설정
-    gcTime: 1000 * 60 * 5, // 5분 동안 캐시 유지
+    retry: 1,
+    staleTime: Infinity,
+    gcTime: 1000 * 60 * 5,
   });
 
   // 로딩 상태 통합 관리
@@ -88,7 +88,14 @@ export default function ProjectPage() {
   // formData가 없고 savedProject도 없는 경우 홈으로 리다이렉트
   useEffect(() => {
     if (!initialFormData && !savedProject && !storeProject && !queryProject) {
-      toast.info("프로젝트 생성 페이지에서 먼저 프로젝트를 생성해주세요.");
+      toast.info("프로젝트 생성 페이지에서 먼저 프로젝트를 생성해주세요.", {
+        position: "top-center",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       navigate("/create");
     }
   }, [initialFormData, savedProject, storeProject, queryProject, navigate]);
@@ -99,61 +106,176 @@ export default function ProjectPage() {
   // 에러 처리
   useEffect(() => {
     if (queryError) {
-      toast.error("프로젝트 생성에 실패했습니다.");
+      toast.error("프로젝트 생성에 실패했습니다. 잠시 후 다시 시도해주세요.", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       navigate("/create");
     }
   }, [queryError, navigate]);
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-full max-w-2xl p-8 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-8"
-          >
-            <div className="inline-block w-16 h-16 mb-4">
+      <div
+        className="fixed inset-0 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm"
+        role="status"
+        aria-label="프로젝트 생성 중"
+      >
+        <div className="w-full max-w-2xl p-6 text-center">
+          <AnimatePresence mode="wait">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="mb-8"
+            >
+              {/* 로켓 애니메이션 */}
+              <div className="relative w-64 h-64 mx-auto mb-8 overflow-hidden">
+                {/* 배경 별들 */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ duration: 1 }}
+                  className="absolute inset-0"
+                >
+                  {[...Array(20)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{
+                        x: Math.random() * 256,
+                        y: Math.random() * 256,
+                        scale: Math.random() * 0.5 + 0.5,
+                      }}
+                      animate={{
+                        y: [null, Math.random() * 256],
+                        opacity: [0.3, 0.8, 0.3],
+                      }}
+                      transition={{
+                        duration: Math.random() * 2 + 2,
+                        repeat: Infinity,
+                        delay: Math.random() * 2,
+                      }}
+                      className="absolute w-1 h-1 bg-white rounded-full"
+                      aria-hidden="true"
+                    />
+                  ))}
+                </motion.div>
+
+                {/* 구름들 */}
+                {[...Array(3)].map((_, i) => (
+                  <motion.div
+                    key={`cloud-${i}`}
+                    initial={{ x: -100, y: 40 + i * 60 }}
+                    animate={{ x: 300 }}
+                    transition={{
+                      duration: 8,
+                      repeat: Infinity,
+                      delay: i * 2,
+                      ease: "linear",
+                    }}
+                    className="absolute"
+                    aria-hidden="true"
+                  >
+                    <div className="flex gap-1">
+                      {[...Array(3)].map((_, j) => (
+                        <div
+                          key={`cloud-part-${j}`}
+                          className="w-8 h-8 rounded-full bg-white/20 dark:bg-gray-700/20 blur-sm"
+                        />
+                      ))}
+                    </div>
+                  </motion.div>
+                ))}
+
+                {/* 로켓 */}
+                <motion.div
+                  initial={{ x: -100, y: 100 }}
+                  animate={{
+                    x: [null, 100, 200, 300],
+                    y: [null, 80, 120, 80],
+                    rotate: [null, -10, 10, -10],
+                  }}
+                  transition={{
+                    duration: 4,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                  }}
+                  className="absolute"
+                  aria-hidden="true"
+                >
+                  <div className="relative">
+                    {/* 로켓 본체 */}
+                    <div className="w-12 h-16 rounded-t-full bg-gradient-to-b from-red-500 to-red-600">
+                      {/* 창문 */}
+                      <div className="absolute w-4 h-4 -translate-x-1/2 bg-blue-400 rounded-full top-4 left-1/2" />
+                      {/* 날개 */}
+                      <div className="absolute bottom-0 left-0 w-4 h-8 -skew-x-12 bg-red-600" />
+                      <div className="absolute bottom-0 right-0 w-4 h-8 skew-x-12 bg-red-600" />
+                    </div>
+                    {/* 불꽃 */}
+                    <motion.div
+                      animate={{
+                        scale: [1, 1.2, 1],
+                        opacity: [0.8, 1, 0.8],
+                      }}
+                      transition={{
+                        duration: 0.5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                      }}
+                      className="absolute -translate-x-1/2 -bottom-4 left-1/2"
+                    >
+                      <div className="flex gap-1">
+                        <div className="w-2 h-6 bg-orange-500 rounded-b-full" />
+                        <div className="w-3 h-8 bg-yellow-500 rounded-b-full" />
+                        <div className="w-2 h-6 bg-orange-500 rounded-b-full" />
+                      </div>
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+
+              <h2 className="mb-3 text-xl font-semibold text-gray-900 sm:text-2xl dark:text-gray-100">
+                프로젝트를 생성하는 중...
+              </h2>
               <motion.div
-                animate={{ rotate: 360 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-                className="w-full h-full border-4 border-indigo-600 rounded-full border-t-transparent dark:border-indigo-400"
-              />
-            </div>
-            <h2 className="mb-2 text-xl font-semibold text-gray-900 dark:text-gray-100">
-              프로젝트를 생성하는 중...
-            </h2>
-          </motion.div>
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+                className="flex items-center justify-center gap-2 text-base text-gray-600 sm:text-lg dark:text-gray-300"
+              >
+                <FaRocket className="w-5 h-5 sm:w-6 sm:h-6" />
+                <span>AI가 열심히 프로젝트를 구상하고 있어요!</span>
+              </motion.div>
+            </motion.div>
+          </AnimatePresence>
 
           {/* 개발 팁 */}
-          <motion.div
-            key={currentTip}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="p-4 mb-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30"
-          >
-            <div className="flex items-center justify-center gap-2 mb-2 text-indigo-600 dark:text-indigo-400">
-              <FaLightbulb className="w-5 h-5" />
-              <span className="font-medium">개발 팁</span>
-            </div>
-            <p className="text-sm text-gray-700 dark:text-gray-300">
-              {currentTip}
-            </p>
-          </motion.div>
-
-          {/* 재미있는 로딩 메시지 */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.5 }}
-            className="flex items-center justify-center gap-2 text-sm text-gray-500 dark:text-gray-400"
-          >
-            <FaRocket className="w-4 h-4" />
-            <span>AI가 열심히 프로젝트를 구상하고 있어요!</span>
-          </motion.div>
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={currentTip}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="p-4 rounded-lg bg-indigo-50 dark:bg-indigo-900/30"
+              role="complementary"
+              aria-label="개발 팁"
+            >
+              <div className="flex items-center justify-center gap-2 mb-2 text-base text-indigo-600 sm:text-lg dark:text-indigo-400">
+                <FaLightbulb className="w-5 h-5 sm:w-6 sm:h-6" />
+                <span className="font-medium">개발 팁</span>
+              </div>
+              <p className="text-base text-gray-700 sm:text-lg dark:text-gray-300">
+                {currentTip}
+              </p>
+            </motion.div>
+          </AnimatePresence>
         </div>
       </div>
     );
@@ -161,19 +283,23 @@ export default function ProjectPage() {
 
   if (storeError && !savedProject) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
-        <div className="p-6 text-center bg-white rounded-lg shadow-lg dark:bg-gray-800">
-          <h2 className="mb-4 text-xl font-bold text-red-600 dark:text-red-400">
+      <div
+        className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 p-4"
+        role="alert"
+        aria-live="assertive"
+      >
+        <div className="w-full max-w-md p-6 text-center bg-white shadow-lg rounded-xl dark:bg-gray-800">
+          <h2 className="mb-4 text-xl font-bold text-red-600 sm:text-2xl dark:text-red-400">
             프로젝트 생성에 실패했습니다
           </h2>
-          <p className="mb-6 text-gray-600 dark:text-gray-300">
+          <p className="mb-6 text-base text-gray-600 sm:text-lg dark:text-gray-300">
             잠시 후 다시 시도해주세요.
           </p>
           <button
             onClick={() => navigate("/create")}
-            className="inline-flex items-center px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800"
+            className="inline-flex items-center px-5 py-2.5 text-base sm:text-lg font-medium text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800"
           >
-            <FaHome className="mr-2" />
+            <FaHome className="w-5 h-5 mr-2 sm:w-6 sm:h-6" />
             프로젝트 생성 페이지로 이동
           </button>
         </div>
@@ -186,11 +312,16 @@ export default function ProjectPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-3xl p-4 mx-auto"
+    >
       <ProjectDisplay
         project={project}
         source={initialFormData ? "create" : "list"}
       />
-    </div>
+    </motion.div>
   );
 }

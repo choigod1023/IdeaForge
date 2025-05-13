@@ -15,7 +15,7 @@ export const TechStackStep = ({
   error,
 }: TechStackStepProps) => {
   return (
-    <section className="p-4 sm:p-6 border border-gray-100 shadow-sm bg-white/95 dark:bg-gray-800/95 rounded-2xl dark:border-gray-700">
+    <section className="p-2 sm:p-4 bg-white/95 dark:bg-gray-800/95 rounded-2xl">
       <div className="space-y-2 sm:space-y-3">
         <div className="flex items-center space-x-2">
           <h2 className="text-base sm:text-xl font-semibold text-gray-900 dark:text-white">
