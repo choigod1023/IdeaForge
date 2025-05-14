@@ -504,12 +504,12 @@ export const TechStackSelector = ({
           placeholder="기술 스택 검색..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="flex-1 px-4 py-2 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
+          className="flex-1 px-4 py-2 text-base border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400"
         />
         <select
           value={selectedCategory}
           onChange={(e) => setSelectedCategory(e.target.value)}
-          className="px-4 py-2.5 text-base border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[200px] bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+          className="px-4 py-2.5 text-base border border-gray-300 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent min-w-[200px] bg-white dark:bg-gray-700 dark:border-gray-600 dark:text-white"
         >
           <option value="all" className="dark:bg-gray-700 dark:text-white">
             전체
@@ -557,14 +557,14 @@ export const TechStackSelector = ({
                           : [...selectedTechs, tech.id];
                         onTechSelect(newTechs);
                       }}
-                      className={`flex items-center space-x-2 p-2 rounded-lg border-2 transition-all w-full text-left ${
+                      className={`flex items-center h-12 px-3 rounded-3xl border-2 transition-all w-full text-left ${
                         isSelected
                           ? "border-blue-500 bg-blue-50 dark:bg-blue-900/50 dark:border-blue-400 shadow-sm"
                           : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                       }`}
                     >
                       <div
-                        className={`p-1 rounded-md flex-shrink-0 ${
+                        className={`flex items-center justify-center w-6 h-6 rounded-2xl flex-shrink-0 ${
                           isSelected
                             ? "bg-white dark:bg-gray-800"
                             : "bg-gray-50 dark:bg-gray-700"
@@ -575,7 +575,7 @@ export const TechStackSelector = ({
                           style={{ color: tech.color }}
                         />
                       </div>
-                      <div className="flex flex-col min-w-0">
+                      <div className="flex flex-col justify-center min-w-0 ml-2.5">
                         <span
                           className={`text-xs font-medium truncate ${
                             isSelected
@@ -614,14 +614,14 @@ export const TechStackSelector = ({
                     : [...selectedTechs, tech.id];
                   onTechSelect(newTechs);
                 }}
-                className={`flex items-center space-x-2 p-2 rounded-lg border-2 transition-all w-full text-left ${
+                className={`flex items-center h-12 px-3 rounded-3xl border-2 transition-all w-full text-left ${
                   isSelected
                     ? "border-blue-500 bg-blue-50 dark:bg-blue-900/50 dark:border-blue-400 shadow-sm"
                     : "border-gray-200 hover:border-blue-300 dark:border-gray-600 dark:hover:border-blue-400 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700"
                 }`}
               >
                 <div
-                  className={`p-1 rounded-md flex-shrink-0 ${
+                  className={`flex items-center justify-center w-6 h-6 rounded-2xl flex-shrink-0 ${
                     isSelected
                       ? "bg-white dark:bg-gray-800"
                       : "bg-gray-50 dark:bg-gray-700"
@@ -629,7 +629,7 @@ export const TechStackSelector = ({
                 >
                   <Icon className="w-4 h-4" style={{ color: tech.color }} />
                 </div>
-                <div className="flex flex-col min-w-0">
+                <div className="flex flex-col justify-center min-w-0 ml-2.5">
                   <span
                     className={`text-xs font-medium truncate ${
                       isSelected

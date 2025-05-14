@@ -12,6 +12,7 @@ import { type FormStep, type Difficulty } from "../constants/formSteps";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { DifficultyStep } from "./forms/DifficultyStep";
 import { motion, AnimatePresence } from "framer-motion";
+import { ProgressBar } from "./forms/ProgressBar";
 
 const STEPS: FormStep[] = ["difficulty", "techStack", "theme", "details"];
 
@@ -32,6 +33,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
     trigger,
     formState: { errors },
     getValues,
+    watch,
   } = useForm<ProjectRequest>({
     resolver: zodResolver(projectFormSchema),
     defaultValues: {
@@ -180,6 +182,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
           return (
             <ThemeStep
               register={register}
+              watch={watch}
               error={
                 errors.theme?.message
                   ? "프로젝트 테마를 선택해주세요"
@@ -189,7 +192,13 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
           );
         case "details":
           console.log("Rendering DetailsStep");
-          return <DetailsStep register={register} />;
+          return (
+            <DetailsStep
+              register={register}
+              watch={watch}
+              setValue={setValue}
+            />
+          );
         default:
           console.log("No step matched:", currentStep);
           return null;
@@ -216,43 +225,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
     <div className="flex flex-col items-center py-4 sm:py-6">
       <div className="w-full max-w-3xl px-4 text-xs sm:px-6 sm:text-sm">
         {/* 진행 상태 표시 */}
-        <div className="mb-12 sm:mb-16">
-          <div className="flex items-center justify-between">
-            {STEPS.map((step: FormStep, index: number) => (
-              <div key={step} className="flex flex-col items-center">
-                <span
-                  className={`text-sm sm:text-base font-semibold ${
-                    currentStep === step
-                      ? "text-indigo-600 dark:text-indigo-400"
-                      : index < STEPS.indexOf(currentStep)
-                      ? "text-indigo-600 dark:text-indigo-400"
-                      : "text-gray-400 dark:text-gray-500"
-                  }`}
-                >
-                  {step === "difficulty"
-                    ? "난이도"
-                    : step === "techStack"
-                    ? "기술 스택"
-                    : step === "theme"
-                    ? "테마"
-                    : "상세 정보"}
-                </span>
-              </div>
-            ))}
-          </div>
-          <div className="relative mt-5">
-            <div className="absolute top-0 w-full h-1.5 bg-gray-200 dark:bg-gray-700 rounded-full">
-              <div
-                className="h-full transition-all duration-300 bg-indigo-600 rounded-full dark:bg-indigo-500"
-                style={{
-                  width: `${
-                    ((STEPS.indexOf(currentStep) + 1) / STEPS.length) * 100
-                  }%`,
-                }}
-              />
-            </div>
-          </div>
-        </div>
+        <ProgressBar currentStep={currentStep} steps={STEPS} />
 
         {/* 폼 컨텐츠 */}
         <div className="bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:shadow-gray-900/30 min-h-[400px] flex flex-col">
@@ -275,7 +248,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
                 <button
                   type="button"
                   onClick={handlePrev}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 transition-colors rounded-md bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 dark:focus:ring-offset-gray-800 min-w-[100px]"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 transition-colors rounded-3xl bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 dark:focus:ring-offset-gray-800 min-w-[100px]"
                 >
                   <FaArrowLeft className="w-4 h-4" />
                   <span>이전</span>
@@ -283,7 +256,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
                 <div className="flex-1" />
                 <button
                   type="submit"
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 min-w-[140px]"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-3xl bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 min-w-[140px]"
                 >
                   <span>프로젝트 생성하기</span>
                   <FaArrowRight className="w-4 h-4" />
@@ -304,7 +277,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
                   <button
                     type="button"
                     onClick={handlePrev}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 transition-colors rounded-md bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 dark:focus:ring-offset-gray-800 min-w-[100px]"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 transition-colors rounded-3xl bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 dark:focus:ring-offset-gray-800 min-w-[100px]"
                   >
                     <FaArrowLeft className="w-4 h-4" />
                     <span>이전</span>
@@ -314,7 +287,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
                 <button
                   type="button"
                   onClick={handleNext}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 min-w-[100px]"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-3xl bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 min-w-[140px]"
                 >
                   <span>다음</span>
                   <FaArrowRight className="w-4 h-4" />

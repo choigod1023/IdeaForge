@@ -1,21 +1,42 @@
 import { THEME_OPTIONS } from "../../constants/formOptions";
-import { type UseFormRegister } from "react-hook-form";
+import { type UseFormRegister, type UseFormWatch } from "react-hook-form";
 import { type ProjectRequest } from "../../schemas/projectFormSchema";
+import {
+  FaTools,
+  FaFilm,
+  FaGraduationCap,
+  FaUsers,
+  FaWrench,
+  FaGamepad,
+  FaMoneyBillWave,
+  FaHeartbeat,
+  FaEllipsisH,
+} from "react-icons/fa";
 
-const INPUT_STYLES = {
-  base: "w-full px-3 sm:px-5 py-2.5 sm:py-4 text-sm sm:text-base transition-all border-2 rounded-2xl shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white/95 dark:bg-gray-800/95 dark:border-gray-600 dark:text-gray-100 dark:placeholder-gray-400 hover:border-blue-300 dark:hover:border-blue-400",
-  select: "appearance-none bg-no-repeat bg-right pr-8 sm:pr-10",
+const THEME_ICONS = {
+  생산성: FaTools,
+  엔터테인먼트: FaFilm,
+  교육: FaGraduationCap,
+  소셜: FaUsers,
+  유틸리티: FaWrench,
+  게임: FaGamepad,
+  금융: FaMoneyBillWave,
+  건강: FaHeartbeat,
+  기타: FaEllipsisH,
 } as const;
 
 interface ThemeStepProps {
   register: UseFormRegister<ProjectRequest>;
+  watch: UseFormWatch<ProjectRequest>;
   error?: string;
 }
 
-export const ThemeStep = ({ register, error }: ThemeStepProps) => {
+export const ThemeStep = ({ register, watch, error }: ThemeStepProps) => {
+  const selectedTheme = watch("theme");
+
   return (
-    <section className="p-3 sm:p-4 bg-white/95 dark:bg-gray-800/95 rounded-2xl">
-      <div className="space-y-2">
+    <section className="p-3 sm:p-4 bg-white/95 dark:bg-gray-800/95 rounded-3xl">
+      <div className="space-y-3">
         <div className="flex items-center space-x-2">
           <h2 className="text-base font-semibold text-gray-900 dark:text-white">
             프로젝트 테마
@@ -27,46 +48,38 @@ export const ThemeStep = ({ register, error }: ThemeStepProps) => {
         <p className="text-xs text-gray-500 dark:text-gray-400">
           프로젝트의 주제와 방향성을 선택해요
         </p>
-        <div className="relative">
-          <select
-            {...register("theme")}
-            className={`${INPUT_STYLES.base} ${INPUT_STYLES.select} h-11 ${
-              error
-                ? "border-red-500 focus:border-red-500 focus:ring-red-500 dark:border-red-400 dark:focus:border-red-400 dark:focus:ring-red-400"
-                : ""
-            }`}
-          >
-            <option value="">테마를 선택해주세요</option>
-            {THEME_OPTIONS.map((theme) => (
-              <option
+
+        <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3">
+          {THEME_OPTIONS.map((theme) => {
+            const Icon = THEME_ICONS[theme];
+            const isSelected = selectedTheme === theme;
+
+            return (
+              <label
                 key={theme}
-                value={theme}
-                className="dark:bg-gray-800 dark:text-gray-100"
+                className={`relative flex flex-col items-center p-3 transition-all rounded-3xl cursor-pointer border-2 ${
+                  isSelected
+                    ? "border-blue-500 bg-blue-50 dark:border-blue-400 dark:bg-blue-900/20"
+                    : "border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 hover:border-blue-300 hover:bg-blue-50/50 dark:hover:border-blue-400 dark:hover:bg-blue-900/10"
+                }`}
               >
-                {theme}
-              </option>
-            ))}
-          </select>
-          <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-            <svg
-              className={`w-4 h-4 ${
-                error ? "text-red-500 dark:text-red-400" : "text-gray-400"
-              }`}
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </div>
+                <input
+                  type="radio"
+                  {...register("theme")}
+                  value={theme}
+                  className="absolute opacity-0"
+                />
+                <Icon className="w-6 h-6 mb-2 text-gray-600 dark:text-gray-300" />
+                <span className="text-sm font-medium text-center text-gray-900 dark:text-white">
+                  {theme}
+                </span>
+              </label>
+            );
+          })}
         </div>
+
         {error && (
-          <div className="flex items-center gap-1.5 p-2 text-xs font-medium text-red-600 rounded-lg bg-red-50 dark:bg-red-900/30 dark:text-red-400">
+          <div className="flex items-center gap-1.5 p-2 text-xs font-medium text-red-600 rounded-3xl bg-red-50 dark:bg-red-900/30 dark:text-red-400">
             <svg
               className="w-4 h-4"
               fill="none"

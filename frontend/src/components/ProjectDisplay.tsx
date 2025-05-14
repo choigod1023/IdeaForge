@@ -174,7 +174,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
           <FaCode className="mr-1 text-indigo-600" />
           프로젝트 설명
         </h3>
-        <p className="px-2 py-1.5 text-xs text-gray-600 whitespace-pre-line bg-gray-50 rounded">
+        <p className="px-2 py-1.5 text-xs text-gray-600 whitespace-pre-wrap break-keep-all bg-gray-50 rounded [word-break:keep-all]">
           {project.description}
         </p>
       </div>
@@ -192,7 +192,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
               return (
                 <span
                   key={`${project.id}-${tech}`}
-                  className={`px-1.5 py-0.5 text-xs font-medium rounded-full ${bg} ${text}`}
+                  className={`px-1.5 py-0.5 text-xs font-medium rounded-full break-keep-all [word-break:keep-all] ${bg} ${text}`}
                 >
                   {tech}
                 </span>
@@ -209,9 +209,14 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
             <FaCode className="mr-1 text-indigo-600" />
             주요 기능
           </h3>
-          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc break-keep-all [word-break:keep-all]">
             {project.features.map((feature, index) => (
-              <li key={`${project.id}-feature-${index}`}>{feature}</li>
+              <li
+                key={`${project.id}-feature-${index}`}
+                className="break-keep-all [word-break:keep-all]"
+              >
+                {feature}
+              </li>
             ))}
           </ul>
         </div>
@@ -224,9 +229,12 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
             <FaBook className="mr-1 text-indigo-600" />
             사전 지식/요구사항
           </h3>
-          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc break-keep-all [word-break:keep-all]">
             {project.prerequisites.map((prerequisite, index) => (
-              <li key={`${project.id}-prerequisite-${index}`}>
+              <li
+                key={`${project.id}-prerequisite-${index}`}
+                className="break-keep-all [word-break:keep-all]"
+              >
                 {prerequisite}
               </li>
             ))}
@@ -241,9 +249,14 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
             <FaExclamationTriangle className="mr-1 text-indigo-600" />
             예상되는 도전 과제
           </h3>
-          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc break-keep-all [word-break:keep-all]">
             {project.challenges.map((challenge, index) => (
-              <li key={`${project.id}-challenge-${index}`}>{challenge}</li>
+              <li
+                key={`${project.id}-challenge-${index}`}
+                className="break-keep-all [word-break:keep-all]"
+              >
+                {challenge}
+              </li>
             ))}
           </ul>
         </div>
@@ -256,9 +269,14 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
             <FaLightbulb className="mr-1 text-indigo-600" />
             개발 팁
           </h3>
-          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc break-keep-all [word-break:keep-all]">
             {project.tips.map((tip, index) => (
-              <li key={`${project.id}-tip-${index}`}>{tip}</li>
+              <li
+                key={`${project.id}-tip-${index}`}
+                className="break-keep-all [word-break:keep-all]"
+              >
+                {tip}
+              </li>
             ))}
           </ul>
         </div>
@@ -271,14 +289,17 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
             <FaBook className="mr-1 text-indigo-600" />
             추천 학습 자료
           </h3>
-          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc">
+          <ul className="pl-3 space-y-0.5 text-xs text-gray-600 list-disc break-keep-all [word-break:keep-all]">
             {project.resources.map((resource, index) => {
               // URL 패턴 매칭
               const urlPattern = /(https?:\/\/[^\s]+)/g;
               const parts = resource.split(urlPattern);
 
               return (
-                <li key={`${project.id}-resource-${index}`}>
+                <li
+                  key={`${project.id}-resource-${index}`}
+                  className="break-keep-all [word-break:keep-all]"
+                >
                   {parts.map((part, i) => {
                     if (part.match(urlPattern)) {
                       // URL을 더 짧게 표시
@@ -306,7 +327,7 @@ ${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
                     return (
                       <span
                         key={`${project.id}-resource-${index}-text-${i}`}
-                        className="break-words"
+                        className="break-keep-all [word-break:keep-all]"
                       >
                         {part}
                       </span>

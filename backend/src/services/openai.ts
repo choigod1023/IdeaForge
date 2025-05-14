@@ -58,9 +58,9 @@ class OpenAIService {
    */
   private constructPrompt(request: PromptRequest): string {
     return `다음 요구사항에 맞는 프로그래밍 프로젝트를 추천해주세요.:
-     문장은 ~요 이런 식으로 작성해주세요. 사용자가 글에 거부감을 느끼지 않도록 해주세요.
 
       필수 요구사항:
+      - 문장은 ~요 이런 식으로 작성해주세요. 사용자가 글에 거부감을 느끼지 않도록 해주세요.
       - 난이도: ${request.difficulty}
       - 선호하는 기술: ${request.preferredTech.join(", ")}
       ${request.theme ? `- 프로젝트 테마: ${request.theme}` : ""}
@@ -78,13 +78,13 @@ class OpenAIService {
       다음 JSON 형식으로 정확히 응답해주세요 (모든 필드는 필수입니다):
       {
         "id": "프로젝트-고유-id",
-        "title": "프로젝트 제목 (한글로 작성)",
+        "title": "프로젝트 제목 (한글로 작성, 8자 이내)",
         "description": "상세한 프로젝트 설명 (한글로 작성, 200자 이내)",
         "techStack": ["사용할 기술 스택 (최소 3개)"],
         "difficulty": "${request.difficulty}",
         "features": ["주요 기능 5-8개 (한글로 작성)"],
         "learningOutcomes": ["학습할 수 있는 내용 5-8개 (한글로 작성)"],
-        "resources": ["참고할 수 있는 자료 5-8개 (한글로 작성, 해당 링크 포함)"],
+        "resources": ["참고할 수 있는 자료 5-8개 (한글로 작성, 해당 링크 포함. 한글로 된 영상 자료 2개 이상 포함.)"],
         "theme": "${request.theme || "생산성"}",
         "prerequisites": ${
           request.hasPrerequisites
