@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { ProjectForm } from "../components/ProjectForm";
+import { ProjectForm } from "../components/forms/ProjectForm";
 import type { ProjectRequest } from "../types";
 import { useProjectStore } from "../stores/projectStore";
 

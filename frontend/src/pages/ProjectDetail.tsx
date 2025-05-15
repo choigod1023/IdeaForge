@@ -26,7 +26,12 @@ export default function ProjectDetail() {
             <h1 className="mb-2 text-3xl font-bold text-gray-900">
               {project.title}
             </h1>
-            <p className="mb-4 text-gray-600">{project.description}</p>
+            <div className="mb-4 space-y-2">
+              <p className="text-lg font-medium text-gray-900">
+                {project.description.summary}
+              </p>
+              <p className="text-gray-600">{project.description.details}</p>
+            </div>
             <div className="flex flex-wrap gap-2">
               <span className="px-3 py-1 text-sm text-blue-800 bg-blue-100 rounded-full">
                 {project.difficulty}

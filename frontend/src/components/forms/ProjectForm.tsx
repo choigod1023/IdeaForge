@@ -3,16 +3,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import {
   projectFormSchema,
   type ProjectRequest,
-} from "../schemas/projectFormSchema";
+} from "../../schemas/projectFormSchema";
 import { useEffect, useState } from "react";
-import { TechStackStep } from "./forms/TechStackStep";
-import { ThemeStep } from "./forms/ThemeStep";
-import { DetailsStep } from "./forms/DetailsStep";
-import { type FormStep, type Difficulty } from "../constants/formSteps";
+import { TechStackStep } from "./TechStackStep";
+import { ThemeStep } from "./ThemeStep";
+import { DetailsStep } from "./DetailsStep";
+import { type FormStep, type Difficulty } from "../../constants/formSteps";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { DifficultyStep } from "./forms/DifficultyStep";
+import { DifficultyStep } from "./DifficultyStep";
 import { motion, AnimatePresence } from "framer-motion";
-import { ProgressBar } from "./forms/ProgressBar";
+import { ProgressBar } from "./ProgressBar";
 
 const STEPS: FormStep[] = ["difficulty", "techStack", "theme", "details"];
 
@@ -228,7 +228,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
         <ProgressBar currentStep={currentStep} steps={STEPS} />
 
         {/* 폼 컨텐츠 */}
-        <div className="bg-white shadow-lg rounded-xl dark:bg-gray-800 dark:shadow-gray-900/30 min-h-[400px] flex flex-col">
+        <div className="bg-white shadow-lg rounded-3xl dark:bg-gray-800 dark:shadow-gray-900/30 min-h-[400px] flex flex-col">
           {currentStep === "details" ? (
             <motion.form
               initial={{ opacity: 0 }}

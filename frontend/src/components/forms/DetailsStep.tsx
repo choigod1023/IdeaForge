@@ -91,7 +91,7 @@ export const DetailsStep = ({
             <button
               type="button"
               onClick={() => handleTopicClick("hasPrerequisites")}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium transition-all rounded-lg border-2 ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium transition-all rounded-full border-2 ${
                 hasPrerequisites
                   ? "border-green-500 bg-green-50 text-green-600 dark:border-green-400 dark:bg-green-900/20 dark:text-green-400"
                   : "border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50/50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-400 dark:hover:bg-blue-900/10"
@@ -108,7 +108,7 @@ export const DetailsStep = ({
             <button
               type="button"
               onClick={() => handleTopicClick("hasChallenges")}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium transition-all rounded-lg border-2 ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium transition-all rounded-full border-2 ${
                 hasChallenges
                   ? "border-green-500 bg-green-50 text-green-600 dark:border-green-400 dark:bg-green-900/20 dark:text-green-400"
                   : "border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50/50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-400 dark:hover:bg-blue-900/10"
@@ -125,7 +125,7 @@ export const DetailsStep = ({
             <button
               type="button"
               onClick={() => handleTopicClick("hasTips")}
-              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium transition-all rounded-lg border-2 ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 text-xs sm:text-sm font-medium transition-all rounded-full border-2 ${
                 hasTips
                   ? "border-green-500 bg-green-50 text-green-600 dark:border-green-400 dark:bg-green-900/20 dark:text-green-400"
                   : "border-gray-200 bg-white text-gray-700 hover:border-blue-300 hover:bg-blue-50/50 dark:border-gray-600 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-blue-400 dark:hover:bg-blue-900/10"

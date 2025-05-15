@@ -1,5 +1,6 @@
 import { FaSeedling, FaStar, FaFire } from "react-icons/fa";
 import { type Difficulty } from "../../constants/formSteps";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface DifficultyStepProps {
   selectedDifficulty: Difficulty | "";
@@ -22,21 +23,21 @@ const DIFFICULTY_COLORS = {
 export const DifficultyStep = ({
   selectedDifficulty,
   onDifficultySelect,
-  error,
 }: DifficultyStepProps) => {
   return (
     <div className="space-y-4">
       <div>
-        <h2 className="text-base font-semibold text-gray-900 sm:text-lg dark:text-white">
+        <h2 className="text-lg font-semibold text-gray-900 sm:text-xl dark:text-white">
           프로젝트 난이도
         </h2>
-        <p className="mt-1 text-xs text-gray-500 sm:text-sm dark:text-gray-400">
-          당신의 현재 실력에 맞는 난이도를 선택해주세요. 너무 어렵거나 쉬운
-          난이도는 학습 동기를 떨어뜨릴 수 있어요.
+        <p className="mt-1 text-xs text-gray-500 sm:text-sm break-keep-all [word-break:keep-all] dark:text-gray-400">
+          당신의 현재 실력에 맞는 난이도를 선택해주세요.
+          <br />
+          너무 어렵거나 쉬운 난이도는 학습 동기를 떨어뜨릴 수 있어요.
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-2 sm:gap-3">
+      <div className="grid grid-cols-3 gap-2 sm:gap-3 h-[100px] items-center my-2 sm:my-4">
         {(["초급", "중급", "고급"] as const).map((difficulty) => {
           const Icon = DIFFICULTY_ICONS[difficulty];
           const isSelected = selectedDifficulty === difficulty;
@@ -63,24 +64,36 @@ export const DifficultyStep = ({
         })}
       </div>
 
-      {selectedDifficulty && (
-        <div className="p-3 mt-4 rounded-3xl bg-gray-50 dark:bg-gray-800/50">
-          <p className="text-sm text-gray-600 dark:text-gray-300">
-            {selectedDifficulty === "초급" &&
-              "처음 시작하는 분들도 쉽게 따라할 수 있어요."}
-            {selectedDifficulty === "중급" &&
-              "기본기를 바탕으로 실전적인 개발을 경험해요."}
-            {selectedDifficulty === "고급" &&
-              "전문적인 개발 역량을 키울 수 있어요."}
-          </p>
-        </div>
-      )}
-
-      {error && (
-        <p className="mt-2 text-xs text-red-600 sm:text-sm dark:text-red-400">
-          {error}
-        </p>
-      )}
+      <div className="h-[60px] mt-4">
+        <AnimatePresence mode="wait">
+          {selectedDifficulty && (
+            <motion.div
+              key={selectedDifficulty}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="p-3 rounded-3xl bg-gray-50 dark:bg-gray-800/50"
+            >
+              <motion.p
+                key={`${selectedDifficulty}-text`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2 }}
+                className="text-base text-gray-600 sm:text-lg dark:text-gray-300 break-keep-all [word-break:keep-all] whitespace-pre-line"
+              >
+                {selectedDifficulty === "초급" &&
+                  "처음 시작하는 분들도 쉽게 따라할 수 있어요."}
+                {selectedDifficulty === "중급" &&
+                  "기본기를 바탕으로 실전적인 역량을 키워요."}
+                {selectedDifficulty === "고급" &&
+                  "전문적인 개발 역량을 키울 수 있어요."}
+              </motion.p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </div>
   );
 };

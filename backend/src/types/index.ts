@@ -1,10 +1,16 @@
 import { z } from "zod";
 
+const ProjectDescriptionSchema = z.object({
+  summary: z.string(),
+  keyPoints: z.array(z.string()),
+  details: z.string(),
+});
+
 // Project type validation schema
 export const ProjectSchema = z.object({
   id: z.string(),
   title: z.string(),
-  description: z.string(),
+  description: ProjectDescriptionSchema,
   techStack: z.array(z.string()),
   difficulty: z.enum(["초급", "중급", "고급"]),
   estimatedTime: z.string(),

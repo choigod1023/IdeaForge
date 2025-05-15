@@ -22,10 +22,16 @@ export type ProjectTheme =
   | "건강"
   | "기타";
 
+interface ProjectDescription {
+  summary: string;
+  keyPoints: string[];
+  details: string;
+}
+
 export interface Project {
   id: string;
   title: string;
-  description: string;
+  description: ProjectDescription;
   techStack: string[];
   features: string[];
   difficulty: Difficulty;

@@ -39,7 +39,7 @@ export const ProjectLoading = () => {
       role="status"
       aria-label="프로젝트 생성 중"
     >
-      <div className="w-full max-w-2xl p-6 text-center">
+      <div className="w-full max-w-4xl text-center">
         <AnimatePresence mode="wait">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -177,7 +177,7 @@ export const ProjectLoading = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="p-6 rounded-3xl bg-indigo-50 dark:bg-indigo-900/30"
+            className="p-6 rounded-3xl"
             role="complementary"
             aria-label="개발 팁"
           >
@@ -185,13 +185,20 @@ export const ProjectLoading = () => {
               <FaLightbulb className="w-5 h-5 sm:w-6 sm:h-6" />
               <span className="font-medium">개발 팁</span>
             </div>
-            <p className="text-base text-gray-700 break-keep-all whitespace-pre-wrap sm:text-lg dark:text-gray-300 [word-break:keep-all]">
-              {currentTip.split(/(\s+)/).map((word, index) => (
-                <span key={index} className="inline-block">
-                  {word}
-                </span>
-              ))}
-            </p>
+            <div className="h-[120px] overflow-y-auto px-4">
+              <p className="text-base text-gray-700 break-keep-all whitespace-pre-wrap sm:text-lg dark:text-gray-300 [word-break:keep-all]">
+                {currentTip.split(/[.!?]+\s+/).map((sentence, index, array) => (
+                  <span key={index} className="block mb-2 last:mb-0">
+                    {sentence.split(/(\s+)/).map((word, wordIndex) => (
+                      <span key={wordIndex} className="inline-block">
+                        {word}
+                      </span>
+                    ))}
+                    {index < array.length - 1 ? "." : ""}
+                  </span>
+                ))}
+              </p>
+            </div>
           </motion.div>
         </AnimatePresence>
       </div>

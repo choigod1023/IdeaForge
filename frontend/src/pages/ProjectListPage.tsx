@@ -109,7 +109,7 @@ export default function ProjectListPage() {
                 </div>
 
                 <p className="mb-3 text-sm text-gray-600 transition-colors group-hover:text-gray-700 dark:text-gray-400 dark:group-hover:text-gray-300 line-clamp-2 sm:text-base">
-                  {project.description}
+                  {project.description.summary}
                 </p>
 
                 <div className="flex flex-wrap gap-1.5 mb-3">

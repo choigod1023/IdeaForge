@@ -95,20 +95,20 @@ export default function ProjectPage() {
   if (storeError && !savedProject) {
     return (
       <div
-        className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 p-4"
+        className="flex flex-col items-center justify-center min-h-[60vh] space-y-6 p-4 bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100"
         role="alert"
         aria-live="assertive"
       >
-        <div className="w-full max-w-md p-6 text-center bg-white shadow-lg rounded-xl dark:bg-gray-800">
+        <div className="w-full max-w-md p-6 text-center bg-white shadow-lg rounded-xl dark:bg-gray-800 border border-gray-100 dark:border-gray-700">
           <h2 className="mb-4 text-xl font-bold text-red-600 sm:text-2xl dark:text-red-400">
             프로젝트 생성에 실패했습니다
           </h2>
-          <p className="mb-6 text-base text-gray-600 sm:text-lg dark:text-gray-300">
+          <p className="mb-6 text-base text-gray-700 sm:text-lg dark:text-gray-200">
             잠시 후 다시 시도해주세요.
           </p>
           <button
             onClick={() => navigate("/create")}
-            className="inline-flex items-center px-5 py-2.5 text-base sm:text-lg font-medium text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800"
+            className="inline-flex items-center px-5 py-2.5 text-base sm:text-lg font-medium text-white transition-colors bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 dark:shadow-indigo-500/20 dark:text-gray-100"
           >
             <FaHome className="w-5 h-5 mr-2 sm:w-6 sm:h-6" />
             프로젝트 생성 페이지로 이동
@@ -127,7 +127,7 @@ export default function ProjectPage() {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className="max-w-3xl p-4 mx-auto"
+      className="max-w-3xl p-4 mx-auto bg-gray-50 dark:bg-gray-900 min-h-screen text-gray-900 dark:text-gray-100"
     >
       <ProjectDisplay
         project={project}
