@@ -67,7 +67,7 @@ const GuidePage = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="relative px-4 py-16 mx-auto text-center max-w-7xl sm:px-6 lg:px-8">
+        <div className="relative px-4 py-16 pb-32 mx-auto text-center max-w-7xl sm:px-6 lg:px-8 sm:pb-16">
           <div className="absolute inset-0 bg-gradient-to-b from-transparent to-gray-50/30 dark:to-gray-900/30" />
           <motion.div
             initial={{ opacity: 0, y: 20 }}

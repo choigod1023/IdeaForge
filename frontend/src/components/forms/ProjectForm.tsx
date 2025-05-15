@@ -222,7 +222,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
   };
 
   return (
-    <div className="flex flex-col items-center py-4 sm:py-6">
+    <div className="flex flex-col items-center py-4 pb-32 sm:py-6 sm:pb-6">
       <div className="w-full max-w-3xl px-4 text-xs sm:px-6 sm:text-sm">
         {/* 진행 상태 표시 */}
         <ProgressBar currentStep={currentStep} steps={STEPS} />
