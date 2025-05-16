@@ -34,7 +34,7 @@ export function ProjectDescription({ description }: ProjectDescriptionProps) {
                 <span className="flex items-center justify-center w-5 h-5 mt-0.5 mr-2 text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 rounded-full shrink-0">
                   {index + 1}
                 </span>
-                <span className="break-all [word-break:break-all] [overflow-wrap:break-word]">
+                <span className="break-all  [overflow-wrap:break-word]">
                   {point}
                 </span>
               </li>
@@ -52,7 +52,7 @@ export function ProjectDescription({ description }: ProjectDescriptionProps) {
               .map((sentence, index) => (
                 <p
                   key={index}
-                  className="mb-3 leading-7 text-gray-700 dark:text-gray-200 last:mb-0 break-all [word-break:break-all] [overflow-wrap:break-word]"
+                  className="mb-3 leading-7 text-gray-700 dark:text-gray-200 last:mb-0 [word-break:break-all] [overflow-wrap:break-word]"
                 >
                   {sentence.trim()}
                 </p>

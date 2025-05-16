@@ -9,7 +9,7 @@ export function ProjectNavigation({ source = "list" }: ProjectNavigationProps) {
   const navigate = useNavigate();
 
   return (
-    <div className="flex justify-center pt-6 mt-8 border-t border-gray-100">
+    <div className="flex justify-center pt-6 pb-32 mt-8 border-t border-gray-100 sm:pb-6">
       <button
         onClick={() => navigate(source === "create" ? "/create" : "/projects")}
         className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors bg-indigo-600 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800"
