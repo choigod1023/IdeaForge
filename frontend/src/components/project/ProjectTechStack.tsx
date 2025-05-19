@@ -194,18 +194,18 @@ interface ProjectTechStackProps {
 export function ProjectTechStack({ techStack }: ProjectTechStackProps) {
   return (
     <div>
-      <h3 className="flex items-center mb-4 text-lg font-semibold text-gray-900 dark:text-gray-100">
-        <FaTools className="mr-2.5 text-indigo-500 dark:text-indigo-400" />
+      <h3 className="flex items-center mb-4 text-base font-semibold text-gray-900 sm:text-lg md:text-xl dark:text-gray-100">
+        <FaTools className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-2.5 text-indigo-500 dark:text-indigo-400" />
         기술 스택
       </h3>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5 sm:gap-2">
         {techStack.map((tech, index) => {
           const { bg, text, darkBg, darkText, border, darkBorder } =
             TECH_COLORS[tech] || TECH_COLORS.default;
           return (
             <span
               key={index}
-              className={`px-3 py-1.5 text-sm font-medium ${bg} ${text} ${darkBg} ${darkText} border ${border} ${darkBorder} rounded-xl`}
+              className={`px-2 sm:px-3 py-1 sm:py-1.5 text-xs sm:text-sm font-medium ${bg} ${text} ${darkBg} ${darkText} border ${border} ${darkBorder} rounded-xl`}
             >
               {tech}
             </span>

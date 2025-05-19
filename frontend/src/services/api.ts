@@ -33,4 +33,30 @@ export const api = {
 
     return data;
   },
+
+  /**
+   * Creates a new project
+   * @param request Project creation request
+   * @returns Created project
+   */
+  async createProject(request: ProjectRequest): Promise<Project> {
+    const response = await fetch(`${API_URL}/api/projects`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "include",
+      body: JSON.stringify(request),
+    });
+
+    if (!response.ok) {
+      const errorData = await response
+        .json()
+        .catch(() => ({ message: "프로젝트 생성에 실패했습니다" }));
+      throw new Error(errorData.message || "프로젝트 생성에 실패했습니다");
+    }
+
+    return response.json();
+  },
 };

@@ -16,11 +16,12 @@ import { ProgressBar } from "./ProgressBar";
 
 const STEPS: FormStep[] = ["difficulty", "techStack", "theme", "details"];
 
-interface ProjectFormProps {
-  onSubmit: (data: ProjectRequest) => void;
+export interface ProjectFormProps {
+  onSubmit: (data: ProjectRequest) => Promise<void>;
+  isLoading?: boolean;
 }
 
-export function ProjectForm({ onSubmit }: ProjectFormProps) {
+export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
   const [currentStep, setCurrentStep] = useState<FormStep>("difficulty");
   const [selectedDifficulty, setSelectedDifficulty] =
     useState<Difficulty | null>(null);
@@ -256,10 +257,10 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
                 <div className="flex-1" />
                 <button
                   type="submit"
+                  disabled={isLoading}
                   className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-3xl bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 min-w-[140px]"
                 >
-                  <span>프로젝트 생성하기</span>
-                  <FaArrowRight className="w-4 h-4" />
+                  {isLoading ? "생성 중..." : "프로젝트 생성하기"}
                 </button>
               </motion.div>
             </motion.form>

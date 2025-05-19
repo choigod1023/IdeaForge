@@ -68,7 +68,9 @@ interface ProjectState {
   isLoading: boolean;
   error: string | null;
   preferredTech: string[];
+  setProject: (project: Project) => void;
   clearProject: () => void;
+  getProject: (id: string) => Project | undefined;
   generateProject: (
     request: ProjectRequest
   ) => Promise<{ success: boolean; isDuplicate?: boolean }>;
@@ -101,6 +103,7 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   isLoading: false,
   error: null,
   preferredTech: [],
+  setProject: (project) => set({ project }),
   clearProject: () =>
     set({
       project: null,
@@ -108,6 +111,10 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       isLoading: false,
       preferredTech: [],
     }),
+  getProject: (id: string) => {
+    const { projectList } = get();
+    return projectList.find((p) => p.id === id);
+  },
   generateProject: async (request: ProjectRequest) => {
     set({ isLoading: true, error: null });
     try {

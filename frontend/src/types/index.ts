@@ -21,32 +21,30 @@ export type ProjectTheme =
   | "금융"
   | "건강"
   | "기타";
-
-interface ProjectDescription {
-  summary: string;
-  keyPoints: string[];
-  details: string;
-}
-
 export interface Project {
   id: string;
   title: string;
-  description: ProjectDescription;
-  techStack: string[];
-  features: string[];
+  description: {
+    summary: string;
+    keyPoints: string[];
+  };
   difficulty: Difficulty;
-  category?: string;
-  theme?: string;
-  learningPoints: string[];
-  recommendationReason: string;
-  gettingStarted: string;
-  references: string[];
+  category?: ProjectCategory;
+  theme?: ProjectTheme;
+  projectType: string[];
+  features: string[];
+  learningOutcomes: string[];
+  resources: string[];
+  prerequisites: string[];
+  challenges: string[];
+  tips: string[];
+  techStack: string[];
   createdAt: string;
-  prerequisites?: string[];
-  challenges?: string[];
-  tips?: string[];
-  resources?: string[];
-  estimatedTime?: string;
+  updatedAt: string;
+  learningPoints?: string[];
+  recommendationReason?: string;
+  gettingStarted?: string;
+  references?: string[];
 }
 
 export interface ProjectRequest {

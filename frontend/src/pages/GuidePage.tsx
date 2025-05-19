@@ -29,7 +29,7 @@ const GuidePage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="relative px-4 py-24 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-32"
+            className="relative px-4 py-2 mx-auto max-w-7xl sm:px-6 lg:px-8 lg:py-32"
           >
             <div className="text-center">
               <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl">

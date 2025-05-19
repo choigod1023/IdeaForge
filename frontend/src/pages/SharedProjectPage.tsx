@@ -1,5 +1,5 @@
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { ProjectDisplay } from "../components/ProjectDisplay";
+import { ProjectDisplay } from "../components/project/ProjectDisplay";
 import type { Project } from "../types";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";

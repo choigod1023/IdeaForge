@@ -31,6 +31,17 @@ export const ProjectSchema = z.object({
   prerequisites: z.array(z.string()),
   challenges: z.array(z.string()),
   tips: z.array(z.string()),
+  category: z.enum([
+    "웹 개발",
+    "모바일 앱",
+    "데스크톱 앱",
+    "게임",
+    "AI/ML",
+    "데이터 분석",
+    "보안",
+    "임베디드",
+    "기타",
+  ]),
 });
 
 // GPT prompt request validation schema
@@ -63,3 +74,17 @@ export type PromptRequest = z.infer<typeof PromptRequestSchema>;
 // Enum types for use in other parts of the application
 export type Difficulty = z.infer<typeof ProjectSchema>["difficulty"];
 export type ProjectTheme = z.infer<typeof ProjectSchema>["theme"];
+export type ProjectCategory = z.infer<typeof ProjectSchema>["category"];
+
+export interface ProjectRequest {
+  difficulty: Difficulty;
+  preferredTech: string[];
+  interests: string[];
+  category?: ProjectCategory;
+  theme?: ProjectTheme;
+  description?: string;
+  hasPrerequisites: boolean;
+  hasChallenges: boolean;
+  hasTips: boolean;
+  additionalInfo?: string;
+}
