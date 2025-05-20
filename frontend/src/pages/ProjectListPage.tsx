@@ -7,8 +7,13 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function ProjectListPage() {
   const navigate = useNavigate();
-  const { projectList, removeFromProjectList, exportToMarkdown, clearProject } =
-    useProjectStore();
+  const {
+    projectList,
+    removeFromProjectList,
+    exportToMarkdown,
+    clearProject,
+    loadFromLocalStorage,
+  } = useProjectStore();
 
   const handleViewProject = (projectId: string) => {
     navigate(`/project/${projectId}`);
@@ -22,6 +27,7 @@ export default function ProjectListPage() {
   const handleRemoveProject = (projectId: string) => {
     if (window.confirm("정말로 이 프로젝트를 삭제하시겠습니까?")) {
       removeFromProjectList(projectId);
+      loadFromLocalStorage();
       toast.success("프로젝트가 삭제되었습니다.");
     }
   };

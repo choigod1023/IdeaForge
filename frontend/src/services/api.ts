@@ -1,4 +1,5 @@
 import type { Project, ProjectRequest } from "../types";
+import { useProjectStore } from "../stores/projectStore";
 
 const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, ""); // Remove trailing slash if exists
 
@@ -9,6 +10,8 @@ export const api = {
    * @returns Generated project recommendation
    */
   async generateRecommendation(request: ProjectRequest): Promise<Project> {
+    const projectList = useProjectStore.getState().projectList;
+
     const response = await fetch(`${API_URL}/api/projects/recommend`, {
       method: "POST",
       headers: {
@@ -16,7 +19,10 @@ export const api = {
         Accept: "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(request),
+      body: JSON.stringify({
+        ...request,
+        existingProjects: projectList,
+      }),
     });
 
     if (!response.ok) {
@@ -40,6 +46,8 @@ export const api = {
    * @returns Created project
    */
   async createProject(request: ProjectRequest): Promise<Project> {
+    const projectList = useProjectStore.getState().projectList;
+
     const response = await fetch(`${API_URL}/api/projects`, {
       method: "POST",
       headers: {
@@ -47,7 +55,10 @@ export const api = {
         Accept: "application/json",
       },
       credentials: "include",
-      body: JSON.stringify(request),
+      body: JSON.stringify({
+        ...request,
+        existingProjects: projectList,
+      }),
     });
 
     if (!response.ok) {

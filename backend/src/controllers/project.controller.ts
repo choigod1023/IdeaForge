@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { openAIService } from "../services/openai";
-import type { ProjectRequest } from "../types";
+import type { ProjectRequest, Project } from "../types";
 
 class ProjectController {
   /**
@@ -10,8 +10,10 @@ class ProjectController {
    */
   async generateRecommendation(req: Request, res: Response) {
     try {
+      const { existingProjects, ...requestData } = req.body;
       const project = await openAIService.generateProjectRecommendation(
-        req.body
+        requestData as ProjectRequest,
+        existingProjects as Project[]
       );
       res.json(project);
     } catch (error) {
@@ -27,14 +29,11 @@ class ProjectController {
 
   async createProject(req: Request, res: Response) {
     try {
-      const projectData: ProjectRequest = req.body;
-
-      // OpenAI 서비스를 통해 프로젝트 생성
+      const { existingProjects, ...projectData } = req.body;
       const project = await openAIService.generateProjectRecommendation(
-        projectData
+        projectData as ProjectRequest,
+        existingProjects as Project[]
       );
-
-      // 생성된 프로젝트 반환
       res.status(201).json(project);
     } catch (error) {
       console.error("Error creating project:", error);
