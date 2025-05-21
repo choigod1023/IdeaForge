@@ -30,7 +30,7 @@ class OpenAIService {
     const prompt = this.constructPrompt(request, existingProjects);
 
     const completion = await this.openai.chat.completions.create({
-      model: "gpt-4.1-mini",
+      model: "gpt-4o-mini",
       messages: [
         {
           role: "system",
@@ -42,6 +42,7 @@ class OpenAIService {
           content: prompt,
         },
       ],
+      response_format: { type: "json_object" },
     });
 
     const response = completion.choices[0].message.content;
@@ -147,33 +148,33 @@ class OpenAIService {
       다음 JSON 형식으로 정확히 응답해주세요 (모든 필드는 필수입니다):
       {
         "id": "프로젝트-고유-id",
-        "title": "프로젝트 제목 (한글로 작성, 8자 이내)",
+        "title": "프로젝트 제목 (한글로 작성, 10자 이내)",
         "description": {
-          "summary": "프로젝트 한 줄 요약 (한글로 작성, 15자 이내)",
+          "summary": "프로젝트 한 줄 요약 (한글로 작성, 18자 이내)",
           "keyPoints": [
-            "핵심 포인트 1 (한글로 작성, 10자 이내)",
-            "핵심 포인트 2 (한글로 작성, 10자 이내)",
-            "핵심 포인트 3 (한글로 작성, 10자 이내)"
+            "핵심 포인트 1 (한글로 작성, 15자 이내)",
+            "핵심 포인트 2 (한글로 작성, 15자 이내)",
+            "핵심 포인트 3 (한글로 작성, 15자 이내)"
           ]
         },
         "techStack": [
           "사용할 기술 스택 (난이도별 필수 기술을 우선 포함하고, 선택 기술을 추가)",
           "초급: 필수 기술 2-3개 + 선택 기술 0-1개 (총 2-4개)",
-          "중급: 필수 기술 3-4개 + 선택 기술 1-2개 (총 4-6개)",
-          "고급: 필수 기술 3-4개 + 선택 기술 1-2개 (총 4-6개)",
+          "중급: 필수 기술 3-4개 + 선택 기술 1-2개 (총 4-5개)",
+          "고급: 필수 기술 3-4개 + 선택 기술 1-2개 (총 4-5개)",
           "기술 스택은 반드시 배열 형태로 제공하며, 각 기술은 개별 문자열로 작성",
           "예시: ['React', 'Node.js', 'Express', 'MongoDB']"
         ],
         "difficulty": "${request.difficulty}",
         "projectType": ["프로젝트 유형 (토이/포트폴리오/오픈소스/실용 중 1-2개)"],
         "features": [
-          "주요 기능 3-4개 (난이도별 구현 수준에 맞게 작성. 15자 이내)",
+          "주요 기능 3-4개 (난이도별 구현 수준에 맞게 작성. 20자 이내)",
           "초급: 단일 페이지에서 구현 가능한 기능",
           "중급: 서버-클라이언트 구조의 기능",
           "고급: 분산 시스템이나 마이크로서비스 구조의 기능"
         ],
         "learningOutcomes": [
-          "학습할 수 있는 내용 3-4개 (난이도별 학습 포인트 포함. 15자 이내)",
+          "학습할 수 있는 내용 3-4개 (난이도별 학습 포인트 포함. 20자 이내)",
           "초급: 기본적인 프론트엔드/백엔드 개발 개념",
           "중급: 풀스택 개발, 데이터베이스, 보안 개념",
           "고급: 시스템 설계, 성능 최적화, DevOps 개념"
