@@ -20,8 +20,8 @@ export function ProjectDisplay({ project }: ProjectDisplayProps) {
   console.log("Tech stack:", project.techStack);
 
   return (
-    <div className="p-4 bg-white shadow-sm rounded-3xl md:rounded-[2rem] md:p-6 dark:bg-gray-800">
-      <div className="mt-8 space-y-8">
+    <div className="overflow-hidden p-4 bg-white shadow-sm rounded-3xl md:rounded-[2rem] md:p-6 dark:bg-gray-800">
+      <div className="relative space-y-8">
         <ProjectHeader project={project} />
         <ProjectDescription description={project.description} />
         <ProjectType types={project.projectType} />
@@ -30,7 +30,9 @@ export function ProjectDisplay({ project }: ProjectDisplayProps) {
         )}
         <ProjectFeatures features={project.features} />
         <ProjectLearningOutcomes learningOutcomes={project.learningOutcomes} />
-        <ProjectResources resources={project.resources} />
+        <div className="relative">
+          <ProjectResources resources={project.resources} />
+        </div>
         {project.prerequisites?.length > 0 && (
           <ProjectPrerequisites prerequisites={project.prerequisites} />
         )}

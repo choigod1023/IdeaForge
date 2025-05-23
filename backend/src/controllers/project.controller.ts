@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { openAIService } from "../services/openai";
-import type { ProjectRequest, Project } from "../types";
+import type { PromptRequest, Project } from "../types";
 
 class ProjectController {
   /**
@@ -12,7 +12,7 @@ class ProjectController {
     try {
       const { existingProjects, ...requestData } = req.body;
       const project = await openAIService.generateProjectRecommendation(
-        requestData as ProjectRequest,
+        requestData as PromptRequest,
         existingProjects as Project[]
       );
       res.json(project);
@@ -31,7 +31,7 @@ class ProjectController {
     try {
       const { existingProjects, ...projectData } = req.body;
       const project = await openAIService.generateProjectRecommendation(
-        projectData as ProjectRequest,
+        projectData as PromptRequest,
         existingProjects as Project[]
       );
       res.status(201).json(project);

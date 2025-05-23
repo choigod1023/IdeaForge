@@ -21,6 +21,36 @@ export type ProjectTheme =
   | "금융"
   | "건강"
   | "기타";
+
+export interface Resource {
+  category: string;
+  title: string;
+  url: string;
+  description: string;
+  relevance: {
+    score: number;
+    reason: string;
+    keyPoints: string[];
+  };
+  learningOutcomes: string[];
+  implementationTips: string[];
+}
+
+export interface ProjectResource {
+  category: "tech" | "feature";
+  title: string;
+  url: string;
+  description: string;
+  learningPoints: string[];
+  codeExamples: string[];
+  practicalExamples: string[];
+  relevance: {
+    score: number;
+    reason: string;
+    keyPoints: string[];
+  };
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -34,7 +64,7 @@ export interface Project {
   projectType: string[];
   features: string[];
   learningOutcomes: string[];
-  resources: string[];
+  resources: ProjectResource[];
   prerequisites: string[];
   challenges: string[];
   tips: string[];
