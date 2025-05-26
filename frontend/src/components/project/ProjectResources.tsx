@@ -7,11 +7,20 @@ interface ProjectResourcesProps {
 }
 
 export function ProjectResources({ resources }: ProjectResourcesProps) {
-  const techResources = resources.filter((r) => r.category === "tech");
-  const featureResources = resources.filter((r) => r.category === "feature");
+  console.log("Project Resources:", resources);
+
+  // 적절성 점수에 따라 정렬
+  const sortedResources = [...resources].sort(
+    (a, b) => b.relevance.score - a.relevance.score
+  );
+  const techResources = sortedResources.filter((r) => r.category === "tech");
+  const featureResources = sortedResources.filter(
+    (r) => r.category === "feature"
+  );
 
   const ResourceCard = ({ resource }: { resource: ProjectResource }) => {
     const [isExpanded, setIsExpanded] = useState(false);
+    console.log("Resource URL:", resource.url); // URL 로깅
 
     return (
       <div className="overflow-hidden bg-white border border-gray-200 rounded-3xl dark:border-gray-700 dark:bg-gray-800">
@@ -189,24 +198,26 @@ export function ProjectResources({ resources }: ProjectResourcesProps) {
               </div>
 
               {/* 외부 링크 */}
-              <div className="flex items-center justify-between pt-2">
-                <a
-                  href={resource.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline dark:text-blue-400"
-                >
-                  <FaBook className="w-4 h-4" />
-                  자세히 보기
-                </a>
-                <button
-                  onClick={() => setIsExpanded(false)}
-                  className="inline-flex items-center gap-1 px-3 py-1 text-sm text-gray-600 transition-colors rounded-md hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
-                >
-                  <FaChevronUp className="w-4 h-4" />
-                  접기
-                </button>
-              </div>
+              {resource.url && resource.url.startsWith("http") && (
+                <div className="flex items-center justify-between pt-2">
+                  <a
+                    href={resource.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline dark:text-blue-400"
+                  >
+                    <FaBook className="w-4 h-4" />
+                    자세히 보기
+                  </a>
+                  <button
+                    onClick={() => setIsExpanded(false)}
+                    className="inline-flex items-center gap-1 px-3 py-1 text-sm text-gray-600 transition-colors rounded-md hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700"
+                  >
+                    <FaChevronUp className="w-4 h-4" />
+                    접기
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -222,27 +233,17 @@ export function ProjectResources({ resources }: ProjectResourcesProps) {
       </h2>
 
       {/* 기술 리소스 */}
-      <div>
-        <h3 className="mb-3 text-sm font-medium sm:text-base md:text-lg">
-          기술 리소스
-        </h3>
-        <div className="grid gap-4 lg:grid-cols-2">
-          {techResources.map((resource, index) => (
-            <ResourceCard key={index} resource={resource} />
-          ))}
-        </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {techResources.map((resource, index) => (
+          <ResourceCard key={index} resource={resource} />
+        ))}
       </div>
 
       {/* 기능 리소스 */}
-      <div>
-        <h3 className="mb-3 text-sm font-medium sm:text-base md:text-lg">
-          기능 리소스
-        </h3>
-        <div className="grid gap-4 lg:grid-cols-2">
-          {featureResources.map((resource, index) => (
-            <ResourceCard key={index} resource={resource} />
-          ))}
-        </div>
+      <div className="grid gap-4 lg:grid-cols-2">
+        {featureResources.map((resource, index) => (
+          <ResourceCard key={index} resource={resource} />
+        ))}
       </div>
     </div>
   );

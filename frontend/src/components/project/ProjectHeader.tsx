@@ -1,7 +1,7 @@
 import { FaDownload, FaCopy } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { type Project } from "../../types";
-import { useProjectStore } from "../../stores/projectStore";
+import { useProjectStore, generateMarkdown } from "../../stores/projectStore";
 
 interface ProjectHeaderProps {
   project: Project;
@@ -12,53 +12,7 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
 
   const handleCopy = async () => {
     try {
-      const markdown = `# ${project.title}
-
-## 프로젝트 정보
-- **난이도**: ${project.difficulty}
-${project.category ? `- **카테고리**: ${project.category}\n` : ""}${
-        project.theme ? `- **테마**: ${project.theme}\n` : ""
-      }
-
-## 프로젝트 설명
-${project.description}
-
-## 기술 스택
-${project.techStack.map((tech) => `- ${tech}`).join("\n")}
-
-## 주요 기능
-${project.features.map((feature) => `- ${feature}`).join("\n")}
-
-${
-  project.prerequisites && project.prerequisites.length > 0
-    ? `## 사전 지식/요구사항
-${project.prerequisites
-  .map((prerequisite) => `- ${prerequisite}`)
-  .join("\n")}\n`
-    : ""
-}
-
-${
-  project.challenges && project.challenges.length > 0
-    ? `## 예상되는 도전 과제
-${project.challenges.map((challenge) => `- ${challenge}`).join("\n")}\n`
-    : ""
-}
-
-${
-  project.tips && project.tips.length > 0
-    ? `## 개발 팁
-${project.tips.map((tip) => `- ${tip}`).join("\n")}\n`
-    : ""
-}
-
-${
-  project.resources && project.resources.length > 0
-    ? `## 추천 학습 자료
-${project.resources.map((resource) => `- ${resource}`).join("\n")}\n`
-    : ""
-}`;
-
+      const markdown = generateMarkdown(project);
       await navigator.clipboard.writeText(markdown);
       toast.success("프로젝트가 마크다운 형식으로 복사되었습니다!");
     } catch (error) {

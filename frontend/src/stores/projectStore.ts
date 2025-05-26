@@ -5,57 +5,135 @@ import { api } from "../services/api";
 // 로컬 스토리지 키
 const STORAGE_KEY = "ideaforge_projects";
 
+interface FeatureItem {
+  title: string;
+  description: string;
+  keyPoints: string[];
+}
+
+interface FeatureSection {
+  mainTitle: string;
+  description: string;
+  items: FeatureItem[];
+}
+
 // 마크다운 템플릿 생성 함수
-const generateMarkdown = (project: Project): string => {
+export const generateMarkdown = (project: Project): string => {
   try {
     return `# ${project.title}
 
+## 프로젝트 정보
+- **난이도**: ${project.difficulty}
+${project.category ? `- **카테고리**: ${project.category}\n` : ""}${
+      project.theme ? `- **테마**: ${project.theme}\n` : ""
+    }
+
 ## 프로젝트 설명
-${project.description}
+${project.description.summary}
+
+## 핵심 포인트
+${project.description.keyPoints.map((point) => `- ${point}`).join("\n")}
 
 ## 기술 스택
-${project.techStack.map((tech) => `- ${tech}`).join("\n")}
+${project.techStack
+  .map((tech) => `- ${tech.name}\n  ${tech.descriptions.join("\n  ")}`)
+  .join("\n")}
 
 ## 주요 기능
-${project.features.map((feature) => `- ${feature}`).join("\n")}
+${project.features
+  .map((feature: string | FeatureSection) => {
+    if (typeof feature === "string") {
+      return `- ${feature}`;
+    }
+    return `### ${feature.mainTitle}
+${feature.description}
 
-## 난이도
-${project.difficulty}
+${feature.items
+  .map(
+    (item: FeatureItem) =>
+      `#### ${item.title}
+${item.description}
 
-${project.category ? `## 카테고리\n${project.category}\n` : ""}
-${project.theme ? `## 테마\n${project.theme}\n` : ""}
+${item.keyPoints.map((point: string) => `- ${point}`).join("\n")}`
+  )
+  .join("\n\n")}`;
+  })
+  .join("\n\n")}
 
 ${
-  project.learningPoints && project.learningPoints.length > 0
-    ? `## 학습 포인트
-${project.learningPoints.map((point) => `- ${point}`).join("\n")}\n`
+  project.prerequisites && project.prerequisites.length > 0
+    ? `## 사전 지식
+${project.prerequisites
+  .map(
+    (category) =>
+      `### ${category.category}\n${category.items
+        .map((item) => `- **${item.name}**: ${item.description}`)
+        .join("\n")}`
+  )
+  .join("\n\n")}\n`
     : ""
 }
 
 ${
-  project.recommendationReason
-    ? `## 추천 이유
-${project.recommendationReason}\n`
+  project.challenges && project.challenges.length > 0
+    ? `## 도전 과제
+${project.challenges
+  .map(
+    (category) =>
+      `### ${category.category}\n${category.items
+        .map((item) => `- **${item.name}**: ${item.description}`)
+        .join("\n")}`
+  )
+  .join("\n\n")}\n`
     : ""
 }
 
 ${
-  project.gettingStarted
-    ? `## 시작하기
-${project.gettingStarted}\n`
+  project.tips && project.tips.length > 0
+    ? `## 개발 팁
+${project.tips
+  .map(
+    (category) =>
+      `### ${category.category}\n${category.items
+        .map((item) => `- **${item.name}**: ${item.description}`)
+        .join("\n")}`
+  )
+  .join("\n\n")}\n`
     : ""
 }
 
 ${
-  project.references && project.references.length > 0
+  project.resources && project.resources.length > 0
     ? `## 참고 자료
-${project.references.map((ref) => `- ${ref}`).join("\n")}\n`
+${project.resources
+  .map(
+    (resource) =>
+      `### ${resource.title}
+- **설명**: ${resource.description}
+- **URL**: ${resource.url}
+- **학습 포인트**:
+${resource.learningPoints.map((point) => `  - ${point}`).join("\n")}
+${
+  resource.codeExamples.length > 0
+    ? `- **코드 예시**:\n${resource.codeExamples
+        .map((example) => `  - ${example}`)
+        .join("\n")}`
+    : ""
+}
+${
+  resource.practicalExamples.length > 0
+    ? `- **실전 예시**:\n${resource.practicalExamples
+        .map((example) => `  - ${example}`)
+        .join("\n")}`
+    : ""
+}`
+  )
+  .join("\n\n")}\n`
     : ""
 }
 
 ---
-생성일: ${project.createdAt || new Date().toLocaleDateString()}
-`;
+생성일: ${project.createdAt || new Date().toLocaleDateString()}`;
   } catch (error) {
     console.error("마크다운 생성 중 오류:", error);
     throw new Error("마크다운 생성에 실패했습니다.");
@@ -106,7 +184,25 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   setProject: (project) => set({ project }),
   clearProject: () =>
     set({
-      project: null,
+      project: {
+        id: "",
+        title: "",
+        description: {
+          summary: "",
+          keyPoints: [],
+        },
+        techStack: [],
+        difficulty: "초급" as const,
+        projectType: [],
+        features: [],
+        resources: [], // 리소스 초기화
+        theme: undefined, // ProjectTheme는 optional이므로 undefined로 설정
+        prerequisites: [],
+        challenges: [],
+        tips: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
       error: null,
       isLoading: false,
       preferredTech: [],

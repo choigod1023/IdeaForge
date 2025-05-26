@@ -9,10 +9,10 @@ import { TechStackStep } from "./TechStackStep";
 import { ThemeStep } from "./ThemeStep";
 import { DetailsStep } from "./DetailsStep";
 import { type FormStep, type Difficulty } from "../../constants/formSteps";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { DifficultyStep } from "./DifficultyStep";
 import { motion, AnimatePresence } from "framer-motion";
 import { ProgressBar } from "./ProgressBar";
+import { FormNavigation } from "./FormNavigation";
 
 const STEPS: FormStep[] = ["difficulty", "techStack", "theme", "details"];
 
@@ -71,7 +71,14 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
 
   const handleFormSubmit = async (data: ProjectRequest) => {
     try {
-      await onSubmit(data);
+      // 필수 항목들을 true로 설정
+      const formData = {
+        ...data,
+        hasPrerequisites: true,
+        hasChallenges: true,
+        hasTips: true,
+      };
+      await onSubmit(formData);
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -196,8 +203,8 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
           return (
             <DetailsStep
               register={register}
-              watch={watch}
               setValue={setValue}
+              watch={watch}
             />
           );
         default:
@@ -223,7 +230,7 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
   };
 
   return (
-    <div className="flex flex-col items-center py-4 pb-32 sm:py-6 sm:pb-6">
+    <div className="flex flex-col items-center py-4 pb-32 sm:py-6 sm:pb-32">
       <div className="w-full max-w-3xl px-4 text-xs sm:px-6 sm:text-sm">
         {/* 진행 상태 표시 */}
         <ProgressBar currentStep={currentStep} steps={STEPS} />
@@ -239,65 +246,24 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
               className="flex flex-col flex-1"
             >
               <div className="flex-1 p-4 sm:p-6">{renderStep()}</div>
-              {/* 네비게이션 버튼 */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-                className="flex justify-between p-4 border-t border-gray-100 sm:p-6 dark:border-gray-700"
-              >
-                <button
-                  type="button"
-                  onClick={handlePrev}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 transition-colors rounded-3xl bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 dark:focus:ring-offset-gray-800 min-w-[100px]"
-                >
-                  <FaArrowLeft className="w-4 h-4" />
-                  <span>이전</span>
-                </button>
-                <div className="flex-1" />
-                <button
-                  type="submit"
-                  disabled={isLoading}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-3xl bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 min-w-[140px]"
-                >
-                  {isLoading ? "생성 중..." : "프로젝트 생성하기"}
-                </button>
-              </motion.div>
             </motion.form>
           ) : (
             <div className="flex flex-col flex-1">
               <div className="flex-1 p-4 sm:p-6">{renderStep()}</div>
-              {/* 네비게이션 버튼 */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-                className="flex justify-between p-4 border-t border-gray-100 sm:p-6 dark:border-gray-700"
-              >
-                {currentStep !== "difficulty" && (
-                  <button
-                    type="button"
-                    onClick={handlePrev}
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-indigo-600 transition-colors rounded-3xl bg-indigo-50 hover:bg-indigo-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-900/30 dark:text-indigo-400 dark:hover:bg-indigo-900/50 dark:focus:ring-offset-gray-800 min-w-[100px]"
-                  >
-                    <FaArrowLeft className="w-4 h-4" />
-                    <span>이전</span>
-                  </button>
-                )}
-                <div className="flex-1" />
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white transition-colors rounded-3xl bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800 min-w-[140px]"
-                >
-                  <span>다음</span>
-                  <FaArrowRight className="w-4 h-4" />
-                </button>
-              </motion.div>
             </div>
           )}
         </div>
       </div>
+
+      {/* 네비게이션 */}
+      <FormNavigation
+        onPrev={handlePrev}
+        onNext={handleNext}
+        onSubmit={handleSubmit(handleFormSubmit)}
+        isLoading={isLoading}
+        isFirstStep={currentStep === "difficulty"}
+        isLastStep={currentStep === "details"}
+      />
     </div>
   );
 }

@@ -3,10 +3,11 @@ import type { ProjectRequest } from "../types";
 import { useProjectStore } from "../stores/projectStore";
 import { useState } from "react";
 import { ProjectLoading } from "../components/project/ProjectLoading";
-import { ProjectDisplay } from "../components/project/ProjectDisplay";
+import { useNavigate } from "react-router-dom";
 
 export default function ProjectCreatePage() {
-  const { project, clearProject, generateProject } = useProjectStore();
+  const navigate = useNavigate();
+  const { clearProject, generateProject } = useProjectStore();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,14 +28,16 @@ export default function ProjectCreatePage() {
 
       if (isDuplicate) {
         setError("이미 동일한 프로젝트가 존재합니다");
+        return;
       }
 
-      // 로딩 상태 해제
-      setIsLoading(false);
+      // 프로젝트 생성 성공 시 /project로 이동
+      navigate("/project");
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "프로젝트 생성에 실패했습니다"
       );
+    } finally {
       setIsLoading(false);
     }
   };
@@ -42,15 +45,6 @@ export default function ProjectCreatePage() {
   // 로딩 중일 때는 로딩 UI 표시
   if (isLoading) {
     return <ProjectLoading />;
-  }
-
-  // 프로젝트가 생성되면 프로젝트 표시
-  if (project) {
-    return (
-      <div className="max-w-4xl p-4 mx-auto">
-        <ProjectDisplay project={project} />
-      </div>
-    );
   }
 
   // 폼 표시

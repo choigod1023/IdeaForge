@@ -34,8 +34,8 @@ function App() {
             <Routes location={location} key={location.pathname}>
               <Route path="/" element={<GuidePage />} />
               <Route path="/create" element={<ProjectCreatePage />} />
-              <Route path="/project/:id" element={<ProjectPage />} />
-              <Route path="/shared/:id" element={<SharedProjectPage />} />
+              <Route path="/project" element={<ProjectPage />} />
+              <Route path="/shared" element={<SharedProjectPage />} />
               <Route path="/projects" element={<ProjectListPage />} />
             </Routes>
           </AnimatePresence>

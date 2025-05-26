@@ -1,63 +1,92 @@
-import { FaArrowLeft } from "react-icons/fa";
-import { useNavigate, useLocation } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { useProjectStore } from "../../stores/projectStore";
+import { FaArrowLeft, FaArrowRight, FaList } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+
+export type ProjectSection =
+  | "overview"
+  | "type"
+  | "techStack"
+  | "features"
+  | "resources"
+  | "prerequisites"
+  | "challenges"
+  | "tips";
 
 interface ProjectNavigationProps {
-  source?: "create" | "list";
+  onPrev: () => void;
+  currentSection: ProjectSection;
+  onSectionChange: (section: ProjectSection) => void;
+  sections: ProjectSection[];
 }
 
-export function ProjectNavigation({ source = "list" }: ProjectNavigationProps) {
+export function ProjectNavigation({
+  onPrev,
+  currentSection,
+  onSectionChange,
+  sections,
+}: ProjectNavigationProps) {
   const navigate = useNavigate();
-  const location = useLocation();
-  const { clearProject } = useProjectStore();
-  const [canGoBack, setCanGoBack] = useState(false);
+  const currentIndex = sections.indexOf(currentSection);
+  const isFirstSection = currentIndex === 0;
+  const isLastSection = currentIndex === sections.length - 1;
 
-  const handleNavigation = () => {
-    if (source === "create") {
-      clearProject(); // 프로젝트 데이터 초기화
-      navigate("/create");
+  const handlePrev = () => {
+    if (isFirstSection) {
+      onPrev();
     } else {
-      navigate("/projects");
+      onSectionChange(sections[currentIndex - 1]);
     }
   };
 
-  useEffect(() => {
-    // create 모드일 때는 항상 버튼을 보여주고, list 모드일 때만 히스토리 체크
-    if (source === "create") {
-      setCanGoBack(true);
+  const handleNext = () => {
+    if (isLastSection) {
+      navigate("/projects");
     } else {
-      setCanGoBack(window.history.length > 1);
+      onSectionChange(sections[currentIndex + 1]);
     }
-  }, [location, source]);
-
-  // 히스토리가 없거나 특정 조건에서는 버튼을 숨김
-  if (!canGoBack) {
-    return null;
-  }
+  };
 
   return (
-    <div className="flex justify-center pt-6 pb-6 mt-8 border-t border-gray-100 dark:border-gray-700">
-      <button
-        onClick={handleNavigation}
-        className={`inline-flex items-center gap-2 px-4 py-2 text-sm font-medium transition-colors rounded-xl focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-          location.pathname.startsWith("/create")
-            ? "text-indigo-700 bg-indigo-50 hover:bg-indigo-100 focus:ring-indigo-500 dark:text-indigo-400 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50 dark:focus:ring-offset-gray-800"
-            : "text-white bg-indigo-600 hover:bg-indigo-700 focus:ring-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-600 dark:focus:ring-offset-gray-800"
-        }`}
-        title={
-          location.pathname.startsWith("/create")
-            ? "새로운 프로젝트 생성하기"
-            : "프로젝트 목록으로 돌아가기"
-        }
-      >
-        <FaArrowLeft className="w-4 h-4" />
-        <span>
-          {location.pathname.startsWith("/create")
-            ? "새로운 프로젝트 만들기"
-            : "내 프로젝트 목록으로"}
-        </span>
-      </button>
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-white/95 backdrop-blur-sm border-t border-gray-100 dark:bg-gray-800/95 dark:border-gray-700">
+      <div className="flex justify-center max-w-4xl mx-auto">
+        <div className="flex w-full gap-4">
+          {!isFirstSection && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handlePrev}
+              className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-gray-600 shadow-lg rounded-xl hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+            >
+              <FaArrowLeft className="mr-2" />
+              이전 섹션
+            </motion.button>
+          )}
+
+          {!isLastSection && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleNext}
+              className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-indigo-600 shadow-lg rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              다음 섹션
+              <FaArrowRight className="ml-2" />
+            </motion.button>
+          )}
+
+          {isLastSection && (
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              onClick={handleNext}
+              className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-indigo-600 shadow-lg rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              내 프로젝트로 가기
+              <FaList className="ml-2" />
+            </motion.button>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,7 +1,17 @@
 import { FaBook } from "react-icons/fa";
 
+interface PrerequisiteItem {
+  name: string;
+  description: string;
+}
+
+interface PrerequisiteCategory {
+  category: string;
+  items: PrerequisiteItem[];
+}
+
 interface ProjectPrerequisitesProps {
-  prerequisites: string[];
+  prerequisites: PrerequisiteCategory[];
 }
 
 export function ProjectPrerequisites({
@@ -13,21 +23,35 @@ export function ProjectPrerequisites({
         <FaBook className="w-4 h-4 sm:w-5 sm:h-5 mr-2 sm:mr-2.5 text-indigo-500 dark:text-indigo-400" />
         사전 지식
       </h3>
+      <div className="space-y-6">
+        {prerequisites.map((category, categoryIndex) => (
+          <div key={categoryIndex} className="space-y-3">
+            <h4 className="text-sm font-medium text-gray-700 sm:text-base dark:text-gray-300">
+              {category.category}
+            </h4>
       <ul className="space-y-2 sm:space-y-3">
-        {prerequisites.map((prerequisite, index) => (
+              {category.items.map((item, itemIndex) => (
           <li
-            key={index}
+                  key={itemIndex}
             className="flex items-start text-sm text-gray-700 sm:text-base md:text-lg dark:text-gray-200"
           >
             <span className="flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 mt-0.5 mr-2 text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 rounded-full shrink-0">
-              {index + 1}
+                    {itemIndex + 1}
             </span>
-            <span className="break-keep-all [word-break:keep-all]">
-              {prerequisite}
-            </span>
+                  <div>
+                    <div className="font-medium text-gray-800 dark:text-gray-100">
+                      {item.name}
+                    </div>
+                    <div className="mt-1 text-gray-600 dark:text-gray-400">
+                      {item.description}
+                    </div>
+                  </div>
           </li>
         ))}
       </ul>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -1,46 +1,53 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useProjectStore } from "../stores/projectStore";
-import { ProjectDisplay } from "../components/project/ProjectDisplay";
 import { ProjectLoading } from "../components/project/ProjectLoading";
+import { ProjectDisplay } from "../components/project/ProjectDisplay";
 
 export default function ProjectPage() {
-  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { clearProject, isLoading, getProject } = useProjectStore();
+  const { project, projectList, isLoading } = useProjectStore();
 
   useEffect(() => {
-    if (!id) {
+    if (!project && !isLoading) {
       navigate("/projects", { replace: true });
-      return;
     }
+  }, [project, navigate, isLoading]);
 
-    const foundProject = getProject(id);
-    if (!foundProject && !isLoading) {
-      navigate("/projects", { replace: true });
-      return;
-    }
-
-    // 컴포넌트 언마운트 시 프로젝트 데이터 초기화
-    return () => {
-      clearProject();
-    };
-  }, [id, navigate, clearProject, isLoading, getProject]);
-
-  // 로딩 중일 때는 로딩 UI 표시
   if (isLoading) {
     return <ProjectLoading />;
   }
 
-  const foundProject = id ? getProject(id) : null;
-  if (!foundProject) {
+  if (!project) {
     return null;
   }
 
-  // 로딩이 완료되고 프로젝트가 있으면 프로젝트 표시
+  const currentIndex = projectList.findIndex((p) => p.id === project.id);
+
+  const handlePrev = () => {
+    if (currentIndex > 0) {
+      const prevProject = projectList[currentIndex - 1];
+      navigate(`/project?transition=prev`, { state: { project: prevProject } });
+    }
+  };
+
   return (
-    <div className="max-w-4xl p-4 mx-auto">
-      <ProjectDisplay project={foundProject} />
-    </div>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={project.id}
+        initial={{ opacity: 0, x: 100 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -100 }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+        className="max-w-4xl p-4 mx-auto"
+      >
+        <ProjectDisplay
+          project={project}
+          projects={projectList}
+          onPrev={handlePrev}
+        />
+      </motion.div>
+    </AnimatePresence>
   );
 }

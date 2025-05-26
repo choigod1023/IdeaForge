@@ -51,6 +51,41 @@ export interface ProjectResource {
   };
 }
 
+interface PrerequisiteItem {
+  name: string;
+  description: string;
+}
+
+interface PrerequisiteCategory {
+  category: string;
+  items: PrerequisiteItem[];
+}
+
+interface ChallengeItem {
+  name: string;
+  description: string;
+}
+
+interface ChallengeCategory {
+  category: string;
+  items: ChallengeItem[];
+}
+
+interface TipItem {
+  name: string;
+  description: string;
+}
+
+interface TipCategory {
+  category: string;
+  items: TipItem[];
+}
+
+interface TechStackItem {
+  name: string;
+  descriptions: string[];
+}
+
 export interface Project {
   id: string;
   title: string;
@@ -63,12 +98,11 @@ export interface Project {
   theme?: ProjectTheme;
   projectType: string[];
   features: string[];
-  learningOutcomes: string[];
   resources: ProjectResource[];
-  prerequisites: string[];
-  challenges: string[];
-  tips: string[];
-  techStack: string[];
+  prerequisites: PrerequisiteCategory[];
+  challenges: ChallengeCategory[];
+  tips: TipCategory[];
+  techStack: TechStackItem[];
   createdAt: string;
   updatedAt: string;
   learningPoints?: string[];

@@ -32,7 +32,7 @@ interface ThemeStepProps {
 }
 
 export const ThemeStep = ({ register, watch, error }: ThemeStepProps) => {
-  const selectedTheme = watch("theme");
+  const selectedTheme = watch("theme") as string | undefined;
 
   return (
     <section className="p-3 sm:p-4 bg-white/95 dark:bg-gray-800/95 rounded-3xl">
