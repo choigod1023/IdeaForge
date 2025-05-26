@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaBook, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import type { ProjectResource } from "../../types";
 

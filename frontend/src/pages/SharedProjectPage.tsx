@@ -48,7 +48,7 @@ export default function SharedProjectPage() {
 
   return (
     <div className="max-w-3xl p-6 mx-auto">
-      <ProjectDisplay project={project} />
+      <ProjectDisplay project={project} projects={[project]} />
     </div>
   );
 }
