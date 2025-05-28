@@ -146,6 +146,12 @@ interface ProjectState {
   isLoading: boolean;
   error: string | null;
   preferredTech: string[];
+  pollingStatus: {
+    jobId: string | null;
+    status: "idle" | "polling" | "completed" | "failed";
+    error: string | null;
+    progress: number;
+  };
   setProject: (project: Project) => void;
   clearProject: () => void;
   getProject: (id: string) => Project | undefined;
@@ -181,6 +187,12 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   isLoading: false,
   error: null,
   preferredTech: [],
+  pollingStatus: {
+    jobId: null,
+    status: "idle",
+    error: null,
+    progress: 0,
+  },
   setProject: (project) => set({ project }),
   clearProject: () =>
     set({
@@ -212,47 +224,168 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     return projectList.find((p) => p.id === id);
   },
   generateProject: async (request: ProjectRequest) => {
-    set({ isLoading: true, error: null });
+    let pollInterval: NodeJS.Timeout | null = null;
+    let timeoutId: NodeJS.Timeout | null = null;
+
+    const cleanup = () => {
+      if (pollInterval) {
+        clearInterval(pollInterval);
+        pollInterval = null;
+      }
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+    };
+
+    set({
+      isLoading: true,
+      error: null,
+      pollingStatus: {
+        jobId: null,
+        status: "polling",
+        error: null,
+        progress: 0,
+      },
+    });
+
     try {
-      const data = await api.generateRecommendation(request);
-      set((state) => {
-        // 중복 체크
-        const isDuplicate = state.projectList.some(
-          (p) => p.title === data.title && p.description === data.description
-        );
+      // 1. 초기 요청으로 jobId 받기
+      const { jobId } = await api.generateRecommendation(request);
 
-        if (isDuplicate) {
-          return {
-            project: data,
-            isLoading: false,
-          };
-        }
-
-        const newList = [...state.projectList, data];
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(newList));
-        return {
-          project: data,
-          isLoading: false,
-          projectList: newList,
-        };
-      });
-      return { success: true, isDuplicate: false };
-    } catch (error) {
-      let errorMessage = "알 수 없는 오류가 발생했습니다.";
-
-      if (error instanceof Error) {
-        if (error.message.includes("Required")) {
-          errorMessage = "모든 필수 항목을 입력해주세요.";
-        } else if (error.message.includes("invalid_type")) {
-          errorMessage = "입력하신 정보가 올바르지 않습니다.";
-        } else {
-          errorMessage = error.message;
-        }
+      if (!jobId) {
+        throw new Error("Job ID를 받지 못했습니다");
       }
 
+      // jobId 저장
+      set((state) => ({
+        pollingStatus: {
+          ...state.pollingStatus,
+          jobId,
+        },
+      }));
+
+      // 2. 폴링 시작
+      pollInterval = setInterval(async () => {
+        const currentStatus = get().pollingStatus.status;
+
+        if (currentStatus !== "polling") {
+          cleanup();
+          return;
+        }
+
+        try {
+          const status = await api.checkRecommendationStatus(jobId);
+
+          switch (status.status) {
+            case "completed": {
+              if (!status.result) {
+                throw new Error("프로젝트 데이터를 받지 못했습니다");
+              }
+              cleanup();
+
+              // 프로젝트 추가
+              const addResult = get().addToProjectList(status.result);
+              if (!addResult.success) {
+                throw new Error("이미 존재하는 프로젝트입니다");
+              }
+
+              set({
+                project: status.result,
+                isLoading: false,
+                pollingStatus: {
+                  jobId: null,
+                  status: "completed",
+                  error: null,
+                  progress: 100,
+                },
+              });
+              break;
+            }
+
+            case "failed": {
+              cleanup();
+              set({
+                error: status.error || "프로젝트 생성에 실패했습니다",
+                isLoading: false,
+                pollingStatus: {
+                  jobId: null,
+                  status: "failed",
+                  error: status.error || "프로젝트 생성에 실패했습니다",
+                  progress: 0,
+                },
+              });
+              break;
+            }
+
+            case "processing": {
+              set((state) => ({
+                pollingStatus: {
+                  ...state.pollingStatus,
+                  progress: Math.min(state.pollingStatus.progress + 10, 90),
+                },
+              }));
+              break;
+            }
+          }
+        } catch (error) {
+          cleanup();
+          set({
+            error:
+              error instanceof Error
+                ? error.message
+                : "상태 확인 중 오류가 발생했습니다",
+            isLoading: false,
+            pollingStatus: {
+              jobId: null,
+              status: "failed",
+              error:
+                error instanceof Error
+                  ? error.message
+                  : "상태 확인 중 오류가 발생했습니다",
+              progress: 0,
+            },
+          });
+        }
+      }, 2000);
+
+      // 5분 타임아웃
+      timeoutId = setTimeout(() => {
+        const currentStatus = get().pollingStatus.status;
+
+        if (currentStatus === "polling") {
+          cleanup();
+          set({
+            error: "프로젝트 생성 시간이 초과되었습니다",
+            isLoading: false,
+            pollingStatus: {
+              jobId: null,
+              status: "failed",
+              error: "프로젝트 생성 시간이 초과되었습니다",
+              progress: 0,
+            },
+          });
+        }
+      }, 5 * 60 * 1000);
+
+      return { success: true };
+    } catch (error) {
+      cleanup();
       set({
-        error: errorMessage,
+        error:
+          error instanceof Error
+            ? error.message
+            : "프로젝트 생성 중 오류가 발생했습니다",
         isLoading: false,
+        pollingStatus: {
+          jobId: null,
+          status: "failed",
+          error:
+            error instanceof Error
+              ? error.message
+              : "프로젝트 생성 중 오류가 발생했습니다",
+          progress: 0,
+        },
       });
       return { success: false };
     }
@@ -294,47 +427,39 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
     set({ projectList: projects });
   },
   exportToMarkdown: (projectId: string) => {
-    try {
-      const { projectList } = get();
-      console.log("현재 프로젝트 목록:", projectList); // 디버깅용 로그
+    const { projectList } = get();
 
-      const project = projectList.find((p) => p.id === projectId);
-      console.log("찾은 프로젝트:", project); // 디버깅용 로그
+    const project = projectList.find((p) => p.id === projectId);
 
-      if (!project) {
-        throw new Error(`ID가 ${projectId}인 프로젝트를 찾을 수 없습니다.`);
-      }
-
-      const markdown = generateMarkdown(project);
-      console.log("생성된 마크다운:", markdown); // 디버깅용 로그
-
-      // 파일명 생성 (특수문자 제거 및 공백을 언더스코어로 변환)
-      const safeFileName = project.title
-        .replace(/[^a-zA-Z0-9가-힣]/g, "_")
-        .replace(/_+/g, "_")
-        .toLowerCase();
-
-      const blob = new Blob([markdown], {
-        type: "text/markdown;charset=utf-8",
-      });
-      const url = URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${safeFileName}.md`;
-      document.body.appendChild(a);
-      a.click();
-
-      // 클린업
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
-
-      return true;
-    } catch (error) {
-      console.error("마크다운 내보내기 실패:", error);
-      throw error; // 에러를 상위로 전파하여 UI에서 처리할 수 있도록 함
+    if (!project) {
+      throw new Error(`ID가 ${projectId}인 프로젝트를 찾을 수 없습니다.`);
     }
+
+    const markdown = generateMarkdown(project);
+
+    // 파일명 생성 (특수문자 제거 및 공백을 언더스코어로 변환)
+    const safeFileName = project.title
+      .replace(/[^a-zA-Z0-9가-힣]/g, "_")
+      .replace(/_+/g, "_")
+      .toLowerCase();
+
+    const blob = new Blob([markdown], {
+      type: "text/markdown;charset=utf-8",
+    });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${safeFileName}.md`;
+    document.body.appendChild(a);
+    a.click();
+
+    // 클린업
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+
+    return true;
   },
 }));

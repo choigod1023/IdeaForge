@@ -1,0 +1,19 @@
+{
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 60
+    }
+  },
+  "routes": [
+    {
+      "src": "/api/projects/recommend",
+      "dest": "/api/projects/recommend",
+      "methods": ["POST"],
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "POST, OPTIONS",
+        "Access-Control-Allow-Headers": "Content-Type, Authorization"
+      }
+    }
+  ]
+}
