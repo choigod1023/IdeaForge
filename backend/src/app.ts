@@ -12,10 +12,11 @@ const app = express();
 
 // CORS configuration
 const corsOptions = {
-  origin:
-    process.env.NODE_ENV === "production"
-      ? "https://idea-forge-omega.vercel.app"
-      : ["http://localhost:5173", "http://125.128.187.5:5173"],
+  origin: [
+    "https://idea-forge-omega.vercel.app",
+    "http://localhost:5173",
+    "http://125.128.187.5:5173",
+  ],
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   credentials: true,
