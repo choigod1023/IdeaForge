@@ -282,11 +282,8 @@ export function ProjectTechStack({ techStack }: ProjectTechStackProps) {
                   {descriptions.map((desc, idx) => (
                     <li
                       key={idx}
-                      className="flex items-start text-sm text-gray-600 dark:text-gray-200"
+                      className="text-sm text-gray-600 dark:text-gray-200"
                     >
-                      <span
-                        className={`flex-shrink-0 w-1.5 h-1.5 mt-1.5 mr-2 rounded-full ${colors.bg} dark:bg-opacity-100 ${colors.darkBg}`}
-                      />
                       {desc}
                     </li>
                   ))}

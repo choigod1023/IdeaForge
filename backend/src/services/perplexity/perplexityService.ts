@@ -27,13 +27,26 @@ export class PerplexityService {
     const techResources = await this.searchTechResources(project);
     const featureResources = await this.searchFeatureResources(project);
 
+    // 각 카테고리별로 관련도 점수 기준으로 정렬하고 상위 4개만 선택
+    const sortedTechResources = techResources
+      .sort((a, b) => b.relevance.score - a.relevance.score)
+      .slice(0, 4);
+
+    const sortedFeatureResources = featureResources
+      .sort((a, b) => b.relevance.score - a.relevance.score)
+      .slice(0, 4);
+
     // 중복 제거 및 유사 리소스 통합
-    return this.mergeSimilarResources([...techResources, ...featureResources]);
+    return this.mergeSimilarResources([
+      ...sortedTechResources,
+      ...sortedFeatureResources,
+    ]);
   }
 
   private mergeSimilarResources(
     resources: ProjectResource[]
   ): ProjectResource[] {
+    const RELEVANCE_THRESHOLD = 7; // 7점 미만의 관련도는 제외 (10점 만점 기준)
     const mergedResources: ProjectResource[] = [];
     const processedTitles = new Set<string>();
 
@@ -50,12 +63,25 @@ export class PerplexityService {
       return words1.some((word) => words2.includes(word) && word.length > 1);
     };
 
-    // 리소스 정렬 (기술 리소스를 우선)
-    const sortedResources = resources.sort((a, b) => {
-      if (a.category === "tech" && b.category === "feature") return -1;
-      if (a.category === "feature" && b.category === "tech") return 1;
-      return 0;
-    });
+    // 리소스 정렬 (YouTube 영상 우선, 기술 리소스 우선)
+    const sortedResources = resources
+      .filter((resource) => resource.relevance.score >= RELEVANCE_THRESHOLD) // 관련도 필터링
+      .sort((a, b) => {
+        // YouTube 영상 우선
+        const aIsYoutube =
+          a.url.includes("youtube.com") || a.url.includes("youtu.be");
+        const bIsYoutube =
+          b.url.includes("youtube.com") || b.url.includes("youtu.be");
+        if (aIsYoutube && !bIsYoutube) return -1;
+        if (!aIsYoutube && bIsYoutube) return 1;
+
+        // 기술 리소스 우선
+        if (a.category === "tech" && b.category === "feature") return -1;
+        if (a.category === "feature" && b.category === "tech") return 1;
+
+        // 관련도 점수로 정렬
+        return b.relevance.score - a.relevance.score;
+      });
 
     for (const resource of sortedResources) {
       // 이미 처리된 유사 제목이 있는지 확인
@@ -135,15 +161,7 @@ export class PerplexityService {
 난이도: ${project.difficulty}
 
 검색 규칙:
-1. 모든 기술 스택 동등하게 다루기:
-   * 웹 기술 (React, TypeScript, Node.js 등)
-   * 머신러닝/딥러닝 (TensorFlow, PyTorch, scikit-learn 등)
-   * 모바일 개발 (React Native, Flutter, Swift 등)
-   * 게임 개발 (Unity, Unreal Engine 등)
-   * 임베디드 시스템 (Arduino, Raspberry Pi 등)
-   * 기타 모든 기술 스택
-
-2. 영상 자료 (최우선, 신뢰성 필수):
+1. YouTube 영상 자료 (최우선):
    * 반드시 다음 조건을 모두 만족하는 영상만 포함:
      - 공식 채널의 영상 (예: React 공식 채널, TensorFlow 공식 채널)
      - 최소 10만 조회수 이상의 인기 영상
@@ -151,8 +169,10 @@ export class PerplexityService {
      - 영상 길이 10분 이상의 상세한 강의
      - 영상 제작자가 해당 기술의 핵심 개발자/메인테이너
      - 영상 내용이 공식 문서와 일치
+   * 각 기술 스택당 최소 1개 이상의 YouTube 영상 포함
+   * YouTube 영상이 없는 경우에만 문서 자료로 대체
 
-3. 기술별 공식 학습 자료:
+2. 기술별 공식 학습 자료 (YouTube 영상이 부족한 경우에만):
    * 웹 기술:
      - React: react.dev, youtube.com/@react
      - TypeScript: typescriptlang.org, youtube.com/@typescript
@@ -172,6 +192,18 @@ export class PerplexityService {
      - Arduino: arduino.cc/en/Guide
      - Raspberry Pi: raspberrypi.org/documentation
    * 기타 기술: 해당 기술의 공식 문서와 채널
+
+3. 관련도 점수 기준 (10점 만점):
+   * YouTube 영상:
+     - 공식 채널: 9-10점
+     - 인기 영상(10만+ 조회수): +1점
+     - 최신 영상(2년 이내): +1점
+     - 핵심 개발자/메인테이너: +1점
+   * 문서 자료:
+     - 공식 문서: 8-9점
+     - 튜토리얼: 7-8점
+     - 예제 코드: 6-7점
+   * 7점 미만의 관련도 점수를 가진 리소스는 제외
 
 4. 학습 자료 우선순위:
    * 1순위: 신뢰할 수 있는 공식 영상 자료

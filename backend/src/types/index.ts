@@ -71,6 +71,7 @@ export interface ProjectPromptContext extends BasePromptContext {
   preferredTech: string[];
   theme?: string;
   description?: string;
+  additionalContext?: string;
 }
 
 export interface ResourcePromptContext extends BasePromptContext {
@@ -126,6 +127,7 @@ export const PromptRequestSchema = z.object({
   preferredTech: z.array(z.string()),
   theme: z.string().optional(),
   description: z.string().optional(),
+  existingProjects: z.array(ProjectSchema).optional(),
 });
 
 // Type definitions inferred from Zod schemas

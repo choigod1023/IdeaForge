@@ -34,7 +34,7 @@ const GuidePage = () => {
             <div className="text-center">
               <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-5xl md:text-6xl">
                 <span className="block">IdeaForge로</span>
-                <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">
+                <span className="block mt-2 text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-indigo-500">
                   실력을 키워보세요
                 </span>
               </h1>
@@ -77,7 +77,7 @@ const GuidePage = () => {
             className="relative"
           >
             <Link to="/create">
-              <button className="inline-flex items-center px-8 py-4 text-lg font-medium text-white transition-all duration-300 shadow-lg rounded-2xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <button className="inline-flex items-center px-8 py-4 text-lg font-medium text-white transition-all duration-300 shadow-lg rounded-2xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                 프로젝트 생성하러 가기
                 <span className="ml-2" role="img" aria-label="rocket">
                   🚀

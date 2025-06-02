@@ -36,14 +36,14 @@ export default function ProjectListPage() {
   };
 
   return (
-    <div className="max-w-7xl p-4 mx-auto space-y-8">
+    <div className="p-4 mx-auto space-y-8 max-w-7xl">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
           내 프로젝트
         </h1>
         <button
           onClick={handleCreateProject}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white transition-colors bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-400 dark:to-purple-500 dark:hover:from-indigo-500 dark:hover:to-purple-600 dark:focus:ring-offset-gray-800"
+          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white transition-colors bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl hover:from-indigo-700 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-500 dark:to-indigo-400 dark:hover:from-indigo-600 dark:hover:to-indigo-500 dark:focus:ring-offset-gray-800"
         >
           <FaPlus className="mr-2" />새 프로젝트
         </button>
@@ -56,7 +56,7 @@ export default function ProjectListPage() {
           </p>
           <button
             onClick={handleCreateProject}
-            className="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white transition-colors bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-400 dark:to-purple-500 dark:hover:from-indigo-500 dark:hover:to-purple-600 dark:focus:ring-offset-gray-800"
+            className="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white transition-colors bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl hover:from-indigo-700 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-500 dark:to-indigo-400 dark:hover:from-indigo-600 dark:hover:to-indigo-500 dark:focus:ring-offset-gray-800"
           >
             <FaPlus className="mr-2" />첫 프로젝트 만들기
           </button>

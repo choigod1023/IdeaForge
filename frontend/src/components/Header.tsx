@@ -12,8 +12,8 @@ const setFavicon = () => {
 
   // 그라데이션 배경
   const gradient = ctx.createLinearGradient(0, 0, 32, 32);
-  gradient.addColorStop(0, "#6366f1"); // indigo-500
-  gradient.addColorStop(1, "#9333ea"); // purple-600
+  gradient.addColorStop(0, "#4f46e5"); // indigo-600
+  gradient.addColorStop(1, "#6366f1"); // indigo-500
   ctx.fillStyle = gradient;
   ctx.fillRect(0, 0, 32, 32);
 
@@ -38,7 +38,7 @@ const setFavicon = () => {
 
 const Logo = () => (
   <div className="flex items-center space-x-2">
-    <div className="flex items-center justify-center text-base font-bold text-white rounded-lg w-9 h-9 bg-gradient-to-r from-indigo-500 to-purple-600 sm:w-12 sm:h-12 sm:text-lg">
+    <div className="flex items-center justify-center text-base font-bold text-white rounded-lg w-9 h-9 bg-gradient-to-r from-indigo-600 to-indigo-500 sm:w-12 sm:h-12 sm:text-lg">
       IF
     </div>
     <h1 className="text-lg font-bold text-gray-900 transition cursor-pointer sm:text-2xl dark:text-white hover:text-indigo-600 dark:hover:text-indigo-400 whitespace-nowrap">
@@ -80,7 +80,7 @@ export const Header = () => {
             </button>
             <button
               onClick={handleCreateProject}
-              className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white transition-colors bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-400 dark:to-purple-500 dark:hover:from-indigo-500 dark:hover:to-purple-600 dark:focus:ring-offset-gray-800 sm:px-4 sm:py-2 sm:text-sm"
+              className="inline-flex items-center px-3 py-1.5 text-xs font-medium text-white transition-colors bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl hover:from-indigo-700 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-500 dark:to-indigo-400 dark:hover:from-indigo-600 dark:hover:to-indigo-500 dark:focus:ring-offset-gray-800 sm:px-4 sm:py-2 sm:text-sm"
             >
               프로젝트 생성
             </button>

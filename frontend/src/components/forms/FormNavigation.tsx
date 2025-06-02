@@ -47,7 +47,7 @@ export const FormNavigation = ({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               disabled={isLoading}
-              className="flex items-center justify-center flex-1 px-8 py-4 text-sm font-medium text-white transition-colors bg-indigo-600 shadow-lg rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center justify-center flex-1 px-4 py-3 text-xs font-medium text-white transition-colors bg-indigo-600 shadow-lg sm:px-8 sm:py-4 sm:text-sm rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
             >
               {isLoading ? "생성 중..." : "프로젝트 생성하기"}
             </motion.button>
@@ -57,10 +57,10 @@ export const FormNavigation = ({
               onClick={onNext}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-indigo-600 shadow-lg rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="flex items-center justify-center flex-1 px-4 py-3 text-xs font-medium text-white transition-colors bg-indigo-600 shadow-lg sm:px-8 sm:py-4 sm:text-sm rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 whitespace-nowrap"
             >
               다음
-              <FaArrowRight className="w-4 h-4 ml-2" />
+              <FaArrowRight className="w-3 h-3 ml-1 sm:w-4 sm:h-4 sm:ml-2" />
             </motion.button>
           )}
         </div>

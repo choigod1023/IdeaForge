@@ -134,46 +134,48 @@ export function ProjectResources({ resources }: ProjectResourcesProps) {
               </div>
 
               {/* 코드 예시 */}
-              {resource.codeExamples.length > 0 && (
-                <div className="p-3 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700/50">
-                  <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-300">
-                    코드 예시
-                  </h4>
-                  <div className="space-y-2">
-                    {resource.codeExamples.map(
-                      (example: string, index: number) => (
-                        <div key={index} className="overflow-x-auto">
-                          <pre className="p-2 text-sm whitespace-pre-wrap bg-white rounded dark:bg-gray-800">
-                            {example}
-                          </pre>
-                        </div>
-                      )
-                    )}
+              {Array.isArray(resource.codeExamples) &&
+                resource.codeExamples.length > 0 && (
+                  <div className="p-3 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700/50">
+                    <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-300">
+                      구현 사례
+                    </h4>
+                    <div className="space-y-2">
+                      {resource.codeExamples.map(
+                        (example: string, index: number) => (
+                          <div key={index} className="overflow-x-auto">
+                            <pre className="p-2 text-sm whitespace-pre-wrap bg-white rounded dark:bg-gray-800">
+                              {example}
+                            </pre>
+                          </div>
+                        )
+                      )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
 
               {/* 실전 예시 */}
-              {resource.practicalExamples.length > 0 && (
-                <div className="p-3 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700/50">
-                  <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-300">
-                    실전 예시
-                  </h4>
-                  <ul className="space-y-2">
-                    {resource.practicalExamples.map(
-                      (example: string, index: number) => (
-                        <li
-                          key={index}
-                          className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300"
-                        >
-                          <span className="text-green-500">•</span>
-                          <span>{example}</span>
-                        </li>
-                      )
-                    )}
-                  </ul>
-                </div>
-              )}
+              {Array.isArray(resource.practicalExamples) &&
+                resource.practicalExamples.length > 0 && (
+                  <div className="p-3 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700/50">
+                    <h4 className="mb-2 font-medium text-gray-700 dark:text-gray-300">
+                      실전 예시
+                    </h4>
+                    <ul className="space-y-2">
+                      {resource.practicalExamples.map(
+                        (example: string, index: number) => (
+                          <li
+                            key={index}
+                            className="flex items-start gap-2 text-sm text-gray-600 dark:text-gray-300"
+                          >
+                            <span className="text-green-500">•</span>
+                            <span>{example}</span>
+                          </li>
+                        )
+                      )}
+                    </ul>
+                  </div>
+                )}
 
               {/* 관련성 분석 */}
               <div className="p-3 rounded-lg shadow-sm bg-gray-50 dark:bg-gray-700/50">

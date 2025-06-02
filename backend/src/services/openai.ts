@@ -3,6 +3,7 @@ import { PromptRequest, Project } from "../types";
 import dotenv from "dotenv";
 import { ProjectPrompt } from "./prompts/projectPrompt";
 import { perplexityService } from "./perplexity/perplexityService";
+import { v4 as uuidv4 } from "uuid";
 
 // 환경 변수 설정
 dotenv.config();
@@ -18,6 +19,12 @@ class OpenAIService {
     this.openai = new OpenAI({
       apiKey: process.env.OPENAI_API_KEY,
     });
+  }
+
+  private generateUniqueProjectId(): string {
+    const timestamp = Date.now().toString(36);
+    const randomStr = uuidv4().split("-")[0];
+    return `project-${timestamp}-${randomStr}`;
   }
 
   async generateProjectRecommendation(
@@ -54,6 +61,9 @@ class OpenAIService {
       }
 
       const project = JSON.parse(cleanJson) as Project;
+
+      // Generate unique project ID
+      project.id = this.generateUniqueProjectId();
 
       // Perplexity 서비스를 통해 리소스 추천 받기
       project.resources = await perplexityService.searchProjectResources(

@@ -18,25 +18,25 @@ export function ProjectDescription({ description }: ProjectDescriptionProps) {
       </h3>
       <div className="space-y-4">
         {/* 한 줄 요약 */}
-        <div className="px-4 py-3 border border-indigo-100 sm:px-6 sm:py-4 dark:border-gray-700 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl">
-          <p className="font-bold text-gray-900 dark:text-gray-100 whitespace-nowrap [font-size:clamp(1rem,2vw,1.25rem)] sm:[font-size:clamp(1.125rem,2.5vw,1.5rem)] md:[font-size:clamp(1.25rem,3vw,1.75rem)]">
+        <div className="p-4 border border-indigo-100 dark:border-gray-700 bg-indigo-50/50 dark:bg-indigo-900/20 rounded-xl">
+          <p className="text-lg font-bold text-gray-900 dark:text-gray-100 sm:text-xl md:text-2xl">
             {description.summary}
           </p>
         </div>
 
         {/* 핵심 포인트 */}
-        <div className="py-2.5 border border-gray-100 sm:px-4 sm:py-3 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/50 rounded-xl">
-          <ul className="px-2 space-y-1.5">
+        <div className="p-4 border border-gray-100 dark:border-gray-700 bg-gray-50/80 dark:bg-gray-800/50 rounded-xl">
+          <ul className="divide-y divide-gray-100 dark:divide-gray-700">
             {description.keyPoints.map((point, index) => (
               <li
                 key={index}
-                className="flex items-start text-sm font-normal text-gray-700 sm:text-base md:text-lg dark:text-gray-200"
+                className="flex items-start py-2.5 first:pt-0 last:pb-0"
               >
-                <span className="flex items-center justify-center w-4 h-4 sm:w-5 sm:h-5 mt-0.5 mr-1.5 text-xs sm:text-sm font-medium text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900/30 rounded-full shrink-0">
-                  {index + 1}
+                <span className="mr-2.5 text-lg">
+                  {point.startsWith("💡") ? point.slice(0, 2) : "💡"}
                 </span>
-                <span className="break-all [overflow-wrap:break-word]">
-                  {point}
+                <span className="text-base text-gray-700 dark:text-gray-200">
+                  {point.startsWith("💡") ? point.slice(2).trim() : point}
                 </span>
               </li>
             ))}

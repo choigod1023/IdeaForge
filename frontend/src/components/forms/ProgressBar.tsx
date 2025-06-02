@@ -1,5 +1,25 @@
 import { type FormStep } from "../../constants/formSteps";
 
+interface SimpleProgressBarProps {
+  currentStep: number;
+  totalSteps: number;
+}
+
+const SimpleProgressBar = ({
+  currentStep,
+  totalSteps,
+}: SimpleProgressBarProps) => {
+  const progress = (currentStep / totalSteps) * 100;
+  return (
+    <div className="relative h-2 overflow-hidden bg-gray-100 rounded-full dark:bg-gray-700">
+      <div
+        className="absolute top-0 left-0 h-full transition-all duration-300 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600 dark:from-indigo-400 dark:to-indigo-500"
+        style={{ width: `${progress}%` }}
+      />
+    </div>
+  );
+};
+
 interface ProgressBarProps {
   currentStep: FormStep;
   steps: FormStep[];
@@ -22,9 +42,9 @@ export const ProgressBar = ({ currentStep, steps }: ProgressBarProps) => {
   };
 
   return (
-    <div className="mb-12 sm:mb-16">
+    <div className="mb-16 sm:mb-16">
       {/* 스텝 레이블 */}
-      <div className="flex justify-between mb-5">
+      <div className="flex justify-between mb-7">
         {steps.map((step, index) => {
           const isCurrentStep = currentStep === step;
           const isCompleted = steps.indexOf(currentStep) > index;
@@ -63,3 +83,5 @@ export const ProgressBar = ({ currentStep, steps }: ProgressBarProps) => {
     </div>
   );
 };
+
+export { SimpleProgressBar };

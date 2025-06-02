@@ -5,25 +5,25 @@ interface ProjectTypeProps {
 }
 
 const PROJECT_TYPE_DESCRIPTIONS: Record<string, string[]> = {
-  토이: [
+  "토이 프로젝트": [
     "작은 규모의 학습용 프로젝트예요.",
     "새로운 기술을 실험해볼 수 있어요.",
     "부담 없이 시작할 수 있어요.",
     "실패해도 괜찮아요.",
   ],
-  포트폴리오: [
+  "포트폴리오 프로젝트": [
     "개발 역량을 보여주는 프로젝트예요.",
     "실제 서비스처럼 구현해요.",
     "기술적 깊이를 보여줄 수 있어요.",
     "코드 품질이 중요해요.",
   ],
-  오픈소스: [
+  "오픈소스 프로젝트": [
     "커뮤니티와 함께 만드는 프로젝트예요.",
     "코드 품질이 매우 중요해요.",
     "다른 개발자와 협업해요.",
     "기술적 성장의 기회예요.",
   ],
-  실용: [
+  "실용 프로젝트": [
     "실제 문제를 해결하는 프로젝트예요.",
     "사용자 경험이 중요해요.",
     "실제 활용성을 고려해요.",
@@ -33,14 +33,20 @@ const PROJECT_TYPE_DESCRIPTIONS: Record<string, string[]> = {
 
 export function ProjectType({ types }: ProjectTypeProps) {
   const getTypeIcon = (type: string) => {
-    switch (type) {
-      case "토이":
+    const cleanType = type
+      .replace(
+        /[^\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF\w\s]/g,
+        ""
+      )
+      .trim();
+    switch (cleanType) {
+      case "토이 프로젝트":
         return <FaCode className="w-6 h-6 sm:w-7 sm:h-7" />;
-      case "포트폴리오":
+      case "포트폴리오 프로젝트":
         return <FaLaptopCode className="w-6 h-6 sm:w-7 sm:h-7" />;
-      case "오픈소스":
+      case "오픈소스 프로젝트":
         return <FaGithub className="w-6 h-6 sm:w-7 sm:h-7" />;
-      case "실용":
+      case "실용 프로젝트":
         return <FaTools className="w-6 h-6 sm:w-7 sm:h-7" />;
       default:
         return null;
@@ -48,18 +54,38 @@ export function ProjectType({ types }: ProjectTypeProps) {
   };
 
   const getTypeLabel = (type: string) => {
-    switch (type) {
-      case "토이":
+    const cleanType = type
+      .replace(
+        /[^\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF\w\s]/g,
+        ""
+      )
+      .trim();
+    switch (cleanType) {
+      case "토이 프로젝트":
         return "토이 프로젝트";
-      case "포트폴리오":
+      case "포트폴리오 프로젝트":
         return "포트폴리오 프로젝트";
-      case "오픈소스":
+      case "오픈소스 프로젝트":
         return "오픈소스 프로젝트";
-      case "실용":
+      case "실용 프로젝트":
         return "실용 프로젝트";
       default:
         return type;
     }
+  };
+
+  const getTypeDescription = (type: string) => {
+    const cleanType = type
+      .replace(
+        /[^\uAC00-\uD7AF\u1100-\u11FF\u3130-\u318F\uA960-\uA97F\uD7B0-\uD7FF\w\s]/g,
+        ""
+      )
+      .trim();
+    return (
+      PROJECT_TYPE_DESCRIPTIONS[cleanType] || [
+        "프로젝트 유형에 대한 설명이 없어요.",
+      ]
+    );
   };
 
   return (
@@ -89,11 +115,7 @@ export function ProjectType({ types }: ProjectTypeProps) {
                 {getTypeLabel(type)}
               </h4>
               <ul className="space-y-2">
-                {(
-                  PROJECT_TYPE_DESCRIPTIONS[type] || [
-                    "프로젝트 유형에 대한 설명이 없어요.",
-                  ]
-                ).map((sentence, idx) => (
+                {getTypeDescription(type).map((sentence, idx) => (
                   <li
                     key={idx}
                     className="flex items-start text-sm text-gray-600 dark:text-gray-400"

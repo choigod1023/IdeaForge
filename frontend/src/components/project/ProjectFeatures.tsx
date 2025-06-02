@@ -1,4 +1,4 @@
-import { FaList, FaChevronRight } from "react-icons/fa";
+import { FaList } from "react-icons/fa";
 
 interface FeatureItem {
   title: string;
@@ -61,11 +61,11 @@ export function ProjectFeatures({ features }: ProjectFeaturesProps) {
             {/* 섹션 헤더 */}
             <div className="p-5 border-b border-gray-100 dark:border-gray-700">
               <div className="flex items-center gap-2 mb-2">
-                <span className="flex items-center justify-center w-6 h-6 text-sm font-medium text-white bg-indigo-500 rounded-full">
-                  {sectionIndex + 1}
+                <span className="text-2xl">
+                  {section.mainTitle.split(" ")[0]}
                 </span>
                 <h4 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  {section.mainTitle}
+                  {section.mainTitle.split(" ").slice(1).join(" ")}
                 </h4>
               </div>
               <p className="text-sm text-gray-600 dark:text-gray-300">
@@ -78,12 +78,12 @@ export function ProjectFeatures({ features }: ProjectFeaturesProps) {
               {section.items.map((item, itemIndex) => (
                 <div key={itemIndex} className="p-5">
                   <div className="flex items-start gap-4">
-                    <div className="flex items-center justify-center flex-shrink-0 w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-900/30">
-                      <FaChevronRight className="w-4 h-4 text-indigo-500 dark:text-indigo-400" />
+                    <div className="flex items-center justify-center flex-shrink-0 w-10 h-10 text-2xl rounded-lg bg-indigo-50 dark:bg-indigo-900/30">
+                      {item.title.split(" ")[0]}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h5 className="text-base font-medium text-gray-900 dark:text-white">
-                        {item.title}
+                        {item.title.split(" ").slice(1).join(" ")}
                       </h5>
                       {item.description && (
                         <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">
@@ -97,8 +97,10 @@ export function ProjectFeatures({ features }: ProjectFeaturesProps) {
                               key={pointIndex}
                               className="flex items-start text-sm text-gray-600 dark:text-gray-300"
                             >
-                              <span className="flex-shrink-0 w-1.5 h-1.5 mt-1.5 mr-2 rounded-full bg-indigo-200 dark:bg-indigo-700" />
-                              {point}
+                              <span className="mr-2 text-lg">
+                                {point.split(" ")[0]}
+                              </span>
+                              {point.split(" ").slice(1).join(" ")}
                             </li>
                           ))}
                         </ul>

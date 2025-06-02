@@ -12,6 +12,17 @@ export type ProjectSection =
   | "challenges"
   | "tips";
 
+const sectionNames: Record<ProjectSection, string> = {
+  overview: "개요",
+  type: "유형",
+  techStack: "기술 스택",
+  features: "주요 기능",
+  resources: "학습 자료",
+  prerequisites: "사전 지식",
+  challenges: "도전 과제",
+  tips: "팁 & 트릭",
+};
+
 interface ProjectNavigationProps {
   onPrev: () => void;
   currentSection: ProjectSection;
@@ -29,6 +40,9 @@ export function ProjectNavigation({
   const currentIndex = sections.indexOf(currentSection);
   const isFirstSection = currentIndex === 0;
   const isLastSection = currentIndex === sections.length - 1;
+
+  const prevSection = !isFirstSection ? sections[currentIndex - 1] : null;
+  const nextSection = !isLastSection ? sections[currentIndex + 1] : null;
 
   const handlePrev = () => {
     if (isFirstSection) {
@@ -58,7 +72,7 @@ export function ProjectNavigation({
               className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-gray-600 shadow-lg rounded-xl hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
               <FaArrowLeft className="mr-2" />
-              이전 섹션
+              {prevSection && sectionNames[prevSection]}
             </motion.button>
           )}
 
@@ -69,7 +83,7 @@ export function ProjectNavigation({
               onClick={handleNext}
               className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-indigo-600 shadow-lg rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              다음 섹션
+              {nextSection && sectionNames[nextSection]}
               <FaArrowRight className="ml-2" />
             </motion.button>
           )}
