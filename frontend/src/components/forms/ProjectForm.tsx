@@ -156,10 +156,17 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
 
   const renderStep = () => {
     console.log("Rendering step:", currentStep);
-    const stepContent = (() => {
-      switch (currentStep) {
-        case "difficulty":
-          return (
+    return (
+      <AnimatePresence mode="wait">
+        {currentStep === "difficulty" && (
+          <motion.div
+            key="difficulty"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full"
+          >
             <DifficultyStep
               selectedDifficulty={selectedDifficulty || ""}
               onDifficultySelect={(difficulty: Difficulty) => {
@@ -172,9 +179,17 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
                   : errors.difficulty?.message
               }
             />
-          );
-        case "techStack":
-          return (
+          </motion.div>
+        )}
+        {currentStep === "techStack" && (
+          <motion.div
+            key="techStack"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full"
+          >
             <TechStackStep
               selectedDifficulty={selectedDifficulty || ""}
               selectedTechs={selectedTechs}
@@ -185,9 +200,17 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
                   : undefined
               }
             />
-          );
-        case "theme":
-          return (
+          </motion.div>
+        )}
+        {currentStep === "theme" && (
+          <motion.div
+            key="theme"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full"
+          >
             <ThemeStep
               register={register}
               watch={watch}
@@ -197,34 +220,24 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
                   : undefined
               }
             />
-          );
-        case "details":
-          console.log("Rendering DetailsStep");
-          return (
+          </motion.div>
+        )}
+        {currentStep === "details" && (
+          <motion.div
+            key="details"
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+            className="w-full"
+          >
             <DetailsStep
               register={register}
               setValue={setValue}
               watch={watch}
             />
-          );
-        default:
-          console.log("No step matched:", currentStep);
-          return null;
-      }
-    })();
-
-    return (
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentStep}
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          exit={{ opacity: 0, x: -20 }}
-          transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="w-full"
-        >
-          {stepContent}
-        </motion.div>
+          </motion.div>
+        )}
       </AnimatePresence>
     );
   };
@@ -237,31 +250,28 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
 
         {/* 폼 컨텐츠 */}
         <div className="bg-white shadow-lg rounded-3xl dark:bg-gray-800 dark:shadow-gray-900/30 min-h-[400px] flex flex-col">
-          {currentStep === "details" ? (
-            <motion.form
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              onSubmit={handleSubmit(handleFormSubmit)}
-              className="flex flex-col flex-1"
-            >
-              <div className="flex-1 p-4 sm:p-6">{renderStep()}</div>
-            </motion.form>
-          ) : (
-            <div className="flex flex-col flex-1">
-              <div className="flex-1 p-4 sm:p-6">{renderStep()}</div>
-            </div>
-          )}
+          <motion.form
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.3 }}
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="flex flex-col flex-1"
+          >
+            <div className="flex-1 p-4 sm:p-6">{renderStep()}</div>
+          </motion.form>
         </div>
       </div>
 
       {/* 네비게이션 */}
       <FormNavigation
+        currentStep={currentStep}
         onPrev={handlePrev}
         onNext={handleNext}
-        onSubmit={handleSubmit(handleFormSubmit)}
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(handleFormSubmit)(e);
+        }}
         isLoading={isLoading}
-        isFirstStep={currentStep === "difficulty"}
         isLastStep={currentStep === "details"}
       />
     </div>

@@ -40,8 +40,21 @@ const jobStore = new Map<
     status: "processing" | "completed" | "failed";
     result?: any;
     error?: string;
+    completedAt?: number; // 작업 완료 시간 추가
   }
 >();
+
+// 주기적으로 오래된 작업 정리 (5분 이상 지난 작업 삭제)
+setInterval(() => {
+  const now = Date.now();
+  for (const [jobId, job] of jobStore.entries()) {
+    if (job.completedAt && now - job.completedAt > 5 * 60 * 1000) {
+      // 5분
+      console.log("API: 오래된 작업 정리", jobId);
+      jobStore.delete(jobId);
+    }
+  }
+}, 60 * 1000); // 1분마다 실행
 
 // 프로젝트 추천 API 엔드포인트
 app.post("/api/projects/recommend", async (req, res) => {
@@ -103,9 +116,11 @@ app.get("/api/projects/recommend/:jobId", (req, res) => {
   console.log("API: 현재 작업 상태", { jobId, status: job.status });
 
   if (job.status === "completed") {
-    // 작업이 완료되면 결과 반환하고 저장소에서 삭제
+    // 작업이 완료되면 결과 반환 (삭제하지 않음)
     console.log("API: 작업 완료, 결과 반환", jobId);
-    jobStore.delete(jobId);
+    if (!job.completedAt) {
+      job.completedAt = Date.now(); // 완료 시간 기록
+    }
     return res.json({ status: "completed", result: job.result });
   }
 

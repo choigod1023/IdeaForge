@@ -10,5 +10,11 @@ export default defineConfig({
     hmr: {
       host: "choigod1023.p-e.kr",
     },
+    proxy: {
+      "/api": {
+        target: "http://localhost:3000",
+        changeOrigin: true,
+      },
+    },
   },
 });

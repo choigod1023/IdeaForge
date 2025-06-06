@@ -12,6 +12,11 @@ export interface SearchResult {
   };
 }
 
+interface TechStackItem {
+  name: string;
+  descriptions: string[];
+}
+
 export type Project = {
   id: string;
   title: string;
@@ -19,7 +24,7 @@ export type Project = {
     summary: string;
     keyPoints: string[];
   };
-  techStack: string[];
+  techStack: TechStackItem[];
   difficulty: "beginner" | "intermediate" | "advanced";
   projectType: ("toy" | "portfolio" | "opensource" | "practical")[];
   features: string[];

@@ -1,81 +1,60 @@
-import { useNavigate } from "react-router-dom";
-import { useProjectStore } from "../stores/projectStore";
-import { FaPlus } from "react-icons/fa";
-import ProjectCard from "../components/project/ProjectCard";
 import { AnimatePresence } from "framer-motion";
+import ProjectCard from "../components/project/ProjectCard";
+import { ProjectLoading } from "../components/project/ProjectLoading";
+import { ProjectListHeader } from "../components/project/ProjectListHeader";
+import { EmptyProjectList } from "../components/project/EmptyProjectList";
+import { ProjectListError } from "../components/project/ProjectListError";
+import { useProjectList } from "../hooks/useProjectList";
+import { match } from "ts-pattern";
+import { projectPageStyles } from "../styles/projectStyles";
+import { toast } from "react-toastify";
 
 export default function ProjectListPage() {
-  const navigate = useNavigate();
   const {
-    projectList,
-    removeFromProjectList,
-    exportToMarkdown,
-    clearProject,
-    setProject,
-  } = useProjectStore();
-
-  const handleViewProject = (projectId: string) => {
-    const project = projectList.find((p) => p.id === projectId);
-    if (project) {
-      setProject(project);
-      navigate("/project");
-    }
-  };
-
-  const handleCreateProject = () => {
-    clearProject();
-    navigate("/create");
-  };
-
-  const handleRemoveProject = (projectId: string) => {
-    removeFromProjectList(projectId);
-  };
-
-  const handleDownload = async (projectId: string) => {
-    await exportToMarkdown(projectId);
-  };
+    pageState,
+    viewProject,
+    navigateToCreate,
+    removeProject,
+    exportProject,
+  } = useProjectList();
 
   return (
-    <div className="p-4 mx-auto space-y-8 max-w-7xl">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">
-          내 프로젝트
-        </h1>
-        <button
-          onClick={handleCreateProject}
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white transition-colors bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl hover:from-indigo-700 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-500 dark:to-indigo-400 dark:hover:from-indigo-600 dark:hover:to-indigo-500 dark:focus:ring-offset-gray-800"
-        >
-          <FaPlus className="mr-2" />새 프로젝트
-        </button>
-      </div>
+    <div className={projectPageStyles.list.container}>
+      {match(pageState)
+        .with({ status: "loading" }, () => <ProjectLoading />)
+        .with({ status: "error" }, ({ error }) => {
+          toast.error(error.message);
+          return (
+            <ProjectListError
+              message={error.message}
+              onRetry={() => window.location.reload()}
+            />
+          );
+        })
+        .with({ status: "success" }, ({ projects }) => (
+          <>
+            <ProjectListHeader onCreateClick={navigateToCreate} />
 
-      {projectList.length === 0 ? (
-        <div className="p-8 text-center bg-white rounded-2xl dark:bg-gray-800">
-          <p className="text-gray-600 dark:text-gray-400">
-            아직 생성된 프로젝트가 없습니다.
-          </p>
-          <button
-            onClick={handleCreateProject}
-            className="inline-flex items-center px-4 py-2 mt-4 text-sm font-medium text-white transition-colors bg-gradient-to-r from-indigo-600 to-indigo-500 rounded-xl hover:from-indigo-700 hover:to-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:from-indigo-500 dark:to-indigo-400 dark:hover:from-indigo-600 dark:hover:to-indigo-500 dark:focus:ring-offset-gray-800"
-          >
-            <FaPlus className="mr-2" />첫 프로젝트 만들기
-          </button>
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
-          <AnimatePresence mode="popLayout">
-            {projectList.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onView={handleViewProject}
-                onRemove={handleRemoveProject}
-                onDownload={handleDownload}
-              />
-            ))}
-          </AnimatePresence>
-        </div>
-      )}
+            <div className={projectPageStyles.list.grid}>
+              <AnimatePresence mode="popLayout">
+                {projects.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    onView={() => viewProject(project.id)}
+                    onRemove={() => removeProject(project.id)}
+                    onDownload={() => exportProject(project.id)}
+                  />
+                ))}
+              </AnimatePresence>
+            </div>
+
+            {projects.length === 0 && (
+              <EmptyProjectList onCreateClick={navigateToCreate} />
+            )}
+          </>
+        ))
+        .exhaustive()}
     </div>
   );
 }

@@ -155,6 +155,7 @@ interface ProjectState {
   setProject: (project: Project) => void;
   clearProject: () => void;
   getProject: (id: string) => Project | undefined;
+  selectProject: (project: Project) => void;
   generateProject: (
     request: ProjectRequest
   ) => Promise<{ success: boolean; isDuplicate?: boolean }>;
@@ -222,6 +223,9 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   getProject: (id: string) => {
     const { projectList } = get();
     return projectList.find((p) => p.id === id);
+  },
+  selectProject: (project: Project) => {
+    set({ project });
   },
   generateProject: async (request: ProjectRequest) => {
     let pollInterval: NodeJS.Timeout | null = null;

@@ -1,0 +1,38 @@
+import { useState, useEffect } from "react";
+
+// 개발 팁 목록
+const DEV_TIPS = [
+  "코드를 작성하기 전에 먼저 설계를 해보세요. 설계는 시간을 절약해줍니다.",
+  "주석은 '왜'를 설명해야 합니다. '무엇'을 하는지는 코드가 이미 보여줍니다.",
+  "작은 단위로 테스트하고, 자주 커밋하세요. 이는 문제를 빠르게 발견하는 데 도움이 됩니다.",
+  "코드 리뷰는 배움의 좋은 기회입니다. 다른 개발자의 관점을 받아들이세요.",
+  "버그를 고치기 전에 먼저 재현 방법을 찾아보세요.",
+  "깃 커밋 메시지는 명확하고 구체적으로 작성하세요.",
+  "IDE의 단축키를 익히면 생산성이 크게 향상됩니다.",
+  "정기적으로 코드를 리팩토링하세요. 깔끔한 코드는 유지보수가 쉽습니다.",
+  "문서화는 코드만큼 중요합니다. 특히 API나 라이브러리를 만들 때는 더욱 그렇습니다.",
+  "에러 메시지를 자세히 읽어보세요. 대부분의 경우 해결 방법을 알려줍니다.",
+  "코드 스니펫을 만들어두면 반복 작업을 줄일 수 있습니다.",
+  "디버깅은 과학적 방법을 따르세요: 가설을 세우고, 테스트하고, 결과를 분석하세요.",
+  "버전 관리는 필수입니다. 깃을 사용하지 않는다면 지금 바로 시작하세요.",
+  "코드 포맷팅 도구를 사용하면 일관된 코드 스타일을 유지할 수 있습니다.",
+  "성능 최적화는 측정 후에 하세요. 직관은 종종 틀립니다.",
+];
+
+export const useDevTips = (interval = 6000) => {
+  const [currentTip, setCurrentTip] = useState("");
+
+  useEffect(() => {
+    const getRandomTip = () =>
+      DEV_TIPS[Math.floor(Math.random() * DEV_TIPS.length)];
+
+    setCurrentTip(getRandomTip());
+    const tipInterval = setInterval(() => {
+      setCurrentTip(getRandomTip());
+    }, interval);
+
+    return () => clearInterval(tipInterval);
+  }, [interval]);
+
+  return currentTip;
+};

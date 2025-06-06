@@ -1,52 +1,29 @@
-import { useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { useProjectStore } from "../stores/projectStore";
-import { ProjectLoading } from "../components/project/ProjectLoading";
+import { AnimatePresence } from "framer-motion";
 import { ProjectDisplay } from "../components/project/ProjectDisplay";
+import { projectPageStyles } from "../styles/projectStyles";
+import { useProjectPage } from "../hooks/useProjectPage";
+import { pageVariants, pageTransition } from "../constants/animations";
+import { motion } from "framer-motion";
 
 export default function ProjectPage() {
-  const navigate = useNavigate();
-  const { project, projectList, isLoading } = useProjectStore();
-
-  useEffect(() => {
-    if (!project && !isLoading) {
-      navigate("/projects", { replace: true });
-    }
-  }, [project, navigate, isLoading]);
-
-  if (isLoading) {
-    return <ProjectLoading />;
-  }
+  const { project, handlePrev } = useProjectPage();
 
   if (!project) {
     return null;
   }
 
-  const currentIndex = projectList.findIndex((p) => p.id === project.id);
-
-  const handlePrev = () => {
-    if (currentIndex > 0) {
-      const prevProject = projectList[currentIndex - 1];
-      navigate(`/project?transition=prev`, { state: { project: prevProject } });
-    }
-  };
-
   return (
     <AnimatePresence mode="wait">
       <motion.div
         key={project.id}
-        initial={{ opacity: 0, x: 100 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -100 }}
-        transition={{ duration: 0.3, ease: "easeInOut" }}
-        className="max-w-4xl p-4 mx-auto"
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={pageTransition}
+        className={projectPageStyles.detail.container}
       >
-        <ProjectDisplay
-          project={project}
-          projects={projectList}
-          onPrev={handlePrev}
-        />
+        <ProjectDisplay project={project} onPrev={handlePrev} />
       </motion.div>
     </AnimatePresence>
   );

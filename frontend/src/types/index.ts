@@ -123,3 +123,5 @@ export interface ProjectRequest {
   hasTips: boolean;
   additionalInfo?: string;
 }
+
+export type { ProjectSection } from "./project";

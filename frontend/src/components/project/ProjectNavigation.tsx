@@ -1,27 +1,8 @@
 import { FaArrowLeft, FaArrowRight, FaList } from "react-icons/fa";
 import { motion } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-
-export type ProjectSection =
-  | "overview"
-  | "type"
-  | "techStack"
-  | "features"
-  | "resources"
-  | "prerequisites"
-  | "challenges"
-  | "tips";
-
-const sectionNames: Record<ProjectSection, string> = {
-  overview: "개요",
-  type: "유형",
-  techStack: "기술 스택",
-  features: "주요 기능",
-  resources: "학습 자료",
-  prerequisites: "사전 지식",
-  challenges: "도전 과제",
-  tips: "팁 & 트릭",
-};
+import type { ProjectSection } from "../../constants/projectSections";
+import { sectionNames } from "../../constants/projectSections";
+import { useProjectNavigation } from "../../hooks/useProjectNavigation";
 
 interface ProjectNavigationProps {
   onPrev: () => void;
@@ -36,29 +17,19 @@ export function ProjectNavigation({
   onSectionChange,
   sections,
 }: ProjectNavigationProps) {
-  const navigate = useNavigate();
-  const currentIndex = sections.indexOf(currentSection);
-  const isFirstSection = currentIndex === 0;
-  const isLastSection = currentIndex === sections.length - 1;
-
-  const prevSection = !isFirstSection ? sections[currentIndex - 1] : null;
-  const nextSection = !isLastSection ? sections[currentIndex + 1] : null;
-
-  const handlePrev = () => {
-    if (isFirstSection) {
-      onPrev();
-    } else {
-      onSectionChange(sections[currentIndex - 1]);
-    }
-  };
-
-  const handleNext = () => {
-    if (isLastSection) {
-      navigate("/projects");
-    } else {
-      onSectionChange(sections[currentIndex + 1]);
-    }
-  };
+  const {
+    isFirstSection,
+    isLastSection,
+    prevSection,
+    nextSection,
+    handlePrev,
+    handleNext,
+  } = useProjectNavigation({
+    currentSection,
+    onSectionChange,
+    onPrev,
+    sections,
+  });
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 p-4 border-t border-gray-100 bg-white/95 backdrop-blur-sm dark:bg-gray-800/95 dark:border-gray-700">

@@ -1,4 +1,5 @@
-import { type ProjectSection } from "./ProjectNavigation";
+import { type ProjectSection } from "../../constants/projectSections";
+import { cn } from "../../utils/cn";
 
 const SECTION_LABELS: Record<ProjectSection, string> = {
   overview: "프로젝트 개요",
@@ -10,6 +11,14 @@ const SECTION_LABELS: Record<ProjectSection, string> = {
   challenges: "도전 과제",
   tips: "개발 팁",
 };
+
+const getSectionLabelClass = (isCurrent: boolean, isCompleted: boolean) =>
+  cn(
+    "text-sm font-medium transition-colors",
+    isCurrent && "text-indigo-600 dark:text-indigo-400",
+    isCompleted && "text-indigo-600/70 dark:text-indigo-400/70",
+    !isCurrent && !isCompleted && "text-gray-400 dark:text-gray-500"
+  );
 
 interface ProjectProgressProps {
   sections: ProjectSection[];
@@ -37,13 +46,7 @@ export function ProjectProgress({
               onClick={() => onSectionChange?.(section)}
             >
               <span
-                className={`text-sm font-medium transition-colors ${
-                  isCurrentSection
-                    ? "text-indigo-600 dark:text-indigo-400"
-                    : isCompleted
-                    ? "text-indigo-600/70 dark:text-indigo-400/70"
-                    : "text-gray-400 dark:text-gray-500"
-                }`}
+                className={getSectionLabelClass(isCurrentSection, isCompleted)}
               >
                 {SECTION_LABELS[section]}
               </span>
