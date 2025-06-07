@@ -44,7 +44,7 @@ export const ProgressBar = ({ currentStep, steps }: ProgressBarProps) => {
   return (
     <div className="mb-16 sm:mb-16">
       {/* 스텝 레이블 */}
-      <div className="flex justify-between mb-7">
+      <div className="flex justify-between mb-5">
         {steps.map((step, index) => {
           const isCurrentStep = currentStep === step;
           const isCompleted = steps.indexOf(currentStep) > index;
