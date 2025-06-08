@@ -53,7 +53,7 @@ export function FormNavigation({
               isFirstStep ? "w-full" : "flex-1"
             } ${isLoading ? "opacity-50 cursor-not-allowed" : ""}`}
           >
-            {isLastStep ? "프로젝트 생성하기" : "다음"}
+            {isLastStep ? "생성하기" : "다음"}
             <FaArrowRight className="ml-2" />
           </motion.button>
         </div>

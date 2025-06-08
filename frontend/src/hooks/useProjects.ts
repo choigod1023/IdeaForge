@@ -1,5 +1,5 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { Project, ProjectRequest } from "../types";
 import { api } from "../services/api";
@@ -8,22 +8,13 @@ import { createProjectWithPolling } from "../utils/projectCreation";
 
 export function useProjects() {
   const navigate = useNavigate();
-  const location = useLocation();
   const queryClient = useQueryClient();
-  const { addToProjectList, selectProject } = useProjectStore();
-  const [isCreating, setIsCreating] = useState(false);
-
-  // 프로젝트 목록 쿼리
   const {
-    data: projects = [],
-    isLoading: isProjectsLoading,
-    error: projectsError,
-  } = useQuery<Project[]>({
-    queryKey: ["projects"],
-    queryFn: api.getProjects,
-    enabled: location.pathname === "/projects",
-    staleTime: 1000 * 60, // 1분 동안 캐시 유지
-  });
+    projectList: projects,
+    addToProjectList,
+    selectProject,
+  } = useProjectStore();
+  const [isCreating, setIsCreating] = useState(false);
 
   // 추천 생성 요청 mutation
   const recommendMutation = useMutation({
@@ -109,9 +100,8 @@ export function useProjects() {
   return {
     projects,
     createProject,
-    isPending: isProjectsLoading || isCreating,
+    isPending: isCreating,
     error:
-      projectsError ||
       recommendMutation.error ||
       checkRecommendationMutation.error ||
       createProjectMutation.error,

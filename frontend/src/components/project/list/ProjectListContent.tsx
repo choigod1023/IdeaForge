@@ -29,14 +29,55 @@ export const ProjectListContent = ({
   return (
     <div className={projectListStyles.container}>
       {match(pageState)
-        .with({ status: "loading" }, () => <ProjectLoading />)
-        .with({ status: "error" }, ({ error }) => (
-          <ProjectListError message={error.message} onRetry={onRetry} />
+        .with({ status: "loading" }, ({ projects }) => (
+          <>
+            {projects.length > 0 && (
+              <>
+                <ProjectListHeader onCreateClick={onCreateClick} />
+                <div className={projectListStyles.grid}>
+                  <AnimatePresence mode="popLayout">
+                    {projects.map((project: Project) => (
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        onView={() => onViewProject(project.id)}
+                        onRemove={() => onRemoveProject(project.id)}
+                        onDownload={() => onExportProject(project.id)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </>
+            )}
+            <ProjectLoading />
+          </>
+        ))
+        .with({ status: "error" }, ({ error, projects }) => (
+          <>
+            {projects.length > 0 && (
+              <>
+                <ProjectListHeader onCreateClick={onCreateClick} />
+                <div className={projectListStyles.grid}>
+                  <AnimatePresence mode="popLayout">
+                    {projects.map((project: Project) => (
+                      <ProjectCard
+                        key={project.id}
+                        project={project}
+                        onView={() => onViewProject(project.id)}
+                        onRemove={() => onRemoveProject(project.id)}
+                        onDownload={() => onExportProject(project.id)}
+                      />
+                    ))}
+                  </AnimatePresence>
+                </div>
+              </>
+            )}
+            <ProjectListError message={error.message} onRetry={onRetry} />
+          </>
         ))
         .with({ status: "success" }, ({ projects }) => (
           <>
             <ProjectListHeader onCreateClick={onCreateClick} />
-
             <div className={projectListStyles.grid}>
               <AnimatePresence mode="popLayout">
                 {projects.map((project: Project) => (
@@ -50,7 +91,6 @@ export const ProjectListContent = ({
                 ))}
               </AnimatePresence>
             </div>
-
             {projects.length === 0 && (
               <EmptyProjectList onCreateClick={onCreateClick} />
             )}

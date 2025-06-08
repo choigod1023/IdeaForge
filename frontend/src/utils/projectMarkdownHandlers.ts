@@ -1,6 +1,6 @@
 import { toast } from "react-toastify";
 import { type Project } from "../types";
-import { generateMarkdown } from "../stores/projectStore";
+import { generateMarkdown } from "../utils/markdown";
 
 export const createMarkdownHandlers = (
   project: Project,

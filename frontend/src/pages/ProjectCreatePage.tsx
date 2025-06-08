@@ -4,9 +4,14 @@ import { FormError } from "../components/forms/FormError";
 import { useProjectCreate } from "../hooks/useProjectCreate";
 import { match } from "ts-pattern";
 import { projectPageStyles } from "../styles/projectStyles";
+import type { ProjectRequest } from "../types";
 
 export default function ProjectCreatePage() {
-  const { pageState, handleSubmit, isPending } = useProjectCreate();
+  const { pageState, createProject, isPending } = useProjectCreate();
+
+  const handleSubmit = async (data: ProjectRequest) => {
+    await createProject(data);
+  };
 
   return (
     <div className={projectPageStyles.container}>

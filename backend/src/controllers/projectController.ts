@@ -67,7 +67,7 @@ export const getProjectResources = async (req: Request, res: Response) => {
       formattedProject,
       {
         difficulty: formattedProject.difficulty,
-        preferredTech: formattedProject.techStack,
+        preferredTech: formattedProject.techStack.map((tech) => tech.name),
         theme: formattedProject.theme,
       }
     );

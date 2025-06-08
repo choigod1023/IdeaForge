@@ -1,6 +1,25 @@
 import { FaDownload, FaCopy } from "react-icons/fa";
 import { type Project } from "../../../types";
 import { useProjectMarkdownHandlers } from "../../../hooks/useProjectMarkdownHandlers";
+import { splitTitleIntoTwoLines } from "../../../utils/titleUtils";
+
+interface ProjectTitleProps {
+  title: string;
+}
+
+function ProjectTitle({ title }: ProjectTitleProps) {
+  const [firstLine, secondLine] = splitTitleIntoTwoLines(title);
+  return (
+    <div className="flex flex-col">
+      <span className="text-2xl font-bold text-gray-900 sm:text-2xl md:text-3xl dark:text-gray-100">
+        {firstLine}
+      </span>
+      <span className="text-2xl font-bold text-gray-900 sm:text-2xl md:text-3xl dark:text-gray-100">
+        {secondLine}
+      </span>
+    </div>
+  );
+}
 
 interface ProjectHeaderProps {
   project: Project;
@@ -11,10 +30,8 @@ export function ProjectHeader({ project }: ProjectHeaderProps) {
 
   return (
     <div className="pb-6 border-b border-gray-100">
-      <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900 sm:text-2xl md:text-3xl dark:text-gray-100">
-          {project.title}
-        </h2>
+      <div className="flex items-start justify-between">
+        <ProjectTitle title={project.title} />
         <div className="flex space-x-3">
           <button
             onClick={handleDownload}

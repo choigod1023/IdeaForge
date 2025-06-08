@@ -86,7 +86,6 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
 
   const handleNext = async () => {
     let isValid = false;
-    console.log("handleNext called, current step:", currentStep);
 
     switch (currentStep) {
       case "difficulty":
@@ -155,7 +154,6 @@ export function ProjectForm({ onSubmit, isLoading = false }: ProjectFormProps) {
   };
 
   const renderStep = () => {
-    console.log("Rendering step:", currentStep);
     return (
       <AnimatePresence mode="wait">
         {currentStep === "difficulty" && (
