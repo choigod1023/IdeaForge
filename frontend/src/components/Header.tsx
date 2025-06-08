@@ -1,11 +1,17 @@
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Logo } from "./header/Logo";
 import { Navigation } from "./header/Navigation";
-import { useHeader } from "../hooks/useHeader";
+import { useNavigation } from "../utils/navigation";
+import { setFavicon } from "../utils/favicon";
 import { headerStyles } from "../styles/headerStyles";
 
 export const Header = () => {
-  const { handleCreateProject, handleViewProjects } = useHeader();
+  const { handleCreateProject, handleViewProjects } = useNavigation();
+
+  useEffect(() => {
+    setFavicon();
+  }, []);
 
   return (
     <header className={headerStyles.container}>

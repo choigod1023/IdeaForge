@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { type ProjectRequest } from "../schemas/projectFormSchema";
 import type { Difficulty } from "../constants/formSteps";
 import { useFormSteps } from "./useFormSteps";
+import { createFormSubmitHandler } from "../utils/formSubmit";
 
 // Types
 export type FormProps = {
@@ -79,19 +80,6 @@ export const useProjectFormState = () => {
   };
 };
 
-// Hook for managing form submission
-export const useFormSubmit = (onSubmit: (data: ProjectRequest) => void) => {
-  const handleFormSubmit = async (data: ProjectRequest) => {
-    try {
-      await onSubmit(data);
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    }
-  };
-
-  return { handleFormSubmit };
-};
-
 // Hook for managing form steps and navigation
 export function useProjectForm(
   onSubmit: (data: ProjectRequest) => Promise<void>
@@ -112,7 +100,7 @@ export function useProjectForm(
     watch,
   } = useProjectFormState();
 
-  const { handleFormSubmit } = useFormSubmit(async (data) => {
+  const { handleFormSubmit } = createFormSubmitHandler(async (data) => {
     setIsLoading(true);
     try {
       await onSubmit(data);

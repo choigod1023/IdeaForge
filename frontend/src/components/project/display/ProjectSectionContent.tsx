@@ -1,14 +1,14 @@
 import { motion } from "framer-motion";
 import type { Project } from "../../../types";
 import type { ProjectSection } from "../../../constants/projectSections";
-import { ProjectDescription } from "../ProjectDescription";
-import { ProjectType } from "../ProjectType";
-import { ProjectTechStack } from "../ProjectTechStack";
-import { ProjectFeatures } from "../ProjectFeatures";
-import { ProjectResources } from "../ProjectResources";
-import { ProjectPrerequisites } from "../ProjectPrerequisites";
-import { ProjectChallenges } from "../ProjectChallenges";
-import { ProjectTips } from "../ProjectTips";
+import { ProjectDescription } from "../feature/ProjectDescription";
+import { ProjectType } from "../type/ProjectType";
+import { ProjectTechStack } from "../tech/ProjectTechStack";
+import { ProjectFeatures } from "../feature/ProjectFeatures";
+import { ProjectResources } from "../feature/ProjectResources";
+import { ProjectPrerequisites } from "../feature/ProjectPrerequisites";
+import { ProjectChallenges } from "../feature/ProjectChallenges";
+import { ProjectTips } from "../feature/ProjectTips";
 
 interface ProjectSectionContentProps {
   project: Project;

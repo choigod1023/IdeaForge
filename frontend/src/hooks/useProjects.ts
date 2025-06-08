@@ -4,6 +4,7 @@ import { useState } from "react";
 import type { Project, ProjectRequest } from "../types";
 import { api } from "../services/api";
 import { useProjectStore } from "../stores/projectStore";
+import { createProjectWithPolling } from "../utils/projectCreation";
 
 export function useProjects() {
   const navigate = useNavigate();
@@ -52,83 +53,35 @@ export function useProjects() {
   // 통합된 프로젝트 생성 함수
   const createProject = async (data: ProjectRequest): Promise<Project> => {
     setIsCreating(true);
-    let pollInterval: NodeJS.Timeout | null = null;
-    let timeoutId: NodeJS.Timeout | null = null;
-
-    const cleanup = () => {
-      if (pollInterval) clearInterval(pollInterval);
-      if (timeoutId) clearTimeout(timeoutId);
-    };
-
     try {
-      // 1. 추천 생성 요청
-      const { jobId } = await api.generateRecommendation(data);
-      if (!jobId) throw new Error("Job ID를 받지 못했습니다");
-
-      // 2. polling 시작
-      return new Promise<Project>((resolve, reject) => {
-        pollInterval = setInterval(async () => {
-          try {
-            const status = await api.checkRecommendationStatus(jobId);
-
-            switch (status.status) {
-              case "completed": {
-                if (!status.result) {
-                  throw new Error("프로젝트 데이터를 받지 못했습니다");
-                }
-                cleanup();
-
-                // localStorage에 프로젝트 저장
-                const addResult = addToProjectList(status.result);
-                if (!addResult.success) {
-                  throw new Error("이미 존재하는 프로젝트입니다");
-                }
-
-                // store에 프로젝트 선택
-                selectProject(status.result);
-                setIsCreating(false);
-                // 프로젝트 생성이 완료되면 ProjectPage로 이동
-                navigate("/project");
-                resolve(status.result);
-                break;
-              }
-
-              case "failed": {
-                cleanup();
-                setIsCreating(false);
-                reject(
-                  new Error(status.error || "프로젝트 생성에 실패했습니다")
-                );
-                break;
-              }
-
-              case "processing":
-                break;
-            }
-          } catch (error) {
-            cleanup();
-            setIsCreating(false);
-            reject(
-              error instanceof Error
-                ? error
-                : new Error("상태 확인 중 오류가 발생했습니다")
-            );
+      const project = await createProjectWithPolling(data, {
+        onSuccess: (result) => {
+          // localStorage에 프로젝트 저장
+          const addResult = addToProjectList(result);
+          if (!addResult.success) {
+            throw new Error("이미 존재하는 프로젝트입니다");
           }
-        }, 2000);
 
-        // 5분 타임아웃
-        timeoutId = setTimeout(() => {
-          cleanup();
+          // store에 프로젝트 선택
+          selectProject(result);
           setIsCreating(false);
-          reject(new Error("프로젝트 생성 시간이 초과되었습니다"));
-        }, 5 * 60 * 1000);
+          // 프로젝트 생성이 완료되면 ProjectPage로 이동
+          navigate("/project");
+        },
+        onError: () => {
+          setIsCreating(false);
+        },
+        onTimeout: () => {
+          setIsCreating(false);
+        },
+        onProcessing: () => {
+          // 처리 중 상태는 이미 isCreating으로 표현됨
+        },
       });
+      return project;
     } catch (error) {
-      cleanup();
       setIsCreating(false);
-      throw error instanceof Error
-        ? error
-        : new Error("프로젝트 생성 중 오류가 발생했습니다");
+      throw error;
     }
   };
 

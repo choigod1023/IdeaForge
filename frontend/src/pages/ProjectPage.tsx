@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { ProjectDisplay } from "../components/project/ProjectDisplay";
+import { ProjectDisplay } from "../components/project/layout/ProjectDisplay";
 import { projectPageStyles } from "../styles/projectStyles";
 import { useProjectPage } from "../hooks/useProjectPage";
 import { pageVariants, pageTransition } from "../constants/animations";

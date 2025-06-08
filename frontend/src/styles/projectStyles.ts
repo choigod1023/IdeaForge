@@ -30,3 +30,23 @@ export const projectPageStyles = {
     },
   },
 };
+
+export const projectListStyles = {
+  container: "container mx-auto px-4 py-8",
+  grid: "grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3",
+  list: {
+    header: {
+      container: "flex items-center justify-between mb-8",
+      title: "text-2xl font-bold text-gray-900 dark:text-white",
+      createButton:
+        "flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600",
+    },
+  },
+  empty: {
+    container: "flex flex-col items-center justify-center py-12 text-center",
+    title: "text-xl font-semibold text-gray-900 dark:text-white mb-2",
+    description: "text-gray-600 dark:text-gray-400 mb-6",
+    button:
+      "inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:bg-blue-500 dark:hover:bg-blue-600",
+  },
+} as const;

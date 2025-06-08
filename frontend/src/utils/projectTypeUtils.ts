@@ -10,7 +10,7 @@ interface ProjectTypeInfo {
   descriptions: string[];
 }
 
-export function getProjectType(type: string): ProjectTypeInfo {
+export function getProjectTypeInfo(type: string): ProjectTypeInfo {
   // 이모지와 특수문자 제거
   const cleaned = type
     .replace(/[\p{Emoji}]/gu, "")

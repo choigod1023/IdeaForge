@@ -1,4 +1,4 @@
-import { ProjectDisplay } from "../components/project/ProjectDisplay";
+import { ProjectDisplay } from "../components/project/layout/ProjectDisplay";
 import { useSharedProject } from "../hooks/useSharedProject";
 
 export default function SharedProjectPage() {

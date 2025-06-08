@@ -1,6 +1,5 @@
 import { useProjects } from "./useProjects";
-import type { ProjectRequest } from "../types";
-import { match, P } from "ts-pattern";
+import { calculateCreatePageState } from "../utils/projectCreate";
 
 export type CreatePageState =
   | { status: "loading" }
@@ -10,40 +9,13 @@ export type CreatePageState =
 export const useProjectCreate = () => {
   const { createProject, isPending, error } = useProjects();
 
-  const handleSubmit = async (data: ProjectRequest) => {
-    createProject(data);
-  };
+  // 상태 계산을 유틸리티 함수로 분리
+  const pageState = calculateCreatePageState({ isPending, error });
 
-  // 현재 페이지 상태 결정
-  const pageState = match({ isPending, error })
-    .with(
-      { isPending: true },
-      () =>
-        ({
-          status: "loading" as const,
-        } as CreatePageState)
-    )
-    .with(
-      { error: P.not(null) },
-      ({ error }) =>
-        ({
-          status: "error" as const,
-          error:
-            error instanceof Error
-              ? error
-              : new Error("프로젝트 생성 중 오류가 발생했습니다"),
-        } as CreatePageState)
-    )
-    .otherwise(
-      () =>
-        ({
-          status: "ready" as const,
-        } as CreatePageState)
-    );
-
+  // createProject를 직접 노출 (불필요한 래퍼 제거)
   return {
     pageState,
-    handleSubmit,
+    createProject,
     isPending,
   };
 };

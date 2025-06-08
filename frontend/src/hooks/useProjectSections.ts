@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Project, ProjectSection } from "../types";
+import { filterProjectSections } from "../utils/projectSections";
 
 export const useProjectSections = (project: Project) => {
   const [currentSection, setCurrentSection] =
@@ -10,33 +11,7 @@ export const useProjectSections = (project: Project) => {
     setCurrentSection("overview");
   }, [project.id]);
 
-  const allSections = [
-    "overview",
-    "type",
-    "techStack",
-    "features",
-    "resources",
-    "prerequisites",
-    "challenges",
-    "tips",
-  ] as const;
-
-  type Section = (typeof allSections)[number];
-
-  const sections = allSections.filter((section): section is Section => {
-    switch (section) {
-      case "techStack":
-        return project.techStack && project.techStack.length > 0;
-      case "prerequisites":
-        return project.prerequisites?.length > 0;
-      case "challenges":
-        return project.challenges?.length > 0;
-      case "tips":
-        return project.tips?.length > 0;
-      default:
-        return true;
-    }
-  });
+  const sections = filterProjectSections(project);
 
   return {
     currentSection,

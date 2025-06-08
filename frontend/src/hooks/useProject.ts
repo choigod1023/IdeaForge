@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import type { Project } from "../types";
+import { api } from "../services/api";
 
 export function useProject(projectId?: string) {
   const navigate = useNavigate();
@@ -12,12 +13,14 @@ export function useProject(projectId?: string) {
         navigate("/projects", { replace: true });
         throw new Error("Project ID not found");
       }
-      // TODO: 실제 API 호출로 변경
-      const response = await fetch(`/api/projects/${projectId}`);
-      if (!response.ok) {
-        throw new Error("Failed to fetch project");
+      try {
+        return await api.getProject(projectId);
+      } catch (error) {
+        if (error instanceof Error) {
+          throw error;
+        }
+        throw new Error("프로젝트를 불러오는데 실패했습니다");
       }
-      return response.json();
     },
     enabled: !!projectId,
   });

@@ -1,6 +1,6 @@
 import { projectCardStyles } from "../../../styles/projectCardStyles";
-import { ProjectTypeIcon } from "../ProjectTypeIcon";
-import { getTypeLabel } from "../../../utils/projectUtils";
+import { ProjectTypeIcon } from "../type/ProjectTypeIcon";
+import { getTypeLabel } from "../../../constants/projectTypes";
 import type { Project } from "../../../types";
 
 interface ProjectCardTagsProps {

@@ -138,4 +138,20 @@ export const api = {
       throw new Error("상태 확인 중 오류가 발생했습니다");
     }
   },
+
+  /**
+   * Fetches a single project by ID
+   * @param projectId ID of the project to fetch
+   * @returns Project data
+   */
+  async getProject(projectId: string): Promise<Project> {
+    try {
+      return await apiClient.get(`api/projects/${projectId}`).json<Project>();
+    } catch (error) {
+      if (error instanceof Error) {
+        throw error;
+      }
+      throw new Error("프로젝트를 불러오는데 실패했습니다");
+    }
+  },
 };

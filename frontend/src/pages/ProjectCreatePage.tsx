@@ -1,5 +1,5 @@
 import { ProjectForm } from "../components/forms/ProjectForm";
-import { ProjectLoading } from "../components/project/ProjectLoading";
+import { ProjectLoading } from "../components/project/layout/ProjectLoading";
 import { FormError } from "../components/forms/FormError";
 import { useProjectCreate } from "../hooks/useProjectCreate";
 import { match } from "ts-pattern";
