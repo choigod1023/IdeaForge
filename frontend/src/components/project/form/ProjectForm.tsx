@@ -1,11 +1,12 @@
+import { ProgressBar } from "../../forms/ProgressBar";
+import { FormNavigation } from "../../forms/FormNavigation";
+import { StepContent } from "../../forms/StepContent";
+import { LoadingSpinner } from "../../common/LoadingSpinner";
+import type { FormStep } from "../../../constants/formSteps";
+import type { ProjectRequest } from "../../../schemas/projectFormSchema";
+import { useProjectForm } from "../../../hooks/useProjectForm";
 import { motion } from "framer-motion";
-import { ProgressBar } from "../forms/ProgressBar";
-import { FormNavigation } from "../forms/FormNavigation";
-import { StepContent } from "../forms/StepContent";
-import { LoadingSpinner } from "../common/LoadingSpinner";
-import type { FormStep } from "../../constants/formSteps";
-import type { ProjectRequest } from "../../schemas/projectFormSchema";
-import { useProjectForm } from "../../hooks/useProjectForm";
+import { match } from "ts-pattern";
 
 const STEPS: FormStep[] = ["difficulty", "techStack", "theme", "details"];
 
@@ -36,8 +37,8 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
     isLoading,
   } = useProjectForm(onSubmit);
 
-  if (isLoading) {
-    return (
+  const formContent = match({ isLoading, isLastStep })
+    .with({ isLoading: true }, () => (
       <div className="flex flex-col items-center justify-center min-h-[400px] py-4 sm:py-6">
         <LoadingSpinner
           size="lg"
@@ -45,8 +46,60 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
           className="min-h-[400px]"
         />
       </div>
-    );
-  }
+    ))
+    .with({ isLastStep: true }, () => (
+      <motion.form
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3 }}
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="flex flex-col flex-1"
+      >
+        <div className="flex-1 p-4 sm:p-6">
+          <StepContent
+            currentStep={currentStep}
+            selectedDifficulty={selectedDifficulty}
+            selectedTechs={selectedTechs}
+            setSelectedDifficulty={setSelectedDifficulty}
+            setSelectedTechs={setSelectedTechs}
+            register={register}
+            watch={watch}
+            setValue={setValue}
+            errors={errors}
+          />
+        </div>
+        <FormNavigation
+          currentStep={currentStep}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          isLastStep={isLastStep}
+          onSubmit={handleSubmit(handleFormSubmit)}
+        />
+      </motion.form>
+    ))
+    .otherwise(() => (
+      <div className="flex flex-col flex-1">
+        <div className="flex-1 p-4 sm:p-6">
+          <StepContent
+            currentStep={currentStep}
+            selectedDifficulty={selectedDifficulty}
+            selectedTechs={selectedTechs}
+            setSelectedDifficulty={setSelectedDifficulty}
+            setSelectedTechs={setSelectedTechs}
+            register={register}
+            watch={watch}
+            setValue={setValue}
+            errors={errors}
+          />
+        </div>
+        <FormNavigation
+          currentStep={currentStep}
+          onPrev={handlePrev}
+          onNext={handleNext}
+          isLastStep={isLastStep}
+        />
+      </div>
+    ));
 
   return (
     <div className="flex flex-col items-center py-4 sm:py-6">
@@ -54,58 +107,7 @@ export function ProjectForm({ onSubmit }: ProjectFormProps) {
         <ProgressBar currentStep={currentStep} steps={STEPS} />
 
         <div className="bg-white shadow-lg rounded-3xl dark:bg-gray-800 dark:shadow-gray-900/30 min-h-[400px] flex flex-col">
-          {isLastStep ? (
-            <motion.form
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-              onSubmit={handleSubmit(handleFormSubmit)}
-              className="flex flex-col flex-1"
-            >
-              <div className="flex-1 p-4 sm:p-6">
-                <StepContent
-                  currentStep={currentStep}
-                  selectedDifficulty={selectedDifficulty}
-                  selectedTechs={selectedTechs}
-                  setSelectedDifficulty={setSelectedDifficulty}
-                  setSelectedTechs={setSelectedTechs}
-                  register={register}
-                  watch={watch}
-                  setValue={setValue}
-                  errors={errors}
-                />
-              </div>
-              <FormNavigation
-                currentStep={currentStep}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                isLastStep={isLastStep}
-                onSubmit={handleSubmit(handleFormSubmit)}
-              />
-            </motion.form>
-          ) : (
-            <div className="flex flex-col flex-1">
-              <div className="flex-1 p-4 sm:p-6">
-                <StepContent
-                  currentStep={currentStep}
-                  selectedDifficulty={selectedDifficulty}
-                  selectedTechs={selectedTechs}
-                  setSelectedDifficulty={setSelectedDifficulty}
-                  setSelectedTechs={setSelectedTechs}
-                  register={register}
-                  watch={watch}
-                  setValue={setValue}
-                  errors={errors}
-                />
-              </div>
-              <FormNavigation
-                currentStep={currentStep}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                isLastStep={isLastStep}
-              />
-            </div>
-          )}
+          {formContent}
         </div>
       </div>
     </div>

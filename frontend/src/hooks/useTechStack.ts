@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react";
-import { getTechColors, getTechDescription } from "../../utils/techStack";
+import { getTechColors, getTechDescription } from "../utils/techStack";
 
 interface UseTechStackProps {
   initialTechs?: string[];
