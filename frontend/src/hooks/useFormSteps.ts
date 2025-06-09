@@ -1,5 +1,6 @@
 import { useState } from "react";
-import type { FormStep, Difficulty } from "../constants/formSteps";
+import type { FormStep } from "../types/form";
+import type { Difficulty } from "../constants/formSteps";
 import type { ProjectRequest } from "../schemas/projectFormSchema";
 import {
   STEPS,
