@@ -1,4 +1,4 @@
-import { type FormStep } from "../../constants/formSteps";
+import { type FormStep } from "../../types/form";
 
 interface SimpleProgressBarProps {
   currentStep: number;

@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import type { FormStep } from "../../constants/formSteps";
+import type { FormStep } from "../../types/form";
 
 interface FormNavigationProps {
   currentStep: FormStep;

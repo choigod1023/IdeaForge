@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
-import type { FormStep, Difficulty } from "../../constants/formSteps";
+import type { FormStep } from "../../types/form";
+import type { Difficulty } from "../../types";
 import { DifficultyStep } from "./DifficultyStep";
 import { TechStackStep } from "./TechStackStep";
 import { ThemeStep } from "./ThemeStep";
