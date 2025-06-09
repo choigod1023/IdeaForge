@@ -1,8 +1,8 @@
-import { FaArrowLeft, FaArrowRight, FaList } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { motion } from "framer-motion";
 import type { ProjectSection } from "../../../constants/projectSections";
 import { sectionNames } from "../../../constants/projectSections";
-import { useProjectNavigation } from "../../../hooks/useProjectNavigation";
+import { useProjectNavigation } from "../../../hooks/useProject";
 
 interface ProjectNavigationProps {
   onPrev: () => void;
@@ -42,7 +42,7 @@ export function ProjectNavigation({
               onClick={handlePrev}
               className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-gray-600 shadow-lg rounded-xl hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
             >
-              <FaArrowLeft className="mr-2" />
+              <FaChevronLeft className="mr-2" />
               {prevSection && sectionNames[prevSection]}
             </motion.button>
           )}
@@ -55,7 +55,7 @@ export function ProjectNavigation({
               className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-indigo-600 shadow-lg rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               {nextSection && sectionNames[nextSection]}
-              <FaArrowRight className="ml-2" />
+              <FaChevronRight className="ml-2" />
             </motion.button>
           )}
 
@@ -67,7 +67,6 @@ export function ProjectNavigation({
               className="flex items-center justify-center flex-1 px-8 py-4 text-base font-medium text-white transition-colors bg-indigo-600 shadow-lg rounded-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
               목록
-              <FaList className="ml-2" />
             </motion.button>
           )}
         </div>

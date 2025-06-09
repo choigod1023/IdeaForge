@@ -1,5 +1,9 @@
 import type { Project } from "../../types";
-import type { ProjectState } from "../../types/store";
+import type {
+  ProjectState,
+  ActionResult,
+  ProjectActionResult,
+} from "../../types/store";
 import type { StoreApi } from "zustand/vanilla";
 import {
   saveProjectsToStorage,
@@ -34,7 +38,7 @@ export const createProjectActions = (
 
   setPreferredTech: (techs: string[]) => set({ preferredTech: techs }),
 
-  addToProjectList: (project: Project) => {
+  addToProjectList: (project: Project): ProjectActionResult => {
     const state = get();
     // 중복 체크
     const isDuplicate = state.projectList.some(
@@ -42,21 +46,29 @@ export const createProjectActions = (
     );
 
     if (isDuplicate) {
-      return { success: false, isDuplicate: true };
+      return {
+        success: false,
+        isDuplicate: true,
+        error: "이미 존재하는 프로젝트입니다",
+      };
     }
 
     const newList = [...state.projectList, project];
     saveProjectsToStorage(newList);
     set({ projectList: newList });
-    return { success: true, isDuplicate: false };
+    return {
+      success: true,
+      isDuplicate: false,
+      data: project,
+    };
   },
 
-  removeFromProjectList: (projectId: string) => {
+  removeFromProjectList: (projectId: string): ActionResult => {
     const state = get();
     const newList = state.projectList.filter((p) => p.id !== projectId);
     saveProjectsToStorage(newList);
     set({ projectList: newList });
-    return true;
+    return { success: true };
   },
 
   clearProjectList: () => {
@@ -64,13 +76,29 @@ export const createProjectActions = (
     saveProjectsToStorage([]);
   },
 
-  saveToLocalStorage: () => {
-    const { projectList } = get();
-    saveProjectsToStorage(projectList);
+  saveToLocalStorage: (): ActionResult => {
+    try {
+      const { projectList } = get();
+      saveProjectsToStorage(projectList);
+      return { success: true };
+    } catch {
+      return {
+        success: false,
+        error: "로컬 스토리지 저장에 실패했습니다",
+      };
+    }
   },
 
-  loadFromLocalStorage: () => {
-    const { projectList } = get();
-    set({ projectList });
+  loadFromLocalStorage: (): ActionResult => {
+    try {
+      const { projectList } = get();
+      set({ projectList });
+      return { success: true };
+    } catch {
+      return {
+        success: false,
+        error: "로컬 스토리지 로드에 실패했습니다",
+      };
+    }
   },
 });

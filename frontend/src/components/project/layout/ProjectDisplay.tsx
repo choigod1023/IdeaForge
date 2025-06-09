@@ -1,11 +1,13 @@
 import { AnimatePresence } from "framer-motion";
-import type { Project } from "../../../types";
 import { ProjectHeader } from "./ProjectHeader";
 import { ProjectNavigation } from "./ProjectNavigation";
 import { ProjectProgress } from "./ProjectProgress";
 import { ProjectSectionContent } from "../display/ProjectSectionContent";
-import { useProjectSections } from "../../../hooks/useProjectSections";
-import { useProjectNavigation } from "../../../hooks/useProjectNavigation";
+import {
+  useProjectSections,
+  useProjectNavigation,
+} from "../../../hooks/useProject";
+import type { Project } from "../../../types";
 
 interface ProjectDisplayProps {
   project: Project;

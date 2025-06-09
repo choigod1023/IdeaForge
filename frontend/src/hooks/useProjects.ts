@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { Project, ProjectRequest } from "../types";
 import { api } from "../services/api";
 import { useProjectStore } from "../stores/projectStore";
-import { createProjectWithPolling } from "../utils/projectCreation";
+import { createProjectWithPolling } from "../utils/projectUtils";
 
 export function useProjects() {
   const navigate = useNavigate();

@@ -2,7 +2,7 @@ import { ProgressBar } from "../../forms/ProgressBar";
 import { FormNavigation } from "../../forms/FormNavigation";
 import { StepContent } from "../../forms/StepContent";
 import { LoadingSpinner } from "../../common/LoadingSpinner";
-import type { FormStep } from "../../../constants/formSteps";
+import type { FormStep } from "../../../types/form";
 import type { ProjectRequest } from "../../../schemas/projectFormSchema";
 import { useProjectForm } from "../../../hooks/useProjectForm";
 import { motion } from "framer-motion";

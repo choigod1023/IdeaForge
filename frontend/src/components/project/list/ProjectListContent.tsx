@@ -7,7 +7,7 @@ import { ProjectListError } from "./ProjectListError";
 import { ProjectLoading } from "../layout/ProjectLoading";
 import { projectListStyles } from "../../../styles/projectStyles";
 import type { Project } from "../../../types";
-import type { ListPageState } from "../../../utils/projectList";
+import type { ListPageState } from "../../../utils/projectUtils";
 
 interface ProjectListContentProps {
   pageState: ListPageState;

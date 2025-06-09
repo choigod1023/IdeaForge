@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import type { ProjectState } from "../types/store";
+import type { ProjectState, ActionResult } from "../types/store";
 import {
   loadProjectsFromStorage,
   loadSelectedProjectFromStorage,
@@ -29,15 +29,28 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
   ...createPollingActions(set, get),
 
   // 마크다운 액션
-  exportToMarkdown: (projectId: string) => {
-    const { projectList } = get();
-    const project = projectList.find((p) => p.id === projectId);
+  exportToMarkdown: (projectId: string): ActionResult => {
+    try {
+      const { projectList } = get();
+      const project = projectList.find((p) => p.id === projectId);
 
-    if (!project) {
-      throw new Error(`ID가 ${projectId}인 프로젝트를 찾을 수 없습니다.`);
+      if (!project) {
+        return {
+          success: false,
+          error: `ID가 ${projectId}인 프로젝트를 찾을 수 없습니다.`,
+        };
+      }
+
+      exportProjectToMarkdown(project);
+      return { success: true };
+    } catch (error) {
+      return {
+        success: false,
+        error:
+          error instanceof Error
+            ? error.message
+            : "마크다운 내보내기에 실패했습니다",
+      };
     }
-
-    exportProjectToMarkdown(project);
-    return true;
   },
 }));

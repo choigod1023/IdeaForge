@@ -1,5 +1,6 @@
 import type { ProjectRequest } from "../../types";
-import type { ProjectState } from "../../types/store";
+import type { ProjectState, ProjectActionResult } from "../../types/store";
+import type { GenerateRecommendationRequest } from "../../types/api";
 import type { StoreApi } from "zustand/vanilla";
 import { api } from "../../services/api";
 
@@ -22,7 +23,9 @@ export const createPollingActions = (
   };
 
   return {
-    generateProject: async (request: ProjectRequest) => {
+    generateProject: async (
+      request: ProjectRequest
+    ): Promise<ProjectActionResult> => {
       cleanup();
 
       set({
@@ -38,7 +41,9 @@ export const createPollingActions = (
 
       try {
         // 1. 초기 요청으로 jobId 받기
-        const { jobId } = await api.generateRecommendation(request);
+        const { jobId } = await api.generateRecommendation(
+          request as GenerateRecommendationRequest
+        );
 
         if (!jobId) {
           throw new Error("Job ID를 받지 못했습니다");
@@ -174,7 +179,13 @@ export const createPollingActions = (
             progress: 0,
           },
         });
-        return { success: false };
+        return {
+          success: false,
+          error:
+            error instanceof Error
+              ? error.message
+              : "프로젝트 생성 중 오류가 발생했습니다",
+        };
       }
     },
   };

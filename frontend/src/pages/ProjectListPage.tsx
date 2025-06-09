@@ -1,5 +1,5 @@
 import { useProjects } from "../hooks/useProjects";
-import { calculateListPageState } from "../utils/projectList";
+import { calculateListPageState } from "../utils/projectUtils";
 import { ProjectListContent } from "../components/project/list/ProjectListContent";
 
 export default function ProjectListPage() {

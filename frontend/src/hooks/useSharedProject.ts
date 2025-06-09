@@ -2,7 +2,7 @@ import { useSearchParams, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useQuery } from "@tanstack/react-query";
 import type { Project } from "../types";
-import { parseProjectData } from "../utils/projectData";
+import { parseProjectData } from "../utils/projectUtils";
 
 export function useSharedProject() {
   const [searchParams] = useSearchParams();
