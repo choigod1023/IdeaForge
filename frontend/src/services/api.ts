@@ -11,7 +11,8 @@ import type {
   ApiClient,
 } from "../types/api";
 import { useProjectStore } from "../stores/projectStore";
-import { isApiError, isProject, isJobStatusResponse } from "../types/api";
+import { isApiError, isJobStatusResponse } from "../types/api";
+import { isProject } from "../types";
 import ky from "ky";
 
 const API_URL = import.meta.env.VITE_API_URL?.replace(/\/$/, ""); // Remove trailing slash if exists
